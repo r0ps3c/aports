@@ -14,5 +14,6 @@ jobs:
           base: master
           head: master
       - uses: r0ps3c/fork-sync@v2
+        with:
           base: 3.17-stable
           head: 3.17-stable
