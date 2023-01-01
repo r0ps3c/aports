@@ -1,7 +1,7 @@
 # Contributor: psykose <alice@ayaya.dev>
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=font-iosevka
-pkgver=16.8.4
+pkgver=17.0.2
 pkgrel=0
 pkgdesc="Versatile typeface for code, from code"
 url="https://typeof.net/Iosevka/"
@@ -57,8 +57,8 @@ curly_slab() {
 }
 
 sha512sums="
-5227e42d9e94071155bd4fee33f9fc163487a19805f2e6374e1c018050bdbacb5884132069ffc8586ee036905e85b9f1cca96463302cf8d38e691f33382b58b6  super-ttc-iosevka-16.8.4.zip
-5fd8caf5c6f507e847bb87863e992043d9a84e0eaf8566ef4d24529a02c5543fea44854d20ff8be30418277ba9b252d73e8d779c6057d210ffdd25a3a88bd3c7  super-ttc-iosevka-slab-16.8.4.zip
-a2b0756d32b6f5fe8b4ff501f8eb2c9dbdc78fa3b421501abb211b4d0beb3a6ab556308e7f76cdcc7827ecd9f2985067f861490eba9585c0ca4ad0f2be1cfbfd  super-ttc-iosevka-curly-16.8.4.zip
-c2ce4494c569ccc66a52a3502ecb3d5dae06a8e0f240c2709681203aee09c299433ceb3068e57dfdd04ab007bd94926d51c2021be7534a0da29a5ec1801f21d8  super-ttc-iosevka-curly-slab-16.8.4.zip
+bcf767fcddb612be522d9a513f196a62c6d0fa2d2642b7adafc9e0938da7b6bcfa799c677db7aa9bdd50e89559e31f690889a67620b76794998fcb2df38c3f00  super-ttc-iosevka-17.0.2.zip
+9a3318e2cb365dbd6a6f5d832933f99f80597c25f28f7535d5a2af261ca9a9486db15013ec24aeb1707c4adf2fddd8a5d3802be9e377d402dbc73da96253ba0d  super-ttc-iosevka-slab-17.0.2.zip
+8a3e86c3ee61a85d97e0f1144e805898126b56f8772cd02d618ed029e880834f100fdc41bf6b40465f6a821e641639300de654afa527982791b90d6c2ba4b910  super-ttc-iosevka-curly-17.0.2.zip
+df4d69d740b7078928c2b79326e524ba3f7d604cdf912c0c248f853410a36d4bcfe819603522d4493b556a0de2251f7c1665620091973798a5672f882dcea965  super-ttc-iosevka-curly-slab-17.0.2.zip
 "

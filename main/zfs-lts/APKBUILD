@@ -8,13 +8,12 @@ _rel=1
 # when changing _kver/_krel make sure _rel=0
 _flavor=${FLAVOR:-lts}
 _kpkg=linux-$_flavor
-_kver=6.1.0
+_kver=6.1.1
 _krel=1
 
 _kpkgver="$_kver-r$_krel"
 
 # for custom kernels set $FLAVOR
-_extra_flavors=
 case $CARCH in
 	x86|x86_64|aarch64) _extra_flavors="virt";;
 esac
@@ -63,7 +62,6 @@ prepare() {
 }
 
 build() {
-	cd "$builddir"
 	local flavor= kabi=
 	for flavor in $_flavor $_extra_flavors; do
 		kabi="$_kver-$_krel-$flavor"
@@ -84,7 +82,6 @@ build() {
 }
 
 package() {
-	cd "$builddir"
 	local flavor= kabi=
 	for flavor in $_flavor $_extra_flavors; do
 		kabi="$_kver-$_krel-$flavor"

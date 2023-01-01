@@ -1,13 +1,14 @@
 # Contributor: Alexey Yerin <yyp@disroot.org>
 # Maintainer: Alexey Yerin <yyp@disroot.org>
 pkgname=tut
-pkgver=1.0.18
-pkgrel=3
+pkgver=1.0.34
+pkgrel=0
 pkgdesc="TUI for Mastodon"
 url="https://github.com/RasmusLindroth/tut"
 arch="all"
 license="MIT"
 makedepends="go"
+subpackages="$pkgname-doc"
 source="
 	$pkgname-$pkgver.tar.gz::https://github.com/RasmusLindroth/tut/archive/refs/tags/$pkgver.tar.gz
 "
@@ -24,8 +25,12 @@ build() {
 
 package() {
 	install -D -m755 tut "$pkgdir"/usr/bin/tut
+
+	install -D -m644 -t "$pkgdir"/usr/share/man/man1/ docs/man/tut.1
+	install -D -m644 -t "$pkgdir"/usr/share/man/man5/ docs/man/tut.5
+	install -D -m644 -t "$pkgdir"/usr/share/man/man7/ docs/man/tut.7
 }
 
 sha512sums="
-a02fa97e7ea7543afaf009b5c69048fbfd864bef5fb9c9c49f1b06e27a4d06c638a5287f245c8badbb6e04becec3b76f4d03fa767ea3dfc9251f5b8abc12500d  tut-1.0.18.tar.gz
+133341b8ecacc918914dc93d3ea9b5bc2c6b83b80374f9b37fdba9d96ecde0275ece9a922be52ab47666e1457aeb85c9f21821fb92c017ad9d5008043542dbb0  tut-1.0.34.tar.gz
 "

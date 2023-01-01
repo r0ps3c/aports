@@ -41,7 +41,6 @@ pkgdesc="HTTP and reverse proxy server (stable version)"
 url="https://www.nginx.org/"
 arch="all"
 license="BSD-2-Clause"
-depends=""
 makedepends="
 	brotli-dev
 	gd-dev
@@ -314,8 +313,6 @@ _build() {
 }
 
 build() {
-	cd "$builddir"
-
 	_build --with-debug
 	mv objs objs-debug
 
@@ -344,8 +341,6 @@ check() {
 }
 
 package() {
-	cd "$builddir"
-
 	make DESTDIR="$pkgdir" install
 	chown root:root "$pkgdir"/usr/sbin/nginx
 

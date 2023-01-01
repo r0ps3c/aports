@@ -14,7 +14,6 @@ _krel=0
 _kpkgver="$_kver-r$_krel"
 
 # for custom kernels set $FLAVOR
-_extra_flavors=
 case $CARCH in
 	armhf|armv7) _extra_flavors="rpi2";;
 	aarch64) _extra_flavors="rpi4";;
@@ -62,7 +61,6 @@ prepare() {
 }
 
 build() {
-	cd "$builddir"
 	local flavor= kabi=
 	for flavor in $_flavor $_extra_flavors; do
 		kabi="$_kver-$_krel-$flavor"
@@ -83,7 +81,6 @@ build() {
 }
 
 package() {
-	cd "$builddir"
 	local flavor= kabi=
 	for flavor in $_flavor $_extra_flavors; do
 		kabi="$_kver-$_krel-$flavor"

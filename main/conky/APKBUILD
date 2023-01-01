@@ -1,6 +1,6 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=conky
-pkgver=1.15.0
+pkgver=1.16.1
 pkgrel=0
 pkgdesc="An advanced, highly configurable system monitor for X based on torsmo"
 url="https://conky.sourceforge.net/"
@@ -25,6 +25,9 @@ makedepends="
 	tolua++
 	samurai
 	wireless-tools-dev
+	wayland-dev
+	wayland-protocols
+	pango-dev
 	"
 subpackages="$pkgname-doc"
 source="$pkgname-$pkgver.tar.gz::https://github.com/brndnmtthws/conky/archive/v$pkgver.tar.gz"
@@ -49,7 +52,8 @@ build() {
 		-DBUILD_WEATHER_METAR=ON \
 		-DBUILD_WLAN=ON \
 		-DBUILD_I18N=OFF \
-		-DBUILD_LUA_CAIRO=ON
+		-DBUILD_LUA_CAIRO=ON \
+		-DBUILD_WAYLAND=ON
 	cmake --build build
 }
 
@@ -59,5 +63,5 @@ package() {
 }
 
 sha512sums="
-d317b0a141355ce56c9dce5ba6e4b9dbe73b05b9b0b85d93d491f6d6da4194c1aceefbbc7e1b10e5fc233a9732933949e273630845194f6c16dce34a77ee5841  conky-1.15.0.tar.gz
+767438b97cd04bf3ce7a73bcb675940d1f9fdf67cd030fc139d494992706dc82fdb6b5b168f712d6806e2aac94e9b4cf12401094b1075a8773c2bc6cb97fc88d  conky-1.16.1.tar.gz
 "

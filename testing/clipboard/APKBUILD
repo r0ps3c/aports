@@ -1,0 +1,33 @@
+# Contributor: Guy Godfroy <guy.godfroy@gugod.fr>
+# Maintainer: Guy Godfroy <guy.godfroy@gugod.fr>
+pkgname=clipboard
+pkgver=0.2.0
+pkgrel=0
+pkgdesc="Cut, copy, and paste anything, anywhere, all from the terminal"
+url="https://github.com/Slackadays/Clipboard"
+arch="all"
+license="GPL-3.0-only"
+makedepends="cmake samurai"
+source="$pkgname-$pkgver.tar.gz::https://github.com/Slackadays/Clipboard/archive/refs/tags/$pkgver.tar.gz"
+builddir="$srcdir/Clipboard-$pkgver"
+options="!check" # No test configuration file
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake -B build -G Ninja \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		$CMAKE_CROSSOPTS
+	cmake --build build
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --install build
+}
+
+sha512sums="
+11df62a2e9da16be5c177521c14c83bd8521453af28c3b184342f592f3188388ccab15b6338a1f40af312224570ac9f58a59885a93add36b8fa46553b211c946  clipboard-0.2.0.tar.gz
+"

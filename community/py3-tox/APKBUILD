@@ -2,7 +2,7 @@
 # Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
 pkgname=py3-tox
 _pkgname=${pkgname#py3-*}
-pkgver=4.0.16
+pkgver=4.1.2
 pkgrel=0
 pkgdesc="virtualenv management and test command line tool"
 options="!check" #  Requires community/py3-pathlib2, and unpackaged flaky
@@ -49,5 +49,5 @@ package() {
 }
 
 sha512sums="
-571f00f440e0c7bf19fb4c1289408fe24b277b217464bbacf5c1296f7e26dfbe88399f87d2bc9ddf207c691c086e9b3d53fa6a44e001a5a2688194a8f0b5c853  tox-4.0.16.tar.gz
+4d02dff0b4ae282cd0b0d251ae3f2420281597556b01a65ff0870a8fc74cd6a12283428cb23bc3261c5df4608628e660d4561bee73dbcee369af92ddca675e7b  tox-4.1.2.tar.gz
 "

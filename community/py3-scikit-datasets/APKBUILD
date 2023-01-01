@@ -1,0 +1,35 @@
+# Contributor: Iztok Fister, Jr. <iztok@iztok-jr-fister.eu>
+# Maintainer: Iztok Fister, Jr. <iztok@iztok-jr-fister.eu>
+pkgname=py3-scikit-datasets
+_pkgorig=scikit-datasets
+pkgver=0.2.2
+pkgrel=0
+pkgdesc="Scikit-learn-compatible datasets"
+url="https://github.com/daviddiazvico/scikit-datasets"
+# py3-scikit-learn is missing on s390x
+arch="noarch !s390x"
+license="MIT"
+options="!check" # network tests | skip for now
+depends="
+	python3
+	py3-numpy
+	py3-scipy
+	py3-scikit-learn
+	"
+makedepends="py3-setuptools"
+source="https://github.com/daviddiazvico/scikit-datasets/archive/v$pkgver/$_pkgorig-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgorig-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --skip-build --root="$pkgdir"
+
+	rm -r "$pkgdir"/usr/lib/python3.*/site-packages/skdatasets/tests
+}
+
+sha512sums="
+7239d1d13f14edbb4cd94c2ba145086d40c5e1f47307240322aa59109ded481ad22788aec4fbce2ecb0bd43e3aedd056e7e6fd3b972a56b7c381bdb3771345c5  scikit-datasets-0.2.2.tar.gz
+"
