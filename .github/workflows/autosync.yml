@@ -1,0 +1,15 @@
+name: Sync Fork
+
+on:
+  schedule:
+    - cron: '9 1 * * *' # sync once a day
+  workflow_dispatch: # on button click
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: r0ps3c/fork-sync@v2
+        with:
+          base: 3.17-stable
+          head: 3.17-stable
