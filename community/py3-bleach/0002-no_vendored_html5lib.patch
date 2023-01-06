@@ -1,8 +1,8 @@
 diff --git a/bleach/html5lib_shim.py b/bleach/html5lib_shim.py
-index b886ca5..ac36f7d 100644
+index d121953..29c5177 100644
 --- a/bleach/html5lib_shim.py
 +++ b/bleach/html5lib_shim.py
-@@ -18,44 +18,44 @@ warnings.filterwarnings(
+@@ -14,46 +14,46 @@ warnings.filterwarnings(
      "ignore",
      message="html5lib's sanitizer is deprecated",
      category=DeprecationWarning,
@@ -35,6 +35,8 @@ index b886ca5..ac36f7d 100644
 -from bleach._vendor.html5lib.filters.sanitizer import (
 +from html5lib.filters.sanitizer import (
      allowed_protocols,
+     allowed_css_properties,
+     allowed_svg_properties,
  )  # noqa: E402 module level import not at top of file
 -from bleach._vendor.html5lib.filters.sanitizer import (
 +from html5lib.filters.sanitizer import (
@@ -59,16 +61,36 @@ index b886ca5..ac36f7d 100644
      Trie,
  )  # noqa: E402 module level import not at top of file
  
+diff --git a/bleach/parse_shim.py b/bleach/parse_shim.py
+index c7ce2d4..cf9b2e8 100644
+--- a/bleach/parse_shim.py
++++ b/bleach/parse_shim.py
+@@ -1 +1 @@
+-from bleach._vendor.parse import urlparse  # noqa
++from urllib.parse import urlparse
+diff --git a/bleach/sanitizer.py b/bleach/sanitizer.py
+index 6527ac0..b9f747c 100644
+--- a/bleach/sanitizer.py
++++ b/bleach/sanitizer.py
+@@ -277,7 +277,7 @@ class BleachSanitizerFilter(html5lib_shim.SanitizerFilter):
+             "ignore",
+             message="html5lib's sanitizer is deprecated",
+             category=DeprecationWarning,
+-            module="bleach._vendor.html5lib",
++            module="html5lib",
+         )
+         return super().__init__(
+             source,
 diff --git a/tests/test_clean.py b/tests/test_clean.py
-index 7c56575..9fb9e52 100644
+index b8e9cf1..61f311f 100644
 --- a/tests/test_clean.py
 +++ b/tests/test_clean.py
-@@ -7,7 +7,7 @@ import pytest
+@@ -5,7 +5,7 @@ import pytest
  from bleach import clean
  from bleach.html5lib_shim import Filter
- from bleach.sanitizer import Cleaner
+ from bleach.sanitizer import ALLOWED_PROTOCOLS, Cleaner
 -from bleach._vendor.html5lib.constants import rcdataElements
 +from html5lib.constants import rcdataElements
  
  
- def test_clean_idempotent():
+ @pytest.mark.parametrize(

@@ -1,0 +1,38 @@
+# Contributor: Clayton Craft <clayton@craftyguy.net>
+# Maintainer: Clayton Craft <clayton@craftyguy.net>
+pkgname=dnsane
+pkgver=0.1.1
+pkgrel=0
+pkgdesc="dns proxy that filters based on IP protocol version support"
+url="https://sr.ht/~craftyguy/dnsane/"
+license="GPL-3.0-or-later"
+arch="all"
+options="net"
+makedepends="go make scdoc"
+subpackages="$pkgname-doc $pkgname-openrc"
+source="$pkgname-$pkgver.tar.gz::https://git.sr.ht/~craftyguy/dnsane/archive/$pkgver.tar.gz"
+
+export GOCACHE="${GOCACHE:-"$srcdir/go-cache"}"
+export GOTMPDIR="${GOTMPDIR:-"$srcdir"}"
+export GOMODCACHE="${GOMODCACHE:-"$srcdir/go"}"
+
+build() {
+	unset LDFLAGS # passed as go linker flags and invalid
+	make PREFIX="/usr" VERSION="$pkgver"
+}
+
+check() {
+	go test ./...
+}
+
+package() {
+	make PREFIX=/usr DESTDIR="$pkgdir" install
+
+	install -Dm755  openrc/dnsane.initd \
+		-t "$pkgdir/etc/init.d/"
+	install -Dm644  openrc/dnsane.confd \
+		-t "$pkgdir/etc/conf.d/"
+}
+sha512sums="
+9186e581ad3701dc15f25117683ef95af752f7f8e7b8c07cef47963faf976ba3ff2e1894073ff19e5d7ba6d21520631ad45f9c9e26e88089c5979c56e3df7b89  dnsane-0.1.1.tar.gz
+"
