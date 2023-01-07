@@ -2,7 +2,7 @@
 # Maintainer: Grigory Kirillov <txgk@bk.ru>
 pkgname=liblinbox
 pkgver=1.7.0
-pkgrel=0
+pkgrel=1
 pkgdesc="Library for exact, high-performance linear algebra computation"
 url="https://linalg.org"
 # armhf, armv7, x86: fail tests
@@ -10,12 +10,12 @@ url="https://linalg.org"
 arch="all !armhf !armv7 !x86 !s390x"
 license="LGPL-2.1-or-later"
 makedepends="
-	gfortran
-	gmp-dev
 	fflas-ffpack
 	flint-dev
 	fplll-dev
-	iml-dev
+	gfortran
+	gmp-dev
+	libiml-dev
 	libm4rie-dev
 	mpfr-dev
 	openblas-dev
