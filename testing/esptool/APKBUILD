@@ -3,18 +3,20 @@
 # Maintainer: Michał Polański <michal@polanski.me>
 pkgname=esptool
 pkgver=4.4
-pkgrel=1
+pkgrel=2
 pkgdesc="ESP8266 and ESP32 serial bootloader utility"
 url="https://docs.espressif.com/projects/esptool"
 license="GPL-2.0-or-later"
 arch="noarch"
 depends="python3 py3-cryptography py3-ecdsa py3-pyserial py3-bitstring py3-reedsolo"
-makedepends="py3-build py3-installer py3-setuptools py3-wheel"
+makedepends="py3-gpep517 py3-installer py3-setuptools py3-wheel"
 checkdepends="py3-pytest py3-elftools"
 source="https://github.com/espressif/esptool/archive/v$pkgver/esptool-$pkgver.tar.gz"
 
 build() {
-	python3 -m build --no-isolation --wheel
+	gpep517 build-wheel \
+		--wheel-dir dist \
+		--output-fd 3 3>&1 >&2
 }
 
 check() {
