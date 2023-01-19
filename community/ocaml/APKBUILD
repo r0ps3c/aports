@@ -3,13 +3,14 @@
 # Maintainer: omni <omni+alpine@hack.org>
 pkgname=ocaml
 pkgver=4.14.1
-pkgrel=0
+pkgrel=1
 pkgdesc="Main implementation of the Caml programming language"
 url="https://ocaml.org/"
 arch="all !riscv64" # hangs forever at final build step
 license="LGPL-2.1-or-later-WITH-linking-exception"
 depends="$pkgname-runtime=$pkgver-r$pkgrel gcc"
 makedepends="gdbm-dev libc-dev ncurses-dev zlib-dev binutils-dev"
+checkdepends="parallel"
 subpackages="
 	$pkgname-doc
 	$pkgname-dev
@@ -21,7 +22,10 @@ source="https://caml.inria.fr/pub/distrib/ocaml-${pkgver%.*}/ocaml-$pkgver.tar.g
 
 # 32bit archs
 case "$CARCH" in
-armv7|armhf|x86) options="$options textrels" ;;
+armv7|armhf|x86)
+	options="$options textrels"
+	export LDFLAGS="$LDFLAGS -Wl,-z,notext"
+	;;
 esac
 
 build() {
@@ -37,9 +41,7 @@ build() {
 }
 
 check() {
-	make ocamlopt
-	make ocamltest
-	make tests
+	make -C testsuite parallel
 }
 
 package() {
