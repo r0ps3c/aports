@@ -2,7 +2,7 @@
 # Contributor: Galen Abell <galen@galenabell.com>
 # Maintainer: Lauren N. Liberda <lauren@selfisekai.rocks>
 pkgname=riot-web
-pkgver=1.11.18
+pkgver=1.11.20
 pkgrel=0
 pkgdesc="A glossy Matrix collaboration client for the web"
 url="https://riot.im/"
@@ -42,5 +42,5 @@ package() {
 }
 
 sha512sums="
-74824d3ac646f91676b554bb54fec2d7dbc9b4287681abe35e4224f893ee251e661b54621677a8b85efe619df1e273164ceb6c855c1335d3e804c096f3cd2a59  element-v1.11.18.tar.gz
+a4dd540fecaf44447a202191febdeaba8931f75ce45bdb83bbfbb00ae3b5f9c4c007b6beb86ca572e272bc9630832b3119d848afb8dc56430cfb67fd89db0567  element-v1.11.20.tar.gz
 "

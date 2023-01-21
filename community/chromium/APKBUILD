@@ -3,7 +3,7 @@
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=chromium
 pkgver=109.0.5414.74
-pkgrel=1
+pkgrel=3
 pkgdesc="Chromium web browser"
 url="https://www.chromium.org/Home"
 arch="aarch64 armv7 x86_64"
@@ -109,6 +109,7 @@ source="https://commondatastorage.googleapis.com/chromium-browser-official/chrom
 	chromium-VirtualCursor-standard-layout.patch
 	chromium-revert-drop-of-system-java.patch
 	chromium-use-alpine-target.patch
+	crbug-1407202-mediarouter-crash.patch
 	credentials-sys-types-header.patch
 	dns-resolver.patch
 	fix-crashpad.patch
@@ -127,9 +128,9 @@ source="https://commondatastorage.googleapis.com/chromium-browser-official/chrom
 	no-stat-redefine.patch
 	partition-atfork.patch
 	quiche-arena-size.patch
-	roll-src-third_party-ffmpeg-102.patch
 	roll-src-third_party-ffmpeg-106.patch
 	scoped-file-no-close.patch
+	system-icu.patch
 	temp-failure-retry.patch
 	wtf-stacksize.patch
 	"
@@ -465,7 +466,6 @@ prepare() {
 	ln -s /usr/bin/node third_party/node/linux/node-linux-x64/bin/
 
 	# reusable system library settings
-	#icu - temp disabled
 	local use_system="
 		brotli
 		dav1d
@@ -474,6 +474,7 @@ prepare() {
 		fontconfig
 		freetype
 		harfbuzz-ng
+		icu
 		jsoncpp
 		libaom
 		libavif
@@ -576,7 +577,7 @@ build() {
 		google_default_client_id=\"$_google_default_client_id\"
 		google_default_client_secret=\"$_google_default_client_secret\"
 		host_toolchain=\"//build/toolchain/linux/unbundle:default\"
-		icu_use_data_file=true
+		icu_use_data_file=false
 		is_cfi=false
 		is_component_ffmpeg=true
 		is_debug=false
@@ -867,6 +868,7 @@ f19ba0c0f542115e6f53019659df256471e811a23d2f37569c9d4dfa265c0c1ace3e62c74d7507f8
 ac0a80174f95d733f33ddc06fc88cdcf7db0973378c28d8544dc9c19e2dabeac47f91c99b3e7384f650b3405554a9e222543f0860b6acc407c078a8c9180d727  chromium-VirtualCursor-standard-layout.patch
 c4654d5b23c6f5d9502507e534fe1951d6749c62251e49b6adfe10d1569431e7f7a5a6fa5ff09ec30984415ced27a5e20985df8c91295de34af3c84557fa5b91  chromium-revert-drop-of-system-java.patch
 6d1b3476ef09a501aedb67e086c9539ee9555e894bb7697fbc7ce5d99f4c798768a4cbe71d4044d5d8aaa4606351dd8e880af244e77acf671a17eca6f6ecf534  chromium-use-alpine-target.patch
+7e484714bcf060e6165677e6f12a57f1c6381ab2ad3c5e4decc1e1b7ed9aa00b1ad19c62359898c874b98809540230567f267f25abebf48e85740b03138e6b01  crbug-1407202-mediarouter-crash.patch
 274858323d040ac8c51bac90b6ef91bb075d7b8d92d73952ed700c10a8bae2c2115fb2a9cc6912de79be226c141d7106839fc3486e22c0206e75cb6d8ff65ee6  credentials-sys-types-header.patch
 082d5391c177f6e559963f19f79b6d5277af8dd3d9df600b2450e3fcc12025ade76ad97ee147a0b77442824714bfd9ef17ac5b105281ec008a144d58129b3ca2  dns-resolver.patch
 9d1edb1e0624ee61825e3af23fbb8c5dbc09d2b92d7769d19f8ca618edae8de8a3e051fedf4ad92c230e1373dc8495922c46971aef93a580c04ad80bc33516c0  fix-crashpad.patch
@@ -885,9 +887,9 @@ caf9c4e4533b94dfe6b28350f8ea9654311b684dfd0c5ba768ab14775e0164f577dfd356cd507bca
 0c0d3ed0a8f2bcecb2bf4eb56130fcd71031bb63744fb56e1b5a6b9dfbe16680607ff592e24602fe045b819509a70556e240b6fe0e876710977d60185f682df4  no-stat-redefine.patch
 ad563e29ac7d83c203f5af966c4ed3ebdeb5c997835a45fb28ecde08dde5231d0a775fb413f44867af28724504c42316b27d5a6aaa602057642dcbdf7ec20a7a  partition-atfork.patch
 d315ef36952f35f834742a063b11b312b3adc2b86fc34a73a6906652f4042e6537789aeae5aade3c60523a80eac8d9751eecac3716831b99a2f8725d4ce50df3  quiche-arena-size.patch
-128ec0fd14349e065c8bb0910d53cbea7423182a06e06f7b7765f3cba1e5ba5e7a8bccbcdab079335b5235abb7bf0d46dee21ecc8c221be7e1c5c6d9795f958e  roll-src-third_party-ffmpeg-102.patch
 1063e68f477645914ddf5641eabdd3eaf744e569635d645ea860c3546f67a7ef91eded99331378ee75071b67ecfe9bd4be307bd3da7c7ad93509e2bd634d1ec3  roll-src-third_party-ffmpeg-106.patch
 9c44875bcc5dd5431226568ba52d225f086b321325371d9e9e01d1fd892049e5aff324a89ba8268f32c59ce1a47e0b0d5448c9162a45ee5a60a58eecb69ca788  scoped-file-no-close.patch
+b1736d4cbcef69e83826c7f3c25cf5d18726d9bc9ebcd5ad59f070195461b7d8afd22db622452f6d5ce7f5c7f969ac9347553c4b2e028a633970eed6a5aa30f5  system-icu.patch
 ece751cd29d28772dd0955c84f5553a6858ac24d06ccb66ac75fcfc6b13460cf5c1f27392c094487e20e08e621d2099c3b5cc9a2a819a458e8c56c78fea11269  temp-failure-retry.patch
 1d4e8c6e65205e6b72af47b9a2fa6f96aaada9b7d5a74f4e11a345a885df3078b523d02aaf8e9dac3aa30d72bbbd07cd6dc7edcf44fb9ae57a7f81251c398f65  wtf-stacksize.patch
 "

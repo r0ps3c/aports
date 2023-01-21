@@ -4,7 +4,7 @@
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=py3-setuptools
 _pkgname=${pkgname#py3-}
-pkgver=66.0.0
+pkgver=66.1.1
 pkgrel=0
 pkgdesc="Collection of enhancements to the Python3 distutils"
 options="!check" # Tests require packages out of main/
@@ -79,5 +79,5 @@ package() {
 }
 
 sha512sums="
-69129009f2994db5cf299ab89971cf2b6402791111425a0089737783a6553339514ccb710601ed7265d612dc24cb8887b28a8e91036dd612bf897f7a842fc288  setuptools-66.0.0.tar.gz
+06e2ba780a8b89ab08a59f78fd56112ac3ea81be02f574bcfaf7b6da3e2c226e224df6ea0e95a8bbf15175b05193b7ed65c53945829ac0d133a318c02d2a2f15  setuptools-66.1.1.tar.gz
 "
