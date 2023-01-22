@@ -1,14 +1,14 @@
 # Contributor: Nathan Johnson <nathan@nathanjohnson.info>
 # Maintainer: Andy Postnikov <apostnikov@gmail.com>
-pkgname=php81-pecl-couchbase
+pkgname=php82-pecl-couchbase
 _extname=couchbase
 pkgver=4.1.0
-pkgrel=2
-pkgdesc="PHP 8.1 extension for Couchbase - PECL"
+pkgrel=1
+pkgdesc="PHP 8.2 extension for Couchbase - PECL"
 url="https://pecl.php.net/package/couchbase"
 arch="all !riscv64" # ftbfs
 license="Apache-2.0"
-_phpv=81
+_phpv=82
 _php=php$_phpv
 depends="$_php-pecl-igbinary"
 makedepends="$_php-dev openssl-dev>3 linux-headers cmake chrpath"
