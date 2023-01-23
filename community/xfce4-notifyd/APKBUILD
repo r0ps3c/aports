@@ -1,6 +1,6 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=xfce4-notifyd
-pkgver=0.6.5
+pkgver=0.7.2
 pkgrel=0
 pkgdesc="Notification daemon for the xfce desktop"
 url="https://docs.xfce.org/apps/notifyd/"
@@ -39,5 +39,5 @@ package() {
 }
 
 sha512sums="
-9953dd456520bd80e0d48da013703d7b976f953b9b41cd55f3ac236a74c55277d04f38a092e2a9024cd67cbcde3f3989daadf6b4f41e57c7e005c20f4acdf1ac  xfce4-notifyd-0.6.5.tar.bz2
+7a2a162db82f7760a455c32c5a5dc25eba6f747bb76da56bc49f5c37e1386416496fa7bc51fe010fe403e958a8ab665ae7359ed334589b0b55942dcccd370894  xfce4-notifyd-0.7.2.tar.bz2
 "

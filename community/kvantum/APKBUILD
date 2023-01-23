@@ -1,8 +1,8 @@
 # Contributor: Leo <thinkabit.ukim@gmail.com>
-# Maintainer:
+# Maintainer: knuxify <knuxify@gmail.com>
 pkgname=kvantum
 pkgver=1.0.7
-pkgrel=0
+pkgrel=1
 pkgdesc="SVG-based theme engine for Qt5"
 options="!check" # No testsuite
 url="https://github.com/tsujan/Kvantum"
@@ -23,7 +23,8 @@ makedepends="
 	qt6-qttools-dev
 	samurai
 	"
-subpackages="$pkgname-lang $pkgname-qt6:_qt6"
+subpackages="$pkgname-lang $pkgname-qt5:_qt5 $pkgname-qt6:_qt6 $pkgname-themes::noarch"
+install="$pkgname.post-install $pkgname.post-upgrade"
 source="$pkgname-$pkgver.tar.gz::https://github.com/tsujan/Kvantum/archive/V$pkgver/kvantum-$pkgver.tar.gz"
 builddir="$srcdir/Kvantum-$pkgver/Kvantum"
 
@@ -64,12 +65,29 @@ lang() {
 	amove usr/share/kvantummanager/translations
 }
 
+_qt5() {
+	pkgdesc="$pkgdesc (Qt5 support)"
+	install_if="$pkgname=$pkgver-r$pkgrel qt5-qtbase"
+	depends="kvantum"
+
+	amove usr/lib/qt5
+}
+
 _qt6() {
 	pkgdesc="$pkgdesc (Qt6 support)"
 	install_if="$pkgname=$pkgver-r$pkgrel qt6-qtbase"
 	depends="kvantum"
 
 	amove usr/lib/qt6
+}
+
+themes() {
+	pkgdesc="$pkgdesc (Pre-installed themes)"
+	depends="kvantum"
+
+	amove usr/share/themes
+	amove usr/share/color-schemes
+	amove usr/share/Kvantum
 }
 
 sha512sums="
