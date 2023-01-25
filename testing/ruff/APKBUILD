@@ -1,6 +1,6 @@
 # Maintainer: Hugo Osvaldo Barrera <hugo@whynothugo.nl>
 pkgname=ruff
-pkgver=0.0.223
+pkgver=0.0.232
 pkgrel=0
 pkgdesc="Extremely fast Python linter"
 url="https://github.com/charliermarsh/ruff"
@@ -33,5 +33,5 @@ package() {
 }
 
 sha512sums="
-863522918e8c01fc2926adb67b8a77fa9b7bcbf8c88e9a418eca64f63856307f21f5af93a783246ced26024a3e91ab965f4289a00daf80906f27c7945eb23911  ruff-0.0.223.tar.gz
+81f9d534240c6f698b3a61e789412d41716b22dd2c747c57fe6a81058ff1d71c31c064192a8a17285bdc3347fa2d8648bced646d827c5b5e4ab3fc77df242dec  ruff-0.0.232.tar.gz
 "
