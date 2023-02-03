@@ -3,7 +3,7 @@
 # Contributor: Jiri Horner <laeqten@gmail.com>
 # Maintainer: knuxify <knuxify@gmail.com>
 pkgname=webkit2gtk-5.0
-pkgver=2.38.3
+pkgver=2.38.4
 pkgrel=0
 pkgdesc="Portable web rendering engine WebKit for GTK+ - GTK4 version"
 url="https://webkitgtk.org/"
@@ -75,13 +75,19 @@ esac
 
 build() {
 	case "$CARCH" in
-	armv7)
-		# clang fails to build armv7 only due to some NEON related thing.
-		# https://github.com/WebKit/WebKit/pull/1233 should fix it
-		# armhf: hangs
+	s390x|armhf|armv7|x86|ppc64le)
+		# llint/LowLevelInterpreter.cpp fails to build with fortify source here
 		export CXXFLAGS="$CXXFLAGS -U_FORTIFY_SOURCE"
 		;;
+	esac
+
+	case "$CARCH" in
+	armv7)
+		# clang fails to build armv7 due to some NEON related thing.
+		# https://github.com/WebKit/WebKit/pull/1233 should fix it
+		;;
 	s390x)
+		# no lld on s390x
 		export CC=clang
 		export CXX=clang++
 		;;
@@ -143,5 +149,5 @@ dbg() {
 }
 
 sha512sums="
-1e5f0d73d6b1d64faf20ab909f1765439fab230dd360dd1906962f03a24725cf9f50a375b1987b615c64fb161ab32d29d6b1d49ea75c7b2b32f495e4ad0f38ce  webkitgtk-2.38.3.tar.xz
+1d0418d14d3852172cfa7a4c97964b547d17eba17ff5c94b124e21ae85bcebb1dda67338ceb3ba12531a01f8cfe15c21132fd16747bf17df9e726296723b9d82  webkitgtk-2.38.4.tar.xz
 "

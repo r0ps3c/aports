@@ -1,30 +1,42 @@
 # Contributor: Francesco Colista <fcolista@alpinelinux.org>
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=re2
-pkgver=2022.12.01
+pkgver=2023.02.01
 _pkgver=${pkgver//./-}
 pkgrel=0
 pkgdesc="Efficient, principled regular expression library"
 url="https://github.com/google/re2"
 arch="all"
 license="BSD-3-Clause"
+makedepends="
+	cmake
+	icu-dev
+	samurai
+	"
 subpackages="$pkgname-dev"
 provides="libre2=$pkgver-r$pkgrel"
 source="$pkgname-$pkgver.tar.gz::https://github.com/google/re2/archive/$_pkgver.tar.gz"
 builddir="$srcdir"/$pkgname-$_pkgver
 
 build() {
-	make
+	export CXXFLAGS="$CXXFLAGS -O2 -flto=auto"
+	cmake -B build -G Ninja \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DBUILD_SHARED_LIBS=ON \
+		-DRE2_USE_ICU=ON \
+		-DRE2_BUILD_TESTING="$(want_check && echo ON || echo OFF)"
+	cmake --build build
 }
 
 check() {
-	make test
+	ctest -j4 --test-dir build --output-on-failure
 }
 
 package() {
-	make DESTDIR="$pkgdir" prefix=/usr install
+	DESTDIR="$pkgdir" cmake --install build
 }
 
 sha512sums="
-783f856e6556ce60f0e9a15b2366cb4df21ca019cdc85ef7ad47a11d0345935300dede5da61892bdc77d2642da82ddc81b6670049eb87f357a64a9c684140ec9  re2-2022.12.01.tar.gz
+164953ae0cdd52efb0c327be3df8bb62532b37200e66adc3229c2dfdbd68cb794572559dbdf2d374e016c910a56712c88bbcca4caa683fdc55357af5716b1bf5  re2-2023.02.01.tar.gz
 "
