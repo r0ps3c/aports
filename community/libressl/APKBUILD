@@ -14,9 +14,9 @@
 #     - CVE-2017-8301
 #
 pkgname=libressl
-pkgver=3.6.1
+pkgver=3.6.2
 _namever=${pkgname}${pkgver%.*}
-pkgrel=1
+pkgrel=0
 pkgdesc="Version of the TLS/crypto stack forked from OpenSSL"
 url="https://www.libressl.org/"
 arch="all"
@@ -98,6 +98,6 @@ _libs() {
 }
 
 sha512sums="
-4903ed4809f499432f307066861ef8a897b7d8d889a2e806fa206bd2ca1061f4ce0ea8fd24d54d2dbedb4332da1f29dc29d63f5199bed725dbe09a2270f776be  libressl-3.6.1.tar.gz
+8fc81e05d1c9f9259d06508ca97d5a1ba5d46b857088c273c20e6b242921f7eac58a1136564ad9831c923758ee63f7b0897c8c6c7b1e53ab8132a995cc559aeb  libressl-3.6.2.tar.gz
 aefa5dc99345462a93f97061fdee6b5b148eed30c4bf7a7097ade8cef9dd890d8d7100558d5e1ebe6790372261c76ce04a874526cb521dea068ec1439259a035  0001-libressl.cnf.patch
 "
