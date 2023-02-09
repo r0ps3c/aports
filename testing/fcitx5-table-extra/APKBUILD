@@ -1,0 +1,34 @@
+# Maintainer: psykose <alice@ayaya.dev>
+pkgname=fcitx5-table-extra
+pkgver=5.0.12
+pkgrel=0
+pkgdesc="extra-table input method support for fcitx5"
+url="https://github.com/fcitx/fcitx5-table-extra"
+# armhf: extra-cmake-modules
+arch="all !armhf"
+license="GPL-3.0-or-later"
+makedepends="
+	cmake
+	extra-cmake-modules
+	gettext-dev
+	fcitx5-dev
+	libime-dev
+	samurai
+	"
+source="$pkgname-$pkgver.tar.gz::https://github.com/fcitx/fcitx5-table-extra/archive/refs/tags/$pkgver.tar.gz"
+options="!check" # no tests
+
+build() {
+	cmake -B build -G Ninja \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr
+	cmake --build build
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --install build
+}
+
+sha512sums="
+705dab51f5efaea7810002a48ba0b80857cc4ddb54f82648e1967727055e0209b4929eb12535f5fd3ad9e1735af9afd65551ee2d79d9172135e5445de3282553  fcitx5-table-extra-5.0.12.tar.gz
+"
