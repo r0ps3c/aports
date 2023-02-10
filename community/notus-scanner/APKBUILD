@@ -1,8 +1,8 @@
 # Contributor: Francesco Colista <fcolista@alpinelinux.org>
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=notus-scanner
-pkgver=22.4.2
-pkgrel=2
+pkgver=22.4.4
+pkgrel=0
 pkgdesc="Notus is a vulnerability scanner for creating results from local security checks "
 url="https://github.com/greenbone/notus-scanner"
 arch="noarch"
@@ -32,7 +32,7 @@ build() {
 }
 
 check() {
-	python3 -m venv --clear --system-site-packages testenv
+	python3 -m venv --clear --without-pip --system-site-packages testenv
 	testenv/bin/python3 -m installer dist/*.whl
 	testenv/bin/python3 -m pytest
 }
@@ -46,7 +46,7 @@ package() {
 }
 
 sha512sums="
-a9a4a82e5777fced11d29b76893d96ca59ce1d704d5d59ec671498a956042618a7a74595c2c7c4b74ef8c9b9b587323860a1bf26ac2bfb3483cd69bb2eeada75  notus-scanner-22.4.2.tar.gz
+6d5bee3e8ef910183a84dfe773756ce76eb622da6fa00789de8fd7667ab95eeb095d3761d55d4a91c9a7719a7e3dfcfad1f763635e0d1d1eaf71112a63b76038  notus-scanner-22.4.4.tar.gz
 740f1527858469341ef468a058ef7032875b87d57a6b0c96afe34ef35e1042271801c50b0ed714c3959ec45fb097bdc0dbd98e0e0971070e46efbf486f68a0a6  tomllib.patch
 d5d6adb9ecdb074cefcc1575e277918bbbde83ddf75997c23bd53609147b434ef7f41ae08090625593616d0829059c141c4ec7f2e567167a40a2e2b3fcf3e903  notus-scanner.initd
 "

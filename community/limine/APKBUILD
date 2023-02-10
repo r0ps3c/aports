@@ -1,15 +1,19 @@
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=limine
-pkgver=4.20230207.1
-pkgrel=0
-pkgdesc="Advanced multiprotocol x86/x86_64 BIOS/UEFI Bootloader"
+pkgver=4.20230208.0
+pkgrel=4
+pkgdesc="Advanced multiprotocol aarch64/x86/x86_64 BIOS/UEFI/PXE Bootloader"
 url="https://limine-bootloader.org"
-# only aarch64/x86_64 supported, x86 is meh
-arch="aarch64 x86_64"
+# only these supported
+arch="aarch64 x86 x86_64"
 license="BSD-2-Clause"
+install="
+	$pkgname.post-install
+	$pkgname-efi-updater.post-upgrade
+	$pkgname-efi-updater.post-install
+	"
 makedepends="
 	clang
-	coreutils
 	lld
 	llvm
 	mtools
@@ -22,27 +26,54 @@ subpackages="
 	$pkgname-deploy
 	$pkgname-pxe
 	$pkgname-sys
-	$pkgname-32:_32
-	$pkgname-64:_64
-	$pkgname-aarch64:_64_arm
+	$pkgname-x86_32:_32
+	$pkgname-efi-updater:updater
 	"
-source="https://github.com/limine-bootloader/limine/releases/download/v$pkgver/limine-$pkgver.tar.xz"
+source="https://github.com/limine-bootloader/limine/releases/download/v$pkgver/limine-$pkgver.tar.xz
+	limine-efi-updater.sh
+	limine-efi.conf
+	"
 options="!check" # no tests in tarball
+
+case "$CARCH" in
+aarch64|x86_64)
+	# can't build these on x86
+	subpackages="
+		$subpackages
+		$pkgname-x86_64:_64
+		$pkgname-aarch64:_64_arm
+		"
+	_conf="--enable-all"
+	;;
+x86)
+	_conf="
+		--enable-bios
+		--enable-bios-cd
+		--enable-bios-pxe
+		--enable-uefi-cd
+		--enable-uefi-ia32
+		"
+	;;
+esac
 
 build() {
 	./configure \
 		--host=$CHOST \
 		--prefix=/usr \
-		--enable-all
+		$_conf
 	make
 }
 
 package() {
 	make DESTDIR="$pkgdir" install
+
+	install -Dm644 "$srcdir"/limine-efi.conf -t "$pkgdir"/etc/limine/
+	install -Dm755 "$srcdir"/limine-efi-updater.sh -t "$pkgdir"/usr/bin/
 }
 
 enroll() {
 	pkgdesc="$pkgdesc (secure boot shim enroller)"
+	depends="$pkgname=$pkgver-r$pkgrel"
 
 	amove usr/bin/limine-enroll-config
 }
@@ -76,26 +107,43 @@ sys() {
 }
 
 _32() {
-	pkgdesc="$pkgdesc (32-bit uefi image)"
+	pkgdesc="$pkgdesc (32-bit x86 uefi image)"
 	depends="$pkgname=$pkgver-r$pkgrel"
+
+	# renamed to be less vague
+	provides="$pkgname-32=$pkgver-r$pkgrel"
+	replaces="$pkgname-32"
 
 	amove usr/share/limine/BOOTIA32.EFI
 }
 
 _64() {
-	pkgdesc="$pkgdesc (64-bit uefi image)"
+	pkgdesc="$pkgdesc (64-bit x86 uefi image)"
 	depends="$pkgname=$pkgver-r$pkgrel"
+
+	# renamed to be less vague
+	provides="$pkgname-64=$pkgver-r$pkgrel"
+	replaces="$pkgname-64"
 
 	amove usr/share/limine/BOOTX64.EFI
 }
 
 _64_arm() {
-	pkgdesc="$pkgdesc (ARM 64-bit uefi image)"
+	pkgdesc="$pkgdesc (64-bit aarch64 uefi image)"
 	depends="$pkgname=$pkgver-r$pkgrel"
 
 	amove usr/share/limine/BOOTAA64.EFI
 }
 
+updater() {
+	pkgdesc="Limine auto-updater for EFI payload"
+
+	amove etc/limine/limine-efi.conf
+	amove usr/bin/limine-efi-updater.sh
+}
+
 sha512sums="
-1a7085fdb183d426d1977af04e26f5804baf8138b298fc64b19a4eb2e7d17db0526cf8a7df1bd0728e3f7734d82cdb96d072a4262676939a9bda8f9099b53ea5  limine-4.20230207.1.tar.xz
+161f804d909bedf71f26375b659bdc4fdde11f481ffc06f719845187db32ffb4bbfbf4a3f0ff337434205127c0e6b39726e2176e29f7b80edbe0dec146e36859  limine-4.20230208.0.tar.xz
+e4a92c519e5a17bae16ec31dcdc7faeefbbaf12531744839e4ce5335a347a15c3955ac2c36ddf848abc33651b2e9536d298356dac8f2c6a54f9a8dff34a69a0d  limine-efi-updater.sh
+bd6197188c702f37aa8a4ec02a7e84b564e626a6b80f05b67faa17753abe77f4b1d8ef7752a16470f85f49e4f9d400284075b304383332562766ed8434c5111a  limine-efi.conf
 "
