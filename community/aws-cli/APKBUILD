@@ -1,7 +1,7 @@
 # Maintainer: Valery Kartel <valery.kartel@gmail.com>
 # Contributor: Valery Kartel <valery.kartel@gmail.com>
 pkgname=aws-cli
-pkgver=1.27.66
+pkgver=1.27.69
 pkgrel=0
 pkgdesc="Universal Command Line Interface for Amazon Web Services"
 url="https://github.com/aws/aws-cli"
@@ -82,5 +82,5 @@ doc() {
 }
 
 sha512sums="
-f2bdded8e435f4d2b5c1ca08aaeeafba575d39d4de1d6966a3e2fbfd42234be9a1ab031e812b5a1e0c433607c350a90195d5c50a12b25d5ad9f9a7ca9dcd7bc1  aws-cli-1.27.66.tar.gz
+85d6d820918ab42ce39e3a90751726a8dbf691083f5d71834b61b8456f6c91e3cac7ead86448187a3853a26f9e75e2e1d7f2acd3a8de59a69ebc028a4692b9ac  aws-cli-1.27.69.tar.gz
 "
