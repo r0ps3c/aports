@@ -2,10 +2,10 @@
 # Maintainer: Newbyte <newbie13xd@gmail.com>
 pkgname=blueprint-compiler
 pkgver=0.6.0
-pkgrel=0
+pkgrel=1
 pkgdesc="Markup language for GTK user interfaces"
 url="https://jwestman.pages.gitlab.gnome.org/blueprint-compiler"
-arch="noarch !riscv64 !s390x"
+arch="noarch !s390x"
 license="LGPL-3.0-or-later"
 depends="
 	gobject-introspection-dev
@@ -15,6 +15,7 @@ depends="
 	"
 makedepends="meson"
 checkdepends="gtk4.0-dev"
+depends_dev="blueprint-compiler"
 subpackages="$pkgname-dev"
 source="https://gitlab.gnome.org/jwestman/blueprint-compiler/-/archive/v$pkgver/blueprint-compiler-v$pkgver.tar.gz"
 builddir="$srcdir/$pkgname-v$pkgver"
