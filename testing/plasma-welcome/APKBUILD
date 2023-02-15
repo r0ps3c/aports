@@ -1,49 +1,47 @@
 # Contributor: Bart Ribbers <bribbers@disroot.org>
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
-pkgname=bluedevil
+pkgname=plasma-welcome
 pkgver=5.27.0
 pkgrel=0
-pkgdesc="Integrate the Bluetooth technology within KDE workspace and applications"
+pkgdesc="A friendly onboarding wizard for Plasma"
 # armhf blocked by qt5-qtdeclarative
-arch="all !armhf"
+# ppc64le, s390x and riscv64 blocked by qt5-qtwebengine -> kaccounts-integration
+arch="all !armhf !ppc64le !s390x !riscv64"
 url="https://kde.org/plasma-desktop/"
-license="GPL-2.0-or-later AND LGPL-2.0-or-later AND ( LGPL-2.1-only OR LGPL-3.0-only )"
-depends="
-	bluez
-	bluez-obexd
-	kded
-	"
+license="GPL-2.0-or-later"
+depends="kirigami2"
 makedepends="
-	bluez-qt-dev
 	extra-cmake-modules
-	kcmutils-dev
+	kaccounts-integration-dev
+	kconfigwidgets-dev
 	kcoreaddons-dev
 	kdbusaddons-dev
-	kded-dev
-	kdoctools-dev
+	kdeclarative-dev
 	ki18n-dev
-	kiconthemes-dev
 	kio-dev
+	kirigami2-dev
 	knotifications-dev
-	kwidgetsaddons-dev
+	kservice-dev
+	kuserfeedback-dev
 	kwindowsystem-dev
 	plasma-framework-dev
 	qt5-qtbase-dev
 	qt5-qtdeclarative-dev
+	qt5-qtquickcontrols2-dev
+	qt5-qtsvg-dev
 	samurai
-	shared-mime-info
 	"
 
 case "$pkgver" in
 	*.90*) _rel=unstable;;
 	*) _rel=stable;;
 esac
-source="https://download.kde.org/$_rel/plasma/$pkgver/bluedevil-$pkgver.tar.xz"
-subpackages="$pkgname-doc $pkgname-lang"
+source="https://download.kde.org/$_rel/plasma/$pkgver/plasma-welcome-$pkgver.tar.xz"
+subpackages="$pkgname-lang"
 
 build() {
 	cmake -B build -G Ninja \
-		-DCMAKE_BUILD_TYPE=MinSizeRel \
+		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_INSTALL_LIBDIR=lib
 	cmake --build build
@@ -59,5 +57,5 @@ package() {
 }
 
 sha512sums="
-7dc8ee2c40bc5468f7a535efa981fdb0748f89f6104577b37bfbe186e3b4c9b88fe8ee096814437b1aa889a09c1db62d458ae73f10979eb1a708aef912ad48f0  bluedevil-5.27.0.tar.xz
+ab1fad86fd0af1bfefe6a278b2bf02316cf44879dd1de5ec3f25941e23748f9d558700e8a0affc34a9d98f3e89529faad7a355a4bda1bfcec9ee60b2e4f7a61a  plasma-welcome-5.27.0.tar.xz
 "
