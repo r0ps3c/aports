@@ -1,8 +1,9 @@
 # Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
-# Maintainer: Valery Kartel <valery.kartel@gmail.com>
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+# Maintainer: psykose <alice@ayaya.dev>
 pkgname=wayland-protocols
 pkgver=1.31
-pkgrel=0
+pkgrel=1
 pkgdesc="Protocols and protocol extensions complementing the Wayland core protocol"
 url="https://wayland.freedesktop.org"
 arch="noarch"
@@ -10,7 +11,13 @@ license="MIT"
 provides="$pkgname-dev=$pkgver-r$pkgrel"
 makedepends="meson wayland-dev"
 source="https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/$pkgver/downloads/wayland-protocols-$pkgver.tar.xz"
-options="!check" # tests are busted
+
+case "$CARCH" in
+ppc64le)
+	# xdg_toplevel_interface: symbol not found in a test
+	options="$options !check"
+	;;
+esac
 
 build() {
 	abuild-meson . output
