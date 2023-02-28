@@ -5,7 +5,7 @@
 # Maintainer: Patrycja Rosa <alpine@ptrcnull.me>
 pkgname=motion
 pkgver=4.5.1
-pkgrel=0
+pkgrel=1
 pkgdesc="Detect if a significant part of the picture has changed (e.g. from a webcam)"
 url="https://motion-project.github.io"
 arch="all"
@@ -17,7 +17,7 @@ depends="v4l-utils"
 makedepends="$depends_dev autoconf automake bash gettext-dev v4l-utils-dev linux-headers
 	libjpeg-turbo-dev ffmpeg-dev libmicrohttpd-dev libwebp-dev"
 install="$pkgname.pre-install"
-subpackages="$pkgname-doc $pkgname-openrc"
+subpackages="$pkgname-doc $pkgname-openrc $pkgname-lang"
 source="https://github.com/Motion-Project/motion/archive/release-$pkgver/motion-$pkgver.tar.gz
 	motion.confd
 	motion.initd

@@ -2,7 +2,7 @@
 pkgname=handbrake
 _pkgname=HandBrake
 pkgver=1.6.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Handbrake video transcoder"
 url="https://handbrake.fr"
 # x86, armhf, armv7: no svt-av1
@@ -12,11 +12,10 @@ makedepends="
 	autoconf
 	automake
 	bash
+	bzip2-dev
 	cmake
-	coreutils
 	dav1d-dev
 	dbus-glib-dev
-	fdk-aac-dev
 	ffmpeg-dev
 	fontconfig-dev
 	freetype-dev
@@ -29,7 +28,6 @@ makedepends="
 	lame-dev
 	libass-dev
 	libbluray-dev
-	libbz2
 	libdvdnav-dev
 	libdvdread-dev
 	libgudev-dev
@@ -68,14 +66,18 @@ case "$CARCH" in
 	x86_64)
 		makedepends="$makedepends intel-media-sdk-dev onevpl-dev"
 		_conf_flags='--enable-qsv'
-	;;
-	*) _conf_flags='--disable-qsv';;
+		export CFLAGS="$CFLAGS -I/usr/include/vpl"
+		export CXXFLAGS="$CXXFLAGS -I/usr/include/vpl"
+		;;
+	*)
+		_conf_flags='--disable-qsv'
+		;;
 esac
 
 # This is a video transcoder, performance is the most important.
-export CFLAGS=${CFLAGS/-Os/}
-export CXXFLAGS=${CXXFLAGS/-Os/}
-export CPPFLAGS=${CPPFLAGS/-Os/}
+export CFLAGS="$CFLAGS -O2 -flto=auto"
+export CXXFLAGS="$CXXFLAGS -O2 -flto=auto"
+export CPPFLAGS="$CPPFLAGS -O2 -flto=auto"
 
 prepare() {
 	default_prepare
