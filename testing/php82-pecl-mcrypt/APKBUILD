@@ -1,33 +1,34 @@
-# Contributor: Andy Postnikov <apostnikov@gmail.com>
-# Maintainer: TBK <alpine@jjtc.eu>
-pkgname=php7-pecl-mcrypt
+# Contributor: TBK <alpine@jjtc.eu>
+# Maintainer: Andy Postnikov <apostnikov@gmail.com>
+pkgname=php82-pecl-mcrypt
 _extname=mcrypt
 pkgver=1.0.6
 pkgrel=0
-pkgdesc="Provides PHP 7 bindings for the unmaintained libmcrypt - PECL"
+pkgdesc="Provides PHP 8.2 bindings for the unmaintained libmcrypt - PECL"
 url="https://pecl.php.net/package/mcrypt"
 arch="all"
 license="PHP-3.01"
-depends="php7-common"
-makedepends="php7-dev libmcrypt-dev"
+_phpv=82
+_php=php$_phpv
+depends="$_php-common"
+makedepends="$_php-dev libmcrypt-dev"
 source="php-pecl-$_extname-$pkgver.tgz::https://pecl.php.net/get/$_extname-$pkgver.tgz"
 builddir="$srcdir/$_extname-$pkgver"
-provides="php7-mcrypt=$pkgver-r$pkgrel" # for backward compatibility
-replaces="php7-mcrypt" # for backward compatibility
 
 build() {
-	phpize7
-	./configure --prefix=/usr --with-php-config=php-config7
+	phpize$_phpv
+	./configure --prefix=/usr --with-php-config=php-config$_phpv
 	make
 }
 
 check() {
+#	rm -f tests/mcrypt_rijndael128_128BitKey.phpt # fails
 	make NO_INTERACTION=1 REPORT_EXIT_STATUS=1 test
 }
 
 package() {
 	make INSTALL_ROOT="$pkgdir" install
-	local _confdir="$pkgdir"/etc/php7/conf.d
+	local _confdir="$pkgdir"/etc/$_php/conf.d
 	install -d $_confdir
 	echo "extension=$_extname" > $_confdir/$_extname.ini
 }
