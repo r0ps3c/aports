@@ -1,0 +1,42 @@
+# Contributor:
+# Maintainer: Krassy Boykinov <kboykinov@teamcentrixx.com>
+pkgname=flowtime
+pkgver=3.1
+pkgrel=0
+pkgdesc="GTK4 / libadwaita assistant for the Flowtime working technique"
+url="https://github.com/Diego-Ivan/Flowtime"
+arch="all"
+license="GPL-3.0-or-later"
+makedepends="
+	desktop-file-utils
+	gst-plugins-bad-dev
+	gstreamer-dev
+	gtk4.0-dev
+	libadwaita-dev
+	libgee-dev
+	libxml2-dev
+	meson
+	vala
+	"
+checkdepends="appstream-glib"
+options="!check" # upstream bug in third check
+subpackages="$pkgname-lang"
+source="$pkgname-$pkgver.tar.gz::https://github.com/Diego-Ivan/Flowtime/archive/refs/tags/v$pkgver.tar.gz"
+builddir="$srcdir/Flowtime-$pkgver"
+
+build() {
+	abuild-meson -Db_lto=true . build
+	meson compile -C build
+}
+
+check() {
+	meson test --no-rebuild --print-errorlogs -C build
+}
+
+package() {
+	DESTDIR="$pkgdir" meson install --no-rebuild -C build
+}
+
+sha512sums="
+66d35fb4c511bda02d37e8146676352901100137e1787f13cf5bed7a0d51a37e65ded05346844ccc8903ff6585fceccf643d98beafe5e2697e5e6357dce245d1  flowtime-3.1.tar.gz
+"

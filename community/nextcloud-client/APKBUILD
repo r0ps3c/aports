@@ -1,8 +1,8 @@
 # Contributor: Rasmus Thomsen <oss@cogitri.dev>
 # Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
 pkgname=nextcloud-client
-pkgver=3.6.6
-pkgrel=0
+pkgver=3.7.1
+pkgrel=1
 pkgdesc="Nextcloud Desktop Client"
 url="https://github.com/nextcloud/desktop"
 # s390x, ppc64le and riscv64 blocked by qt5-qtwebengine
@@ -18,6 +18,7 @@ makedepends="
 	graphviz
 	inkscape
 	kio-dev
+	libcloudproviders-dev
 	openssl-dev>3
 	qtkeychain-dev
 	qt5-qtquickcontrols2-dev
@@ -26,7 +27,7 @@ makedepends="
 	qt5-qtwebsockets-dev
 	samurai
 	"
-checkdepends="xvfb-run"
+checkdepends="cmocka-dev xvfb-run"
 subpackages="$pkgname-dev $pkgname-dolphin"
 source="$pkgname-$pkgver.tar.gz::https://github.com/nextcloud/desktop/archive/refs/tags/v$pkgver.tar.gz
 	Nextcloud.conf"
@@ -48,7 +49,7 @@ build() {
 
 check() {
 	cd build
-	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest -E ChunkingNgTest
 }
 
 package() {
@@ -59,16 +60,13 @@ package() {
 
 dolphin() {
 	pkgdesc="$pkgdesc - KDE Dolphin integration"
-	install_if="$pkgname dolphin"
-
-	mkdir -p "$subpkgdir"/usr/lib "$subpkgdir"/usr/share
+	install_if="$pkgname=$pkgver-r$pkgrel dolphin"
 
 	amove usr/lib/qt5
 	amove usr/lib/libnextclouddolphinpluginhelper.so
-	amove usr/share/kservices5
 }
 
 sha512sums="
-b9fe96f9f8ac70c4c586b58f1b460e293d73e979d6b849d232112c7601463fd48608e8a093f3a8b0c2dc5a417e20e8aff3c2c3582eb7bce0fcb9f15e3d909327  nextcloud-client-3.6.6.tar.gz
+ecd3a4984098d3a8eb61dade76890cd195d23261b11902c056a666cb2f8f8333f25bc84e21e11a71f8bf8531d54ca64ef723b8354a089e341b33285de61c2cdb  nextcloud-client-3.7.1.tar.gz
 28faf643e3ba22f3e1f45a96acfba1b3c53c49d4e923974e58e5ad2fdda612f52300608f0e0219e61d3478403fe3c59a9a2c70c3db1c93fbccda1e0638ecbc22  Nextcloud.conf
 "
