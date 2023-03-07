@@ -2,14 +2,14 @@
 
 _flavor=asahi
 pkgname=linux-${_flavor}
-pkgver=6.2_rc3_p7
+pkgver=6.2_p1
 
 _rel=${pkgver#*_p}
 kver=${pkgver%_p*}
 kver=${kver//_/-}
 _asahiver=$kver-$_rel
 pkgdesc="Apple Silicon (M1 development kernel)"
-pkgrel=1
+pkgrel=2
 url="https://www.kernel.org"
 depends="initramfs-generator"
 _depends_dev="perl gmp-dev elfutils-dev bash flex bison"
@@ -205,7 +205,7 @@ _dev() {
 }
 
 sha512sums="
-1119d22a7fe6bafeb1c9c741bf1c625c51364f0eff77f17797b1ed70af8aca9eda4f77cfa72fa5b8bddd6c59964a93757f531b513f1ee3bdd55c4e72c1865c5e  linux-asahi-6.2-rc3-7.tar.gz
-8bf436bc6c127ac0cc3fe8b271b9813c33153f1ab4edf1fd9ef4ae17dd26ed848e064b56db91a94bad446d71a6fb8a8c042d5a83ab3ded8a77db9540d133712a  config-asahi.aarch64
+876910fab512d18add8c2a1c668798a5a9f911f98fa9e65494dd14ddc3a9dd1ad90e6565ad0a4754c2107864c0070d93d0a39245958ad47f0c15e9eab3346252  linux-asahi-6.2-1.tar.gz
+455596100a869dfa4e70df97431036d3903b70e6b35e743655aff3232e1769155e580e82e3bb4a9a31f059a7e8626e0921a829c727d23c7138c44b8fa16f2004  config-asahi.aarch64
 49dfcbc7e3d6d01fde548bfa4174e011fbb36ece94853d856e028f768da3ab156f77c01e0642e6d91f5f024f0c97d5de5847bb064e2a033f3237dfc66768049e  sensors.patch
 "
