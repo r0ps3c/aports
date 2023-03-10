@@ -5,19 +5,19 @@
 # Contributor: Ariadne Conill <ariadne@dereferenced.org>
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=rust
-pkgver=1.67.1
+pkgver=1.68.0
 _llvmver=15
-_bootver=1.66.0
+_bootver=1.67.0
 pkgrel=0
 pkgdesc="The Rust Programming Language"
 url="https://www.rust-lang.org/"
 arch="all"
 license="Apache-2.0 AND MIT"
 
-# gcc is needed at runtime just for linking. Someday rustc might invoke
-# the linker directly, and then we'll only need binutils.
+# 'cc' is needed at runtime just for linking. Someday rustc might invoke
+# the linker directly, and then we'll only need 'ld'.
 # See: https://github.com/rust-lang/rust/issues/11937
-depends="$pkgname-stdlib=$pkgver-r$pkgrel gcc musl-dev"
+depends="gcc musl-dev"
 
 # * Rust is self-hosted, so you need rustc (and cargo) to build rustc...
 #   The last revision of this abuild that does not depend on itself (uses
@@ -70,7 +70,6 @@ esac
 
 subpackages="
 	$pkgname-dbg
-	$pkgname-stdlib
 	$pkgname-wasm
 	$pkgname-analysis
 	$pkgname-gdb::noarch
@@ -241,6 +240,10 @@ check() {
 }
 
 package() {
+	# merged into main package
+	provides="rust-stdlib=$pkgver-r$pkgrel"
+	replaces="rust-stdlib"
+
 	mkdir -p "$pkgdir/usr"
 
 	cd "$pkgdir"
@@ -293,13 +296,6 @@ package() {
 	find "$pkgdir"/usr/lib/rustlib -type f -perm -700 -exec chmod 755 {} \;
 }
 
-stdlib() {
-	pkgdesc="Standard library for Rust (static rlibs)"
-	depends=
-
-	amove $_rlibdir/*.rlib
-}
-
 wasm() {
 	pkgdesc="WebAssembly targets for rust"
 	depends="rust=$pkgver-r$pkgrel lld wasi-sdk"
@@ -309,7 +305,7 @@ wasm() {
 
 analysis() {
 	pkgdesc="Compiler analysis data for the Rust standard library"
-	depends="$pkgname-stdlib=$pkgver-r$pkgrel"
+	depends="$pkgname=$pkgver-r$pkgrel"
 
 	amove $_rlibdir/../analysis
 }
@@ -332,7 +328,7 @@ lldb() {
 
 clippy() {
 	pkgdesc="Lints to catch common mistakes and improve your Rust code"
-	depends="$pkgname-stdlib=$pkgver-r$pkgrel"
+	depends="$pkgname=$pkgver-r$pkgrel"
 
 	amove usr/bin/cargo-clippy
 	amove usr/bin/clippy-driver
@@ -402,7 +398,7 @@ _mv() {
 }
 
 sha512sums="
-42d77ee93b168ae139b026138fb48d925624ff436a836aa97ee235f870e61ea11643b0cf7ad20bcafda774c6cd3855a4bc10a2e2ed1c4d82c6f15158963b304d  rustc-1.67.1-src.tar.xz
+f6cc5c06488080f2d7ce8c4f5adf7ca8ae8b10caea627b57876b051593af1201a48823d0abf5fcbcd344b46606b53957569db9844d647a5fdc4abca06e260f3a  rustc-1.68.0-src.tar.xz
 03a179e31c95f88a98fb1ba6b2fd0baaf9fe1a74ade76d3096fe45ddc5e453c25109355e667783d9be1bcc585445d07b7270cb3e6e403de971049714f2c6f91a  alpine-move-py-scripts-to-share.patch
 f87b12c6c3ccf8abc3a21d40631ed753efe313c601c5fdd5200cea16aa65878621700b6ca6b22c4f2334a8540dc7d23ef0ff9087fc65177433d56a700e56bb8c  alpine-target.patch
 7af23c34096f7a03c5a1b40aa07e00dd6193743c872881018a9baa900f240c6e44918e481ab5ed7787a70ef361e4aeec2a7719bcd695f52988262e23271b44e5  do-not-install-libunwind-source.patch
