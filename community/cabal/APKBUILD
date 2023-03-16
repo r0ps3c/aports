@@ -2,8 +2,8 @@
 # Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
 # Maintainer: Mitch Tishmack <mitch.tishmack@gmail.com>
 pkgname=cabal
-pkgver=3.8.1.0
-pkgrel=3
+pkgver=3.10.1.0
+pkgrel=0
 pkgdesc="The Haskell Cabal"
 url="https://haskell.org/cabal"
 arch="aarch64 x86_64" # Limited by GHC
@@ -38,11 +38,11 @@ cabal_update() {
 	cd $builddir
 	# Build a freeze file to make the build reproducible.
 	# This freeze file is stored in $source and thus tracked in Git.
-	HOME="$_cabal_home" cabal v2-update --allow-newer
+	HOME="$_cabal_home" cabal v2-update
 	(
 		cd "$builddir"
 		HOME="$_cabal_home" cabal v2-freeze \
-			--allow-newer --shadow-installed-packages
+			--shadow-installed-packages
 		mv cabal.project.freeze "$startdir/"
 	)
 }
@@ -57,8 +57,7 @@ build() {
 	# ghc version path
 	export PATH="$PATH:/usr/lib/llvm14/bin"
 	HOME="$_cabal_home" cabal v2-update
-	HOME="$_cabal_home" cabal v2-build all \
-		--allow-newer \
+	HOME="$_cabal_home" cabal v2-build cabal-install:exes \
 		--jobs=${JOBS:-1} \
 		--prefix=/usr \
 		--docdir=/usr/share/doc/$pkgname \
@@ -72,7 +71,7 @@ package() {
 	# previous step manually.
 	#
 	# See https://github.com/haskell/cabal/issues/6919#issuecomment-761563498
-	HOME="$_cabal_home" cabal list-bin --allow-newer all:exes | \
+	HOME="$_cabal_home" cabal list-bin cabal-install:exes | \
 		xargs install -Dm755 -t "$pkgdir"/usr/bin
 
 	mkdir -p "$pkgdir"/usr/share/man/man1
@@ -83,6 +82,6 @@ package() {
 }
 
 sha512sums="
-850267c8b255f1658beea2ff81d025e80f0a78902d32684a047fdc9347fe0893ccbdf60a00dbb5bb0339e3d1ddefb0f94e31273808c6b72de23fb1340fa74ae4  cabal-install-3.8.1.0.tar.gz
-0cded7e0446566383172d6e98be1299ee2a9d97dce9f0fe08d2277913e73e614e3b712a43a319bcb9d7e30dda1d2a928281e9b85ba4c6b880194a09eaae21f49  cabal.project.freeze
+4c4c437a93eebd4628922ad889f2ddb01dca7aa7c7af4696e7c7ea54b44ac158adf9a91963117d962d18d8a9ed4324581d7024f0767c8e9c99c40f8e63f669bc  cabal-install-3.10.1.0.tar.gz
+8041f34071b208b4a4d00983374483c783082e03b41a4c1b22273c05601d6954eb5ac97d3ea9c4dfc6ceb0a5215b672c2e8ef33cd16817bcba0cf668328177fc  cabal.project.freeze
 "

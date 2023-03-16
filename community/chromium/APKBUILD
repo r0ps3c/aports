@@ -3,7 +3,7 @@
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=chromium
 pkgver=111.0.5563.64
-pkgrel=0
+pkgrel=1
 # https://source.chromium.org/chromium/chromium/src/+/main:third_party/test_fonts/test_fonts.tar.gz.sha1
 # (for the given version, when it changes)
 _testfonts=336e775eec536b2d785cc80eff6ac39051931286
@@ -133,6 +133,7 @@ source="https://commondatastorage.googleapis.com/chromium-browser-official/chrom
 	quiche-array.patch
 	scoped-file-no-close.patch
 	temp-failure-retry.patch
+	toolhack.patch
 	"
 
 # backwards compat (merged into primary)
@@ -505,33 +506,19 @@ prepare() {
 		zlib
 		"
 
-	# start with the basic excludes
-	# shellcheck disable=2089
-	local findexpr="
-		(
-			! -path './base/third_party/icu/*'
-			! -path './third_party/libxml/*'
-			! -path './third_party/pdfium/third_party/freetype/include/pstables.h'
-			! -path './third_party/harfbuzz-ng/utils/hb_scoped.h'
-			! -path './third_party/crashpad/crashpad/third_party/zlib/zlib_crashpad.h'
-			! -regex '.*\.\(gn\|gni\|isolate\|py\)'
-		)
-		"
 	for _lib in $use_system libjpeg_turbo; do
-		# add in per-lib excludes/includes
-		findexpr="
-			$findexpr
-			-a (
-				-type f -path \"*third_party/$_lib/*\"
-				! -path \"*third_party/$_lib/chromium/*\"
-				! -path \"*third_party/$_lib/google/*\"
-			)
-			"
+		msg "Removing buildscripts for system provided $_lib"
+			find . -type f -path "*third_party/$_lib/*" \
+			\! -path "*third_party/$_lib/chromium/*" \
+			\! -path "*third_party/$_lib/google/*" \
+			\! -path './base/third_party/icu/*' \
+			\! -path './third_party/libxml/*' \
+			\! -path './third_party/pdfium/third_party/freetype/include/pstables.h' \
+			\! -path './third_party/harfbuzz-ng/utils/hb_scoped.h' \
+			\! -path './third_party/crashpad/crashpad/third_party/zlib/zlib_crashpad.h' \
+			\! -regex '.*\.\(gn\|gni\|isolate\|py\)' \
+			-delete
 	done
-
-	msg "Removing buildscripts for system provided libs"
-	# shellcheck disable=2046,2090,2116
-	find -O1 . $(echo $findexpr) -delete
 
 	msg "Replacing gn files"
 	python3 build/linux/unbundle/replace_gn_files.py --system-libraries \
@@ -567,7 +554,6 @@ _configure() {
 	local _google_api_key _google_default_client_id _google_default_client_secret
 	eval "$(base64 -d < $srcdir/google-api.keys)"
 
-	# silence really annoying warning on every compiler invocation, reproducible extras
 	export CFLAGS="${CFLAGS/-g/} -O2 -Wno-unknown-warning-option -Wno-builtin-macro-redefined -Wno-deprecated-declarations"
 	export CXXFLAGS="${CXXFLAGS/-g/} -O2 -Wno-unknown-warning-option -Wno-builtin-macro-redefined -Wno-deprecated-declarations"
 	export CPPFLAGS="${CPPFLAGS/-g/} -D__DATE__=  -D__TIME__=  -D__TIMESTAMP__="
@@ -827,4 +813,5 @@ e4c4e5bc6f828f9c883dd418c0ba01887949c29c311f76206a1ec29f620b0c0ba0452949dc2778a9
 86f612dd2b39602984a75b1b11c2ab8bc8cc6b4e78fae998570a777a6901ae45fdcdb22e46dd006dab703a0674e64c72cf8120af2dc5b9e78004f402c7e65358  quiche-array.patch
 8c33808ede31dd3b8eb951991e034751949756c4e6c2cd0e19823e95fddf5f9d94424bbd73ffe6dd965df2b0887fc5c42ab8a97c64b553d47662e90651b84f13  scoped-file-no-close.patch
 e48693e6b7aeebf69a5acbf80d9a35defe4c23835121dfeb58b051ac7c527e758a41004f4d193274fe1b01c0bfb1dbc77b09cb6a404a3fdee507a2918afb0edb  temp-failure-retry.patch
+86f5c27633ae4f3309ae932bf8377dbd523ed05e44b48582def92ad50a4c6c482a5782afaf1888786a3899d81376af117061b323c549904256385e83eb888759  toolhack.patch
 "

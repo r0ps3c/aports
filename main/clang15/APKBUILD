@@ -5,7 +5,7 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=clang15
 pkgver=15.0.7
-pkgrel=3
+pkgrel=8
 _llvmver=${pkgver%%.*}
 pkgdesc="A C language family front-end for LLVM"
 arch="all"
@@ -33,6 +33,7 @@ subpackages="
 	$pkgname-bash-completion:bash:noarch
 	$pkgname-analyzer::noarch
 	$pkgname-dev
+	$pkgname-emacs::noarch
 	$pkgname-extra-tools:extra
 	py3-$pkgname:python:noarch
 	"
@@ -42,6 +43,7 @@ source="https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/c
 	10-add-musl-triples.patch
 	30-Enable-stack-protector-by-default-for-Alpine-Linux.patch
 
+	clang-default-fno-semantic-interposition.patch
 	clang-001-fortify-include.patch
 	clang-002-fortify-enable.patch
 	clang-003-as-needed.patch
@@ -127,14 +129,17 @@ package() {
 		mkdir -p "$pkgdir"/usr/share/emacs/site-lisp
 		mv "$pkgdir"/usr/lib/llvm$_llvmver/share/clang/clang-*.el \
 			"$pkgdir"/usr/share/emacs/site-lisp
-		rmdir -p usr/lib/llvm$_llvmver/share/emacs/clang || true
+		rmdir -p usr/lib/llvm$_llvmver/share/emacs || true
+
+		mv "$pkgdir"/usr/lib/llvm$_llvmver/share/man "$pkgdir"/usr/share/
+		# XXX: scan-build specifically needs to stay in llvm path, but scan-view has to not be
+		# everything uses different path lookup logic..
+		mv "$pkgdir"/usr/lib/llvm$_llvmver/share/scan-view "$pkgdir"/usr/share/
 
 		local sitedir=$(python3 -c "import site; print(site.getsitepackages()[0])")
 		mv "$pkgdir"/usr/lib/llvm$_llvmver/lib/python3* "$pkgdir"/usr/lib
 		mkdir -p "$pkgdir"/"$sitedir"
 		mv "$pkgdir"/usr/lib/llvm$_llvmver/lib/libscanbuild "$pkgdir"/"$sitedir"
-
-		mv "$pkgdir"/usr/lib/llvm$_llvmver/share/* "$pkgdir"/usr/share/
 
 		# symlink everything in the bin dir,
 		# into /usr/bin.
@@ -202,6 +207,10 @@ package() {
 	for lib in $libs; do
 		ln -sfv ../lib/llvm$_llvmver/lib/$lib "$pkgdir"/usr/lib/$lib
 	done
+
+	# compat symlink back to fix clang with -no-canonical-prefixes
+	mkdir -p "$pkgdir"/usr/lib/clang
+	ln -sfv ../../lib/llvm$_llvmver/lib/clang/$pkgver "$pkgdir"/usr/lib/clang/$pkgver
 }
 
 dev() {
@@ -211,6 +220,14 @@ dev() {
 	# move back usr/lib/llvm*/lib/clang/x.y.z/include with files such as altivec.h, msa.h etc
 	# these are needed to build programs *with* clang, not *against* it.
 	mv "$subpkgdir"/usr/lib/llvm$_llvmver/lib/clang "$pkgdir"/usr/lib/llvm$_llvmver/lib/
+
+	# create cmakedir symlinks, so find_package works
+	# llvm does the same thing- versioned, plus unversioned default.
+	mkdir -p "$subpkgdir"/usr/lib/cmake
+	ln -sfv ../llvm$_llvmver/lib/cmake/clang "$subpkgdir"/usr/lib/cmake/clang$_llvmver
+	if [ $_default_clang = yes ]; then
+		ln -sfv clang$_llvmver "$subpkgdir"/usr/lib/cmake/clang
+	fi
 }
 
 static() {
@@ -257,7 +274,8 @@ analyzer() {
 		usr/lib/llvm$_llvmver/libexec/analyze-* \
 		usr/lib/llvm$_llvmver/libexec/intercept-* \
 		usr/lib/llvm$_llvmver/lib/libear* \
-		usr/share/scan-*
+		usr/lib/llvm$_llvmver/share/scan-build \
+		usr/share/scan-view
 }
 
 extra() {
@@ -317,11 +335,15 @@ extra() {
 		usr/lib/llvm$_llvmver/bin/modularize* \
 		usr/lib/llvm$_llvmver/bin/pp-trace* \
 		usr/lib/llvm$_llvmver/bin/run-clang-tidy* \
-		usr/share/clang/clang-include-fixer* \
-		usr/share/clang/clang-format*.py \
-		usr/share/clang/*clang-tidy* \
-		usr/share/clang/run-find-all-symbols.py \
-		usr/share/emacs
+		usr/lib/llvm$_llvmver/share/clang/clang* \
+		usr/lib/llvm$_llvmver/share/clang/run-find-all-symbols.py
+}
+
+emacs() {
+	pkgdesc="clang plugin for emacs"
+	install_if="$pkgname-extra-tools=$pkgver-r$pkgrel emacs"
+
+	amove	usr/share/emacs
 }
 
 python() {
@@ -331,7 +353,6 @@ python() {
 	replaces="py3-clang"
 
 	amove usr/lib/python*
-	amove usr/share/clang/clang-rename.py
 }
 
 _default_replace() {
@@ -347,6 +368,7 @@ dd95d261d3a1618967b698e97ac0b41204d872d7479c0c832fcf5a91fe447af6a97fa794de07b3e2
 85097a6eaee0df004567905f7e5ce8ca02e3b46c6fc66fa552fe99734642e6ee61685de4e5e6e8b505963334d7b91d98ecd9c5870e6bdd3f0018ee5b963ffa96  cmake-15.0.7.src.tar.xz
 5809d931656cac13b91bc91aac63df072b0403708ac718bf01546d9d520ff2c4163ee11411439dce5bb683a3bfa044b62443b6f66a1419c9086d20e79a018071  10-add-musl-triples.patch
 b9b5529bcf460767796ddbc6f7d8c479b62d63c74d39297b3c7c79a2f6898272ac52a2f2d1ea2bd601e869cecf23c0cd69fbcd613b8c6299b14a1be8203fd089  30-Enable-stack-protector-by-default-for-Alpine-Linux.patch
+6896d6c5358b8b83c97c7cb31f60042f33a1326cfad093a0f23dcacd10ef418f845964f6de948a5873494dae5180e51a4b2b0cec937aa5597765362779da6f35  clang-default-fno-semantic-interposition.patch
 aa2dff990278e0258763934eaa528827baa1733eeb7dc36cc7f1500a4919b8d11870a0522f20f210d454322e3faf5945e9afaeffc9f3a3c4fd422b706370a663  clang-001-fortify-include.patch
 751f8acef2bfd1b50c065dea2ad0c3a20cadd4ff4c842ae519b5085c48372127b49a75d3fd0bd32291f5a69119340e5568a9fba6d94e6f354b14233986f61328  clang-002-fortify-enable.patch
 5f98f147d7d66315e9a56ae6fee602a053d40e57a8b1ee4f2ef1764203bb6fdb9082c8e825c535a9388213a38b49d2702b1e936fcf56560c4a2a56b7e6dd232c  clang-003-as-needed.patch

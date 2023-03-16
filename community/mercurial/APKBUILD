@@ -2,20 +2,32 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=mercurial
 pkgver=6.3.3
-pkgrel=0
+pkgrel=2
 pkgdesc="Scalable distributed SCM tool"
 url="https://www.mercurial-scm.org/"
 arch="all"
 license="GPL-2.0-or-later"
 depends="python3"
 makedepends="
+	gettext-dev
+	py3-gpep517
+	py3-setuptools
+	py3-wheel
 	python3-dev
 	zlib-dev
 	"
-checkdepends="bash unzip diffutils xz sqlite gettext py3-docutils"
+checkdepends="
+	bash
+	diffutils
+	py3-docutils
+	sqlite
+	unzip
+	xz
+	"
 subpackages="
 	$pkgname-doc
-	$pkgname-vim:vim:noarch
+	$pkgname-lang
+	$pkgname-vim::noarch
 	$pkgname-zsh-completion
 	$pkgname-bash-completion
 	"
@@ -34,6 +46,7 @@ x86_64|armv7|armhf|aarch64|x86|ppc64le)
 	# Oxidation, limited by Rust
 	export HGWITHRUSTEXT=cpython
 	makedepends="$makedepends cargo"
+	subpackages="$subpackages $pkgname-chg"
 	;;
 esac
 
@@ -43,8 +56,26 @@ esac
 
 export CARGO_REGISTRIES_CRATES_IO_PROTOCOL="sparse"
 
+prepare() {
+	default_prepare
+
+	if [ "$HGWITHRUSTEXT" = "cpython" ]; then
+		cd rust
+		cargo fetch --target=$CTARGET --locked
+		cd chg
+		cargo fetch --target=$CTARGET --locked
+	fi
+}
+
 build() {
-	python3 setup.py build
+	gpep517 build-wheel \
+		--wheel-dir dist \
+		--output-fd 3 3>&1 >&2
+
+	if [ "$HGWITHRUSTEXT" = "cpython" ]; then
+		cd rust/chg
+		cargo build --release --frozen
+	fi
 }
 
 check() {
@@ -52,14 +83,31 @@ check() {
 }
 
 package() {
-	HGPYTHON3=1 python3 setup.py install --root="$pkgdir" --skip-build
-	install -m755 contrib/hgk contrib/hg-ssh hgeditor -t "$pkgdir"/usr/bin
+	python3 -m installer -d "$pkgdir" \
+		dist/*.whl
+
+	install -Dm755 contrib/hgk contrib/hg-ssh hgeditor -t "$pkgdir"/usr/bin
 
 	local man
 	for man in doc/*.?; do
 		install -Dm644 "$man" \
 			"$pkgdir"/usr/share/man/man${man##*.}/${man##*/}
 	done
+
+	install -Dm644 contrib/vim/HGAnnotate.vim contrib/vim/hgtest.vim \
+		-t "$pkgdir"/usr/share/vim/vimfiles/syntax/
+
+	
+	if [ "$HGWITHRUSTEXT" = "cpython" ]; then
+		install -Dm755 rust/chg/target/release/chg -t "$pkgdir"/usr/bin/
+	fi
+}
+
+chg() {
+	pkgdesc="Client for Mercurial command server with cHg extension"
+	depends="$pkgname=$pkgver-r$pkgrel"
+
+	amove usr/bin/chg
 }
 
 vim() {
@@ -67,10 +115,14 @@ vim() {
 	pkgdesc="Vim syntax for $pkgname"
 	install_if="vim $pkgname=$pkgver-r$pkgrel"
 
-	cd "$builddir"/contrib/vim/
-	mkdir -p "$subpkgdir"/usr/share/vim/vimfiles/syntax/
-	install -Dm644 HGAnnotate.vim hgtest.vim \
-		"$subpkgdir"/usr/share/vim/vimfiles/syntax/
+	amove usr/share/vim
+}
+
+lang() {
+	pkgdesc="translations for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel lang"
+
+	amove usr/lib/python3*/site-packages/mercurial/locale
 }
 
 sha512sums="
