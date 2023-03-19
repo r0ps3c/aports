@@ -2,7 +2,7 @@
 # Contributor: Rasmus Thomsen <oss@cogitri.dev>
 # Maintainer: Patrycja Rosa <alpine@ptrcnull.me>
 pkgname=libsoup3
-pkgver=3.2.2
+pkgver=3.4.0
 pkgrel=1
 pkgdesc="Gnome HTTP client/server Library"
 url="https://wiki.gnome.org/Projects/libsoup"
@@ -24,7 +24,9 @@ makedepends="
 	zlib-dev
 	"
 checkdepends="gnutls-dev"
-source="https://download.gnome.org/sources/libsoup/${pkgver%.*}/libsoup-$pkgver.tar.xz"
+source="https://download.gnome.org/sources/libsoup/${pkgver%.*}/libsoup-$pkgver.tar.xz
+	char-int-force-http.patch
+	"
 builddir="$srcdir/libsoup-$pkgver"
 
 case "$CARCH" in
@@ -57,5 +59,6 @@ package() {
 }
 
 sha512sums="
-1f2b49244f8bac4d112b39ac9c6a942acbc1ae1cff33262ed02e7682af3994cf6ba6741b365b3c80c45c6427d391599fa6f31df6caa4ffefe7d078ac373bad1b  libsoup-3.2.2.tar.xz
+d9bc5c160e453d5bc467694dac057e03d9e6c075a87bd6ff59be4ddedbfcb496168d9457e905edc3aff569270f0401560001f3d54fca1a7c3679ac631bd779d6  libsoup-3.4.0.tar.xz
+c60d88791332da1218126bab0de7589e94e8e37d640f3729ddde6332369d87542f30c7e3101f79fb1091d2c2223f387e2b4c0257bcdf6397388dd10b0f5b8617  char-int-force-http.patch
 "
