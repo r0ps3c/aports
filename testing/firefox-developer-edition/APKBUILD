@@ -1,9 +1,9 @@
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=firefox-developer-edition
-pkgver=112.0_beta3
+pkgver=112.0_beta4
 _pkgver=${pkgver/_beta/b}
-_releasedate=2023-03-17
-pkgrel=0
+_releasedate=2023-03-20
+pkgrel=2
 pkgdesc="Firefox web browser"
 url="https://www.firefox.com/"
 # s390x and riscv64 blocked by rust and cargo
@@ -21,7 +21,7 @@ makedepends="
 	bsd-compat-headers
 	cargo
 	cbindgen
-	clang-dev
+	clang15
 	dbus-glib-dev
 	gettext
 	gtk+3.0-dev
@@ -39,7 +39,7 @@ makedepends="
 	libwebp-dev
 	libxcomposite-dev
 	libxt-dev
-	lld
+	lld15
 	llvm-dev
 	m4
 	mesa-dev
@@ -65,6 +65,7 @@ source="https://ftp.mozilla.org/pub/firefox/releases/$_pkgver/source/firefox-$_p
 	install-dir.patch
 	no-ccache-stats.patch
 	python-deps.patch
+	rust-lto-thin.patch
 	sandbox-fork.patch
 	sandbox-largefile.patch
 	sandbox-sched_setscheduler.patch
@@ -91,8 +92,9 @@ _clear_vendor_checksums() {
 	sed -i 's/\("files":{\)[^}]*/\1/' third_party/rust/$1/.cargo-checksum.json
 }
 
-export CFLAGS="$CFLAGS -O2"
-export CXXFLAGS="$CXXFLAGS -O2"
+	# XXX: LARGEFILE64 fixme
+export CFLAGS="$CFLAGS -O2 -D_LARGEFILE64_SOURCE"
+export CXXFLAGS="$CXXFLAGS -O2 -D_LARGEFILE64_SOURCE"
 export CARGO_REGISTRIES_CRATES_IO_PROTOCOL="sparse"
 
 prepare() {
@@ -150,7 +152,8 @@ prepare() {
 	ac_add_options --with-distribution-id=org.alpinelinux
 	ac_add_options --with-libclang-path=/usr/lib
 	ac_add_options --with-unsigned-addon-scopes=app,system
-	ac_add_options --with-wasi-sysroot=/usr/share/wasi-sysroot
+	#ac_add_options --with-wasi-sysroot=/usr/share/wasi-sysroot
+	ac_add_options --without-wasm-sandboxed-libraries
 	ac_add_options --with-branding=browser/branding/aurora
 	ac_add_options --host=$CHOST
 	ac_add_options --target=$CTARGET
@@ -180,9 +183,8 @@ build() {
 
 	export LDFLAGS="$LDFLAGS -Wl,--thinlto-jobs=$thinlto_jobs"
 
-	# Build with Clang, only supported, much better here
-	export CC="clang"
-	export CXX="clang++"
+	export CC="clang-15"
+	export CXX="clang++-15"
 
 	export SHELL=/bin/sh
 	export BUILD_OFFICIAL=1
@@ -253,7 +255,7 @@ package() {
 }
 
 sha512sums="
-6563e205e50f8418aa35bdf4fb575f927e7016f6c4591072f4fb9cedeadcc8acf7192a5400c674cf757142613d55c98957688c66b92dd5f9d7e400907d099546  firefox-112.0b3.source.tar.xz
+9229dae67df86ddc377d5ea654123b1300b376472e4a237e2f1d7ebad7b345c3471455d75f15497233182c13c25be07598b2ae1d34c8f6e545567befd238598c  firefox-112.0b4.source.tar.xz
 b1cb2db3122634f66d2bae7066e76f2dcd455c464e021db4de3b0a08314df95cb667846081682db549dd2af8a00831cabe44a2420c66cdfb5e3b5fa7e6bd21d3  avoid-redefinition.patch
 454ea3263cabce099accbdc47aaf83be26a19f8b5a4568c01a7ef0384601cf8315efd86cd917f9c8bf419c2c845db89a905f3ff9a8eb0c8e41042e93aa96a85c  disable-moz-stackwalk.patch
 2f4f15974d52de4bb273b62a332d13620945d284bbc6fe6bd0a1f58ff7388443bc1d3bf9c82cc31a8527aad92b0cd3a1bc41d0af5e1800e0dcbd7033e58ffd71  fix-fortify-system-wrappers.patch
@@ -262,6 +264,7 @@ cd68b89e29e5f6379fbd5679db27b9a5ef70ea65e51c0d0a8137e1f1fd210e35a8cfb047798e9549
 ff471e5160e313a9657bcbb767a6a581bab9da053cced02bde38d1ef03349472ad3602dba026c10d676d55c1712af772dd2b7bdbfa72b5db498c9ce8a2133423  install-dir.patch
 64b6458099baa225b346b40e3080cea3a5c73a834e39fa4a438af77701e6ded84e2fb0d6fffff8c2533cc43b898fe9f411be023e875acebec452aa2379861f04  no-ccache-stats.patch
 b78c684b612cde3aec80d8de1e5782c5ccfefaf2466a52bd3d87fa291babb8f8278101a1c3d1c8037af5909637155dcf51f6ffae8e0dab54383d9d51bd24a4cb  python-deps.patch
+dddc14074d9d5b402f0aed732d18e0d4897729d543dd8b0ea4a24d065ca7aa4bbfcb324a8c6eae1e5c8a41d7af4ed70ad3ecb8dabaa6a8eff8f26138e5737429  rust-lto-thin.patch
 2518f2fc75b5db30058e0735f47d60fdf1e7adfaeee4b33fb2afb1bd9a616ce943fd88f4404d0802d4083703f4acf1d5ad42377218d025bc768807fbaf7e1609  sandbox-fork.patch
 b7d0a6126bdf6c0569f80aabf5b37ed2c7a35712eb8a0404a2d85381552f5555d4f97d213ea26cec6a45dc2785f22439376ed5f8e78b4fd664ef0223307b333e  sandbox-largefile.patch
 94433c5ffdbe579c456d95c5f053f61fcbab2f652fa90bc69dcc27d9a1507a8e5c677adeadae9a7a75cc9a55184c1040737f4dfd10b279c088ef016561e6f135  sandbox-sched_setscheduler.patch
