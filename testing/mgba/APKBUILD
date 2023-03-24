@@ -3,12 +3,11 @@
 # Maintainer:
 pkgname=mgba
 pkgver=0.10.1
-pkgrel=0
+pkgrel=3
 pkgdesc="Game Boy Advance Emulator"
 url="https://mgba.io"
 arch="all !s390x" # broken on big-endian
 arch="$arch !armhf" # Missing qt5-qtmultimedia-dev
-arch="$arch !armv7 !aarch64" # arm opengl issues
 license="MPL-2.0"
 makedepends="
 	cmake
@@ -31,13 +30,21 @@ makedepends="
 checkdepends="py3-cffi py3-cached-property"
 subpackages="$pkgname-doc libmgba libmgba-dev $pkgname-qt"
 source="mgba-$pkgver.tar.gz::https://github.com/mgba-emu/mgba/archive/$pkgver.tar.gz"
-# the tests fail to build this release
-options="!check"
 
 build() {
 	if [ "$CBUILD" != "$CHOST" ]; then
 		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
 	fi
+
+	case "$CARCH" in
+	aarch64|armv7)
+		# setting USE_EPOXY fails things because of wrong gl.h includes(?)
+		local armstuff=OFF
+		;;
+	*)
+		local armstuff=ON
+		;;
+	esac
 	cmake -G Ninja -B build \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_INSTALL_LIBDIR=lib \
@@ -45,13 +52,16 @@ build() {
 		-DCMAKE_BUILD_TYPE=MinSizeRel \
 		-DBUILD_TEST="$(want_check && echo ON || echo OFF)" \
 		-DBUILD_SUITE="$(want_check && echo ON || echo OFF)" \
+		-DUSE_DISCORD_RPC=OFF \
+		-DUSE_EPOXY=$armstuff \
 		$CMAKE_CROSSOPTS
 	cmake --build build
 }
 
 check() {
 	cd build
-	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+	LD_LIBRARY_PATH="$PWD" \
+		ctest --output-on-failure
 }
 
 package() {
