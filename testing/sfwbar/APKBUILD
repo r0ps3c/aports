@@ -1,8 +1,8 @@
 # Contributor: Jakub Jirutka <jakub@jirutka.cz>
 # Maintainer:
 pkgname=sfwbar
-pkgver=1.0_beta9
-pkgrel=0
+pkgver=1.0_beta10
+pkgrel=1
 pkgdesc="Sway Floating Window Bar"
 url="https://github.com/LBCrion/sfwbar"
 arch="all"
@@ -14,12 +14,14 @@ makedepends="
 	meson
 	"
 subpackages="$pkgname-doc"
-source="https://github.com/LBCrion/sfwbar/archive/v$pkgver/sfwbar-$pkgver.tar.gz"
+source="https://github.com/LBCrion/sfwbar/archive/v$pkgver/sfwbar-$pkgver.tar.gz
+	$pkgname-fix-network-segv.patch::https://github.com/LBCrion/sfwbar/commit/47c37b4d634d834287c5cc1da948e643d61b0847.patch
+	"
 options="!check"  # no tests provided
 
 build() {
 	abuild-meson -Db_lto=true . output
-	meson compile -j ${JOBS:-0} -C output
+	meson compile -C output
 }
 
 package() {
@@ -27,5 +29,6 @@ package() {
 }
 
 sha512sums="
-673c703de28ac3185e96f264a27c038204f9d6a7724a21f813d699f1bb6253da9ede379060d9a1d86217753584ddbcc51beb7401eacdb898862b1400863e2de3  sfwbar-1.0_beta9.tar.gz
+d3671564a228419bca9a8cfa94939efd4c4455b7b80e7e06de023fb694366a267b012ad8167719cf8863bb1841cfba50b269924c4b23b447089ca587616d613f  sfwbar-1.0_beta10.tar.gz
+082a62b73304488733cadb93385d017dc7c73ae3d5a76cd8ea5b46d05730f6f12cd6d0a4e1044b2329458c6998329628dd0d757cc59bc9802740ce97ed227d08  sfwbar-fix-network-segv.patch
 "

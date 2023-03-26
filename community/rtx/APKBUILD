@@ -1,6 +1,6 @@
 # Maintainer: Jeff Dickey <alpine@rtx.pub>
 pkgname=rtx
-pkgver=1.27.2
+pkgver=1.27.8
 pkgrel=0
 pkgdesc="Polyglot runtime and dev tool version manager"
 url="https://rtx.pub"
@@ -18,7 +18,7 @@ prepare() {
 }
 
 build() {
-	cargo build --release --frozen --features alpine
+	cargo build --release --frozen
 }
 
 check() {
@@ -31,5 +31,5 @@ package() {
 }
 
 sha512sums="
-1baf64c6054d25bb8a95b8e486ffbc6b6c0d8e595a6361ab266c99d41235bea4b858b6fc80af91898074933a4f3e76b4422571eb0f7a62d52480d3554a605716  rtx-1.27.2.tar.gz
+b98251c29fd4e0d83c71ac66b10683fe66bc8deb37f18e1c51389f8a7a3c2af015a40f6c4931549b00db401beee0f4d87ddf7ffa422d27059f9a4f0fda8ceaac  rtx-1.27.8.tar.gz
 "
