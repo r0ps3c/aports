@@ -1,34 +1,34 @@
 # Contributor: Damian Kurek <starfire24680@gmail.com>
 # Maintainer: Damian Kurek <starfire24680@gmail.com>
 pkgname=kodi-inputstream-adaptive
-pkgver=19.0.7
-_realname=Matrix
-pkgrel=1
+pkgver=20.3.5
+_realname=Nexus
+pkgrel=0
 pkgdesc="kodi inputstream addon for several manifest types"
 url="https://github.com/xbmc/inputstream.adaptive"
 arch="x86 x86_64 aarch64" # tests fail on armv7
 license="GPL-2.0-only"
-makedepends="cmake expat-dev kodi-dev"
+makedepends="cmake expat-dev kodi-dev samurai"
 source="$pkgname-$pkgver-$_realname.tar.gz::https://github.com/xbmc/inputstream.adaptive/archive/$pkgver-$_realname.tar.gz"
 builddir="$srcdir/inputstream.adaptive-$pkgver-$_realname"
 
 build() {
-	cmake -B build \
+	cmake -B build -G Ninja \
 		-DCMAKE_BUILD_TYPE=None \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_MODULE_PATH=/usr/lib/cmake/kodi \
-		-DUSE_LTO=1
-	make -C build
+		-DENABLE_INTERNAL_BENTO4=ON
+	cmake --build build
 }
 
 check() {
-	make -C build test
+	ctest --test-dir build --output-on-failure
 }
 
 package() {
-	make -C build DESTDIR="$pkgdir" install
+	DESTDIR="$pkgdir" cmake --install build
 }
 
 sha512sums="
-e0cc3a7a153a32628ae0c56a98d662105f8de505ced2b8680afef3f11ee1a847af44c60fbe1ad40c6ad710ad382786b0adbea38e2a2d400c95fc42d1c9493d90  kodi-inputstream-adaptive-19.0.7-Matrix.tar.gz
+a6690380a76fb15b4146a3ce4f25fc9175714ff4de0a53413524867acb61602ab9477d84a9d70afef630b5b183974cba599d57745d035e9b20981a0862099faf  kodi-inputstream-adaptive-20.3.5-Nexus.tar.gz
 "
