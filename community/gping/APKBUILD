@@ -6,12 +6,18 @@ pkgrel=0
 pkgdesc="Ping, but with a graph"
 url="https://github.com/orf/gping"
 license="MIT"
-arch="all !s390x !riscv64" # blocked by rust/cargo
+arch="all"
 makedepends="cargo"
 source="https://github.com/orf/gping/archive/gping-v$pkgver/gping-$pkgver.tar.gz"
 builddir="$srcdir/gping-gping-v$pkgver"
 
 export CARGO_REGISTRIES_CRATES_IO_PROTOCOL="sparse"
+
+case "$CARCH" in
+riscv64)
+	options="$options textrels"
+	;;
+esac
 
 prepare() {
 	default_prepare
