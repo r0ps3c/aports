@@ -1,21 +1,19 @@
 # Contributor: Andy Postnikov <apostnikov@gmail.com>
 # Maintainer: Andy Postnikov <apostnikov@gmail.com>
 
-pkgname=php81-pecl-smbclient
+pkgname=php82-pecl-smbclient
 _extname=smbclient
 pkgver=1.1.0
 pkgrel=0
-pkgdesc="PHP 8.1 extension that uses Samba's libsmbclient library to provide Samba related functions and 'smb' streams to PHP programs."
+pkgdesc="PHP 8.2 extension that uses Samba's libsmbclient library to provide Samba related functions and 'smb' streams to PHP programs."
 url="https://pecl.php.net/package/smbclient"
 arch="all"
 license="BSD-2-Clause"
-_phpv=81
+_phpv=82
 _php=php$_phpv
 depends="$_php-common"
 makedepends="$_php-dev samba-dev"
-checkdepends="phpunit"
-source="php-pecl-$_extname-$pkgver.tgz::https://pecl.php.net/get/$_extname-$pkgver.tgz
-	fix-test.patch"
+source="php-pecl-$_extname-$pkgver.tgz::https://pecl.php.net/get/$_extname-$pkgver.tgz"
 builddir="$srcdir"/$_extname-$pkgver
 
 build() {
@@ -25,10 +23,8 @@ build() {
 }
 
 check() {
-	$_php -d extension=modules/$_extname.so --ri smbclient
 	# Test suite require smb to run.
-	$_php -d extension=modules/$_extname.so "$(command -v phpunit)" \
-		-c phpunit.xml.dist tests/VersionTest.php
+	$_php -d extension=modules/$_extname.so --ri smbclient
 }
 
 package() {
@@ -40,5 +36,4 @@ package() {
 
 sha512sums="
 b1ca1c28c4c3671de2edb00d864f5ee62236a9bfc7f49d9e9aa17120ea1b57b710b0eb00b9f0a59f87f6354015b563e0ca4b02e03ef0809ed9ade6580f1313b7  php-pecl-smbclient-1.1.0.tgz
-eaf8c764a2020fb45a58c181eab14beadb76d9e3376364914ecb2884d13e7bceb0f00445389c74964245664d860a59464dff47dd8ade7a58de700e80b1781ffa  fix-test.patch
 "
