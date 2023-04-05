@@ -1,15 +1,15 @@
 # Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
-# Maintainer:
+# Maintainer: Sören Tempel <soeren+alpine@soeren-tempel.net>
 pkgname=ck
 pkgver=0.7.1
-pkgrel=0
+pkgrel=1
 pkgdesc="Concurrency primitives, safe memory reclamation mechanisms and non-blocking (including lock-free) data structures"
 url="http://concurrencykit.org/"
 arch="all"
 license="BSD-2-Clause AND Apache-2.0"
 makedepends="linux-headers"
 subpackages="$pkgname-static $pkgname-dev $pkgname-doc"
-options="!check" # TODO: pass locally but hang on CI
+options="!check" # Tests take >2h on most architectures
 source="$pkgname-$pkgver.tar.gz::https://github.com/concurrencykit/ck/archive/refs/tags/$pkgver.tar.gz"
 
 # GitLab CI and builders run armhf/armv7 as 32-bit arches on aarch64.
@@ -31,6 +31,10 @@ _conf_opts=""
 case "$CTARGET_ARCH" in
 riscv64) _conf_opts="--use-cc-builtins" ;;
 esac
+
+# With -Os the compiler emits lots of -Winline warnings.
+# Silence those for now to keep the build log readable.
+export CFLAGS="$CFLAGS -Wno-inline"
 
 build() {
 	./configure \
