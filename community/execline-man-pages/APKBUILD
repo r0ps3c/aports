@@ -1,12 +1,13 @@
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=execline-man-pages
-pkgver=2.9.3.0.3
+pkgver=2.9.3.0.5
 pkgrel=0
 pkgdesc="Unofficial mdoc versions of the execline documentation"
-url="https://github.com/flexibeast/execline-man-pages"
+url="https://git.sr.ht/~flexibeast/execline-man-pages"
 arch="noarch"
 license="ISC"
-source="$pkgname-$pkgver.tar.gz::https://github.com/flexibeast/execline-man-pages/archive/refs/tags/v$pkgver.tar.gz"
+source="$pkgname-$pkgver.tar.gz::https://git.sr.ht/~flexibeast/execline-man-pages/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-v$pkgver"
 options="!check" # no tests
 
 package() {
@@ -17,5 +18,5 @@ package() {
 }
 
 sha512sums="
-0d9d4ce655bf6b9caff6f7f183f6c0a051eeb3707f2adb79e7913dd566f23f12a85fa22655a56697182ca34e1f7cdfa14b3168448883a3b00d25f7037536a380  execline-man-pages-2.9.3.0.3.tar.gz
+cd24ad64a4bbdec991ddaf069b0458bb0807b80dda9911c2458564430e5dc705aef8bf48fd05019d3a5acdeec93837deea57cbb785c5d18f9cf07bd0be180674  execline-man-pages-2.9.3.0.5.tar.gz
 "
