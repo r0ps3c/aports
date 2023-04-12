@@ -2,13 +2,14 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=e2fsprogs
 pkgver=1.47.0
-pkgrel=0
+pkgrel=2
 pkgdesc="Standard Ext2/3/4 filesystem utilities"
 url="https://e2fsprogs.sourceforge.net/"
 arch="all"
 license="GPL-2.0-or-later AND LGPL-2.0-or-later AND BSD-3-Clause AND MIT"
 depends_dev="util-linux-dev gawk"
-makedepends="$depends_dev linux-headers fuse-dev"
+# XXX: build hack to upgrade live on builders
+makedepends="$depends_dev musl>1.2.3_git20230322-r2 linux-headers fuse-dev"
 checkdepends="diffutils perl coreutils"
 subpackages="
 	$pkgname-static
@@ -39,12 +40,13 @@ esac
 #     - CVE-2019-5094
 
 build() {
+	# XXX: LARGEFILE64
+	CFLAGS="$CFLAGS -D_LARGEFILE64_SOURCE -flto=auto" \
 	./configure \
 		--build=$CBUILD \
 		--host=$CHOST \
 		--mandir=/usr/share/man \
 		--enable-elf-shlibs \
-		--enable-lto \
 		--enable-symlink-install \
 		--disable-fsck \
 		--disable-uuidd \

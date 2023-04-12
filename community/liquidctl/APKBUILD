@@ -2,7 +2,7 @@
 # Maintainer:
 pkgname=liquidctl
 pkgver=1.12.1
-pkgrel=0
+pkgrel=1
 pkgdesc="Liquid Cooler Control"
 url="https://github.com/liquidctl/liquidctl"
 options="!check" # Requires writable /var/run
@@ -10,6 +10,7 @@ arch="noarch"
 license="GPL-3.0-or-later"
 depends="
 	py3-colorlog
+	py3-crcmod
 	py3-docopt
 	py3-hidapi
 	py3-smbus
@@ -24,7 +25,15 @@ makedepends="
 	py3-wheel
 	"
 checkdepends="py3-pytest"
+subpackages="$pkgname-doc"
 source="$pkgname-$pkgver.tar.gz::https://github.com/liquidctl/liquidctl/archive/v$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+
+	# `uaccess` is (e)logind-specific.
+	sed -i 's/TAG+="uaccess"/GROUP="plugdev"/' extra/linux/71-liquidctl.rules
+}
 
 build() {
 	export SETUPTOOLS_SCM_PRETEND_VERSION=$pkgver
@@ -40,8 +49,9 @@ check() {
 }
 
 package() {
-	python3 -m installer -d "$pkgdir" \
-		dist/*.whl
+	python3 -m installer -d "$pkgdir" dist/*.whl
+	install -Dm644 extra/linux/71-liquidctl.rules -t "$pkgdir/usr/lib/udev/rules.d/"
+	install -Dm644 liquidctl.8 -t "$pkgdir/usr/share/man/man8/"
 }
 
 sha512sums="
