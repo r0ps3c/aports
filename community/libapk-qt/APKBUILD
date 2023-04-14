@@ -1,7 +1,7 @@
 # Maintainer: Alexey Minnekhanov <alexeymin@postmarketos.org>
 pkgname=libapk-qt
 pkgver=0.4.3
-pkgrel=0
+pkgrel=1
 pkgdesc="Alpine Package Keeper (apk) Qt bindings"
 url="https://gitlab.com/postmarketOS/libapk-qt"
 # s390x: segfaults in tests
@@ -10,8 +10,8 @@ license="GPL-2.0-only"
 makedepends="apk-tools-dev cmake qt5-qtbase-dev samurai"
 source="https://gitlab.com/postmarketOS/libapk-qt/-/archive/v$pkgver/libapk-qt-v$pkgver.tar.gz"
 subpackages="$pkgname-dev $pkgname-dbg"
-
 builddir="$srcdir/libapk-qt-v$pkgver"
+options="!check" # fail with permission errors on builders
 
 build() {
 	cmake -B build -G Ninja \
