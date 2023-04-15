@@ -1,7 +1,7 @@
 # Maintainer: Peter van Dijk <peter.van.dijk@powerdns.com>
 pkgname=dnsdist
 pkgver=1.8.0
-pkgrel=2
+pkgrel=4
 pkgdesc="dnsdist is a highly DNS-, DoS-, and abuse-aware loadbalancer."
 url="https://dnsdist.org/"
 # s390x blocked by h2o
@@ -38,7 +38,7 @@ ppc64le|riscv64)
 	;;
 *)
 	makedepends="$makedepends lua5.4-dev luajit-dev"
-	subpackages="$pkgname-luajit"
+	subpackages="$subpackages $pkgname-luajit"
 	_luajit=ON
 	;;
 esac
