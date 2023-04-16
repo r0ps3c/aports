@@ -1,6 +1,6 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=abuild
-pkgver=3.11.0_rc3
+pkgver=3.11.0_rc5
 _ver=${pkgver%_git*}
 pkgrel=0
 pkgdesc="Script to build Alpine Packages"
@@ -95,5 +95,5 @@ _rootbld() {
 }
 
 sha512sums="
-a0f7fca65cedd6bdf6ff11b7e4791b36aac41d49f1dd321d5c90624ba066cba679a481c86e60eb7b8b74b2a058e0b8761082ece439b8f7cb478f00618b0b3e82  abuild-3.11.0_rc3.tar.gz
+db7510f06548307e5d173ad04984a7eee54d2c9503a442af0c0ed26b6c70e2748e171bb3576621c6581e00c2b96fe09b96ad8ba2920a4a398da50c1fa38dceb6  abuild-3.11.0_rc5.tar.gz
 "
