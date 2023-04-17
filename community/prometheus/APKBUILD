@@ -1,7 +1,7 @@
 # Maintainer: Drew DeVault <sir@cmpwn.com>
 pkgname=prometheus
 pkgver=2.42.0
-pkgrel=2
+pkgrel=4
 pkgdesc="The Prometheus monitoring system and time series database"
 url="https://github.com/prometheus/prometheus"
 arch="all !riscv64" # npm
@@ -29,12 +29,12 @@ build() {
 	GOLDFLAGS="-X github.com/prometheus/common/version.Version=$pkgver
 		-X github.com/prometheus/common/version.Revision=AlpineLinux
 		-X github.com/prometheus/common/version.Branch=master
-		-X github.com/prometheus/common/version.BuildUser=$USER@$HOSTNAME
+		-X github.com/prometheus/common/version.BuildUser=$USER@$(hostname)
 		-X github.com/prometheus/common/version.BuildDate=$(date -u "+%Y%m%d-%H:%M:%S" ${SOURCE_DATE_EPOCH:+-d @$SOURCE_DATE_EPOCH})
 	"
 	if [ -n "$LDFLAGS" ]; then
 		# LDFLAGS (and only LDFLAGS) should be passed to -extldflags.
-		GOLDFLAGS="$GOLDFLAGS -extldflags $LDFLAGS"
+		GOLDFLAGS="$GOLDFLAGS -extldflags '$LDFLAGS'"
 	fi
 
 	# set -j1 to run things in the correct order in makefile
@@ -86,6 +86,6 @@ package() {
 
 sha512sums="
 5af1c6489f82f977d2ebc8ed51dded4ac941d723765299723059936f64c07ba090130b9e2936a3170534957f8905093517625110527f060e498fcb37a48a3a4c  prometheus-2.42.0.tar.gz
-eb0cebe41782f90079f367832f7c9efa18b99df410506b65b2e0b11fa05f8f2956f68c0fca836664729d50b85fc969a96e99e1d32012fe3c655cddc0b16a7561  prometheus.initd
-24b34e586238d5b331639aa5c43b6a927692f251af2cea2787335eab30d2fc7d46975059595db4697ae0dc1d35b5e23cfc4e4b2e424442c209a05283ca22a239  prometheus.confd
+f4c222ba836f65d874fb30c62c7a55c27c4cedd6c473e39808a84bb7b4353c79c6ff3cefd3c4cf2ce966ce3a1234db3343cba397c83328ccc4e25072f683fcf5  prometheus.initd
+2e47a19e313cbf64f7a57a15de4bea959f5b1c307ef0c2b7f6b254f4abc5504b6ae31b02a1e11487fd82bc975f1cd8e1f3733393823b007f375acbdaf17af8ea  prometheus.confd
 "

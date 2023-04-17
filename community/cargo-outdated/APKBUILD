@@ -5,8 +5,7 @@ pkgver=0.11.2
 pkgrel=1
 pkgdesc="A cargo subcommand for displaying when Rust dependencies are out of date"
 url="https://github.com/kbknapp/cargo-outdated"
-# s390x and riscv64 blocked by cargo
-arch="all !s390x !riscv64"
+arch="all"
 license="MIT"
 makedepends="
 	cargo
@@ -22,6 +21,12 @@ source="$pkgname-$pkgver.tar.gz::https://github.com/kbknapp/cargo-outdated/archi
 
 export LIBSSH2_SYS_USE_PKG_CONFIG=1
 export CARGO_REGISTRIES_CRATES_IO_PROTOCOL="sparse"
+
+case "$CARCH" in
+riscv64)
+	options="$options textrels"
+	;;
+esac
 
 prepare() {
 	default_prepare
