@@ -4,14 +4,16 @@
 # Maintainer: Duncan Bellamy <dunk@denkimushi.com>
 _pkgname=ceph
 pkgver=17.2.6
-pkgrel=0
+pkgrel=1
 _majorver=${pkgver%%.*}
 pkgname=$_pkgname$_majorver
 pkgdesc="Ceph is a distributed object store and file system, version $_majorver"
 pkgusers="ceph"
 pkggroups="ceph"
 url="https://ceph.io/en/"
-arch="all !armhf !armv7 !x86"
+# 32-bit: doesn't build ui + useless
+# riscv64: doesn't build
+arch="all !armhf !armv7 !x86 !riscv64"
 # https://github.com/ceph/ceph/blob/master/COPYING
 license="LGPL-2.1-only AND LGPL-2.0-or-later AND GPL-2.0-only AND GPL-3.0-only AND CC-BY-SA-1.0 AND BSL-1.0 AND GPL-2.0-or-later WITH Autoconf-exception-2.0 AND BSD-3-Clause AND MIT AND custom"
 depends="$pkgname-mds=$pkgver-r$pkgrel $pkgname-mgr=$pkgver-r$pkgrel $pkgname-mon=$pkgver-r$pkgrel $pkgname-osd=$pkgver-r$pkgrel"
@@ -233,7 +235,7 @@ build() {
 		-DWITH_SYSTEM_BOOST=ON \
 		-DWITH_SYSTEM_LIBURING=ON \
 		-DWITH_SYSTEM_NPM=ON \
-		-DWITH_SYSTEM_ROCKSDB=OFF \
+		-DWITH_SYSTEM_ROCKSDB=ON \
 		-DWITH_SYSTEM_ZSTD=ON \
 		-DWITH_TESTS="$(want_check && echo ON || echo OFF)" \
 		-DWITH_THREAD_SAFE_RES_QUERY=ON \
