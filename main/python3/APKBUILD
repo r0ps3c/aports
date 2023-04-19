@@ -4,7 +4,7 @@ pkgname=python3
 # the python3-tkinter's pkgver needs to be synchronized with this.
 pkgver=3.11.3
 _basever="${pkgver%.*}"
-pkgrel=4
+pkgrel=10
 pkgdesc="A high-level scripting language"
 url="https://www.python.org/"
 arch="all"
@@ -15,10 +15,11 @@ subpackages="
 	$pkgname-dev
 	$pkgname-doc
 	$pkgname-tests::noarch
-	$pkgname-gdbm
+	$pkgname-pyc
 	$pkgname-pycache-pyc2
 	$pkgname-pycache-pyc1
 	$pkgname-pycache-pyc0
+	$pkgname-gdbm
 	"
 makedepends="
 	!gettext-dev
@@ -215,10 +216,20 @@ gdbm() {
 	amove usr/lib/python3*/lib-dynload/_gdbm.cpython*
 }
 
+pyc() {
+	pkgdesc="$pkgdesc (install .pyc cache files)"
+	install_if="$pkgname=$pkgver-r$pkgrel"
+	depends="
+		$pkgname=$pkgver-r$pkgrel
+		$pkgname-pycache-pyc0=$pkgver-r$pkgrel
+		pyc
+		"
+
+	mkdir -p "$subpkgdir"
+}
+
 pyc0() {
 	pkgdesc="$pkgdesc (.pyc pycache files)"
-	# install this by default as it's the only actually used one
-	install_if="$pkgname=$pkgver-r$pkgrel"
 
 	cd "$pkgdir"
 	amove $(find usr/lib/python3* -name "*.pyc")
