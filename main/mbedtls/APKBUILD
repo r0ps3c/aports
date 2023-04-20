@@ -62,7 +62,8 @@ build() {
 
 check() {
 	cd build
-	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+	# tests break in parallel
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest -j1
 }
 
 package() {

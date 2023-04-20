@@ -2,7 +2,7 @@
 # Maintainer: Carlo Landmeter <clandmeter@alpinelinux.org>
 pkgname=freetype
 pkgver=2.13.0
-pkgrel=3
+pkgrel=4
 pkgdesc="TrueType font rendering library"
 url="https://www.freetype.org/"
 arch="all"
@@ -11,8 +11,6 @@ options="!check"
 makedepends="
 	brotli-dev
 	bzip2-dev
-	harfbuzz-bootstrap
-	harfbuzz-bootstrap-dev
 	libpng-dev
 	libx11-dev
 	zlib-dev
@@ -23,8 +21,9 @@ subpackages="
 	$pkgname-demos
 	$pkgname-doc
 	"
-source="https://download.savannah.gnu.org/releases/freetype/freetype-$pkgver.tar.xz
-	https://download.savannah.gnu.org/releases/freetype/ft2demos-$pkgver.tar.xz
+source="
+	https://de.freedif.org/savannah/freetype/freetype-$pkgver.tar.xz
+	https://de.freedif.org/savannah/freetype/ft2demos-$pkgver.tar.xz
 	pcf-family-names.patch
 	subpixel.patch
 	table-validation-modules.patch
