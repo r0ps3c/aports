@@ -2,7 +2,7 @@
 # Maintainer: Holger Jaekel <holger.jaekel@gmx.de>
 pkgname=gdal
 pkgver=3.6.3
-pkgrel=3
+pkgrel=5
 pkgdesc="A translator library for raster and vector geospatial data formats"
 url="https://gdal.org/"
 arch="all"
@@ -29,7 +29,6 @@ makedepends="
 	libgeotiff-dev
 	libheif-dev
 	libjpeg-turbo-dev
-	libjxl-dev
 	libkml-dev
 	libpng-dev
 	libpq-dev
@@ -78,6 +77,21 @@ source="https://github.com/OSGeo/gdal/releases/download/v$pkgver/gdal-$pkgver.ta
 	10-atoll.patch
 	"
 
+# Print value of the specified variable, or the default if empty or not defined.
+getvar() {
+	eval "printf '%s\n' \"\${$1:-$2}\""
+}
+
+_all_drivers=""
+_add_driver() {
+	local name="$1" typ="$2" descr="$3"
+	local varprefix="_${name//-/_}"
+
+	eval "${varprefix}_typ='$typ'; ${varprefix}_descr='$descr'"
+	subpackages="$subpackages $pkgname-driver-$name:_driver"
+	_all_drivers="$_all_drivers $pkgname-driver-$name=$pkgver-r$pkgrel"
+}
+
 # Optional dependency netcdf-dev is not available on s390x
 _with_netcdf="OFF"
 case "$CARCH" in
@@ -103,6 +117,17 @@ case "$CARCH" in
 	*)
 		makedepends="$makedepends lerc-dev"
 		_with_lerc="ON";;
+esac
+
+# Optional dependency libjxl-dev is not available on s390x
+_with_jxl="OFF"
+case "$CARCH" in
+s390x) ;;
+*)
+	makedepends="$makedepends libjxl-dev"
+	_add_driver JPEGXL gdal "JPEG-XL File Format"
+	_with_jxl="ON"
+	;;
 esac
 
 # Optional dependency librasterlite2-dev is only available on x86 and x86_64
@@ -131,28 +156,12 @@ case "$CARCH" in
 		;;
 esac
 
-# Print value of the specified variable, or the default if empty or not defined.
-getvar() {
-	eval "printf '%s\n' \"\${$1:-$2}\""
-}
-
-_all_drivers=""
-_add_driver() {
-	local name="$1" typ="$2" descr="$3"
-	local varprefix="_${name//-/_}"
-
-	eval "${varprefix}_typ='$typ'; ${varprefix}_descr='$descr'"
-	subpackages="$subpackages $pkgname-driver-$name:_driver"
-	_all_drivers="$_all_drivers $pkgname-driver-$name=$pkgver-r$pkgrel"
-}
-
 _add_driver BASISU_KTX2 gdal "Basis Universal"
 _add_driver EXR gdal "Extended Dynamic Range Image File Format"
 _add_driver FITS gdal "Flexible Image Transport System"
 _add_driver HDF5 gdal "Hierarchical Data Format Release 5 (HDF5)"
 _add_driver HEIF gdal "ISO/IEC 23008-12:2017 High Efficiency Image File Format"
 _add_driver JP2OpenJPEG gdal "JPEG2000 driver based on OpenJPEG library"
-_add_driver JPEGXL gdal "JPEG-XL File Format"
 _add_driver KEA gdal "KEA"
 _add_driver PCIDSK gdal "PCI Geomatics Database File"
 _add_driver PCRaster gdal "PCRaster raster file format"
@@ -220,7 +229,7 @@ build() {
 		-DGDAL_USE_IDB=OFF \
 		-DGDAL_USE_JPEG=ON \
 		-DGDAL_USE_JSONC=ON \
-		-DGDAL_USE_JXL=ON \
+		-DGDAL_USE_JXL=$_with_jxl \
 		-DGDAL_USE_KDU=OFF \
 		-DGDAL_USE_KEA=ON \
 		-DGDAL_USE_LERC=$_with_lerc \

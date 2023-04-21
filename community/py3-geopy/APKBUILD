@@ -3,7 +3,7 @@
 _pkgname=geopy
 pkgname="py3-$_pkgname"
 pkgver=2.3.0
-pkgrel=0
+pkgrel=1
 pkgdesc="Geocoding library"
 url="https://geopy.readthedocs.io/"
 arch="noarch"
@@ -18,8 +18,10 @@ checkdepends="
 	py3-pytest
 	py3-pytest-aiohttp
 	py3-pytest-asyncio
+	py3-pytest-xdist
 	py3-sphinx
 "
+subpackages="$pkgname-pyc"
 source="https://files.pythonhosted.org/packages/source/g/geopy/geopy-$pkgver.tar.gz"
 builddir="$srcdir/$_pkgname-$pkgver"
 
@@ -28,7 +30,9 @@ build() {
 }
 
 check() {
-	PYTHONPATH=build/lib pytest -v --ignore='test/geocoders'
+	PYTHONPATH=build/lib pytest -n auto -v \
+		--ignore='test/geocoders' \
+		--deselect=test/adapters/each_adapter.py # timeout read internet
 }
 
 package() {

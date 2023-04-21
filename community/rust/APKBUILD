@@ -5,10 +5,10 @@
 # Contributor: Ariadne Conill <ariadne@dereferenced.org>
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=rust
-pkgver=1.68.2
+pkgver=1.69.0
 _llvmver=15
-_bootver=1.67.0
-pkgrel=0
+_bootver=1.68.0
+pkgrel=2
 pkgdesc="The Rust Programming Language"
 url="https://www.rust-lang.org/"
 arch="all"
@@ -71,7 +71,6 @@ esac
 subpackages="
 	$pkgname-dbg
 	$pkgname-wasm
-	$pkgname-analysis
 	$pkgname-gdb::noarch
 	$pkgname-lldb::noarch
 	$pkgname-clippy
@@ -147,15 +146,6 @@ build() {
 	export CFLAGS="$CFLAGS -O2"
 	export CXXFLAGS="$CXXFLAGS -O2"
 
-	# todo: try enable lto:
-	# --set="rust.lto=thin"
-	# this fails when using the stage2 compiler with:
-	# thread 'main' panicked at 'range start index 1 out of range for slice of length 0', compiler/rustc_driver/src/lib.rs:988:17
-	# on a rustc -vV invocation. the slice is
-	# pub fn handle_options(args: &[String]) -> Option<getopts::Matches> {
-	#     // Throw away the first argument, the name of the binary
-	#     let args = &args[1..];
-	# which should not be null with -vV?
 	./configure \
 		--build="$_build" \
 		--host="$_target" \
@@ -167,7 +157,7 @@ build() {
 		--llvm-root="/usr/lib/llvm$_llvmver" \
 		--disable-docs \
 		--enable-extended \
-		--tools="analysis,cargo,clippy,src,rustfmt" \
+		--tools="cargo,clippy,src,rustdoc,rustfmt,rust-demangler" \
 		--enable-llvm-link-shared \
 		--enable-option-checking \
 		--enable-locked-deps \
@@ -180,6 +170,7 @@ build() {
 		--set="rust.codegen-units-std=1" \
 		--set="rust.parallel-compiler=false" \
 		--set="rust.description=Alpine Linux" \
+		--set="rust.lto=thin" \
 		--set="target.$_target.llvm-config=/usr/lib/llvm$_llvmver/bin/llvm-config" \
 		--set="target.$_target.musl-root=/usr" \
 		--set="target.$_target.crt-static=false" \
@@ -253,8 +244,6 @@ package() {
 	tar xf "$builddir"/build/dist/rust-std-$pkgver-$_target.tar.gz \
 		-C "$pkgdir/usr" --strip-components=2 --exclude=manifest.in --no-same-owner
 	tar xf "$builddir"/build/dist/rustc-dev-$pkgver-$_target.tar.gz \
-		-C "$pkgdir/usr" --strip-components=2 --exclude=manifest.in --no-same-owner
-	tar xf "$builddir"/build/dist/rust-analysis-$pkgver-$_target.tar.gz \
 		-C "$pkgdir/usr" --strip-components=2 --exclude=manifest.in --no-same-owner
 	tar xf "$builddir"/build/dist/rust-src-$pkgver.tar.gz \
 		-C "$pkgdir/usr" --strip-components=2 --exclude=manifest.in --no-same-owner
@@ -398,7 +387,7 @@ _mv() {
 }
 
 sha512sums="
-8b085d0351e19100e9abc24b10c44a0939a1d35ba23421da4ece345d7373f7dbad1dc6a2ae153c1259404dd96b41e2682e711cf2b0b63fd03a196760cddbcdd3  rustc-1.68.2-src.tar.xz
+724398fc208ec18adbd8ba81a445e23d1001b746990f36b869126be8a45f1cdfa75f5b9cbdd0abbab506f91a56d3736ab247677699ebd69525245558cfc01a60  rustc-1.69.0-src.tar.xz
 03a179e31c95f88a98fb1ba6b2fd0baaf9fe1a74ade76d3096fe45ddc5e453c25109355e667783d9be1bcc585445d07b7270cb3e6e403de971049714f2c6f91a  alpine-move-py-scripts-to-share.patch
 a97bc511a8fd5f71ea7095efa4cf97048badc4ba46d1bde1b7d5ede2879f099157b8b6f5a03278c9f5766d809ea5d6a1affadce7ceb47d0cc134fde8bc70d51d  alpine-target.patch
 7af23c34096f7a03c5a1b40aa07e00dd6193743c872881018a9baa900f240c6e44918e481ab5ed7787a70ef361e4aeec2a7719bcd695f52988262e23271b44e5  do-not-install-libunwind-source.patch
