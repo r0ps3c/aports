@@ -1,13 +1,13 @@
 # Maintainer: Paul Bredbury <brebs@sent.com>
 pkgname=swi-prolog
 pkgver=9.0.3
-pkgrel=0
+pkgrel=1
 pkgdesc="Versatile implementation of the Prolog programming language"
 url="https://www.swi-prolog.org"
 arch="all !riscv64" # missing libunwind-dev
 license="BSD-2-Clause AND LGPL-3.0-or-later"
 # Need to package JavaHamcrest in order to enable JPL
-subpackages="$pkgname-doc $pkgname-xpce:xpce:noarch $pkgname-xpce-doc:xpce_doc:noarch"
+subpackages="$pkgname-doc $pkgname-xpce:xpce:noarch $pkgname-xpce-doc:xpce_doc:noarch $pkgname-pyc"
 makedepends="
 	cmake
 	gmp-dev
@@ -75,6 +75,15 @@ xpce() {
 
 xpce_doc() {
 	pkgdesc="X support for $pkgname (doc files)"
+}
+
+pyc() {
+	pkgdesc="Precompiled Python bytecode for ${subpkgname%-pyc}"
+	install_if="${subpkgname%-pyc}=$pkgver-r$pkgrel pyc"
+
+	cd "$pkgdir" || return 0
+	local IFS=$'\n'
+	amove $(find usr/lib -type d -name __pycache__)
 }
 
 sha512sums="
