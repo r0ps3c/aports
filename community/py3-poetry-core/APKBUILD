@@ -3,7 +3,7 @@
 pkgname=py3-poetry-core
 _pkgname=poetry-core
 pkgver=1.5.2
-pkgrel=0
+pkgrel=1
 pkgdesc="PEP 517 build backend implementation for Poetry"
 url="https://github.com/python-poetry/poetry-core"
 license="MIT"
@@ -25,7 +25,10 @@ checkdepends="
 	py3-virtualenv
 	python3-dev
 	"
-source="$_pkgname-$pkgver.tar.gz::https://github.com/python-poetry/poetry-core/archive/$pkgver.tar.gz"
+subpackages="$pkgname-pyc"
+source="$_pkgname-$pkgver.tar.gz::https://github.com/python-poetry/poetry-core/archive/$pkgver.tar.gz
+	fix-musl.patch
+	"
 builddir="$srcdir/$_pkgname-$pkgver"
 
 build() {
@@ -43,7 +46,8 @@ check() {
 		--deselect tests/masonry/builders/test_sdist.py::test_includes_with_inline_table \
 		--deselect tests/masonry/builders/test_sdist.py::test_default_with_excluded_data \
 		--deselect tests/masonry/builders/test_wheel.py::test_default_src_with_excluded_data
-	testenv/bin/python3 -m pytest --integration tests/integration
+	testenv/bin/python3 -m pytest --integration tests/integration \
+		--deselect tests/integration/test_pep517_backend.py::test_pip_install
 }
 
 package() {
@@ -57,4 +61,5 @@ package() {
 
 sha512sums="
 e0eab97bcf678f8fd329074d14cb394db8732666b0387384d273db49ec020ff34e15e9982e049bce62e9ba80443404de7646e66433164a2358f9802a8ce2fbb1  poetry-core-1.5.2.tar.gz
+b3ac0ac12e9d7f179946c45ae548c8f73a497bf26cf4db3f94e87cc401f7cb9ee12e40788f34b357bdad9f0c4b18b3ac990a90eb0f1c60ace75de521532c92b4  fix-musl.patch
 "

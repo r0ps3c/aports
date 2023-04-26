@@ -1,18 +1,23 @@
 # Contributor: Carlo Landmeter <clandmeter@alpinelinux.org>
 # Contributor: Galen Abell <galen@galenabell.com>
 # Maintainer: Lauren N. Liberda <lauren@selfisekai.rocks>
-pkgname=riot-web
-pkgver=1.11.29
-pkgrel=0
+pkgname=element-web
+pkgver=1.11.30
+pkgrel=2
 pkgdesc="A glossy Matrix collaboration client for the web"
-url="https://riot.im/"
+url="https://element.io/"
 arch="noarch"
 options="!check"
 license="Apache-2.0"
 source="https://github.com/vector-im/element-web/releases/download/v$pkgver/element-v$pkgver.tar.gz"
 builddir="$srcdir/element-v$pkgver"
+install="$pkgname.post-upgrade"
+provides="riot-web=$pkgver-r$pkgrel"
+replaces="riot-web"
 
 # secfixes:
+#   1.11.30-r0:
+#     - CVE-2023-30609
 #   1.11.26-r0:
 #     - CVE-2023-28103
 #     - CVE-2023-28427
@@ -36,14 +41,15 @@ build() {
 
 package() {
 	mkdir -p "$pkgdir"/usr/share/webapps \
-		"$pkgdir"/etc/riot-web
-	cp -r "$builddir" "$pkgdir"/usr/share/webapps/riot-web
-	mv "$pkgdir"/usr/share/webapps/riot-web/config.sample.json \
-		"$pkgdir"/etc/riot-web
-	ln -sf /etc/riot-web/config.json \
-		"$pkgdir"/usr/share/webapps/riot-web/config.json
+		"$pkgdir"/etc/element-web
+	cp -r "$builddir" "$pkgdir"/usr/share/webapps/element-web
+	ln -s ../element-web "$pkgdir"/usr/share/webapps/riot-web
+	mv "$pkgdir"/usr/share/webapps/element-web/config.sample.json \
+		"$pkgdir"/etc/element-web
+	ln -sf /etc/element-web/config.json \
+		"$pkgdir"/usr/share/webapps/element-web/config.json
 }
 
 sha512sums="
-c9018d547ea3c801a847cc4e5aa3416163d246fc0f509297b98b694a42e8f15f4b47c75dcc83351a586489a34c30bdc5b9dd895880ff1d79000aca6e37ebe0d9  element-v1.11.29.tar.gz
+1df898ca97bb64b38ba560fe4190f6ca88fc3cf55eea262c612105617d65503850d54e36b16092e825bfac8dce761a18bdd053f62046636b181c823f10f0f0b1  element-v1.11.30.tar.gz
 "
