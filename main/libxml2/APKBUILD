@@ -2,7 +2,7 @@
 # Maintainer: Carlo Landmeter <clandmeter@alpinelinux.org>
 pkgname=libxml2
 pkgver=2.11.0
-pkgrel=0
+pkgrel=2
 pkgdesc="XML parsing library, version 2"
 url="http://www.xmlsoft.org/"
 arch="all"
@@ -18,7 +18,9 @@ if [ -z "$BOOTSTRAP" ]; then
 else
 	_py_configure="--with-python=no"
 fi
-source="https://download.gnome.org/sources/libxml2/${pkgver%.*}/libxml2-$pkgver.tar.xz"
+source="https://download.gnome.org/sources/libxml2/${pkgver%.*}/libxml2-$pkgver.tar.xz
+	spinny.patch
+	"
 
 # secfixes:
 #   2.10.4-r0:
@@ -103,4 +105,5 @@ utils() {
 
 sha512sums="
 4249703750c2d3bdf839b49181ff781e0364eb435fc85eed896ffb475c8190aad844e80b877f0f785342629c5b9376bff32cd5a55d7b10f429a67fa5006f714c  libxml2-2.11.0.tar.xz
+0161b561fbcbf4412dbffa4e0fe25f8aaba1b4605c446fd23e204282d4422d29894f97144103345275cd7fadd9057be80e9d5050760add4ac3750bb40d26ed3e  spinny.patch
 "
