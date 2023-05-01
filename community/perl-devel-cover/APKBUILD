@@ -4,13 +4,13 @@
 pkgname=perl-devel-cover
 #_pkgreal is used by apkbuild-cpan to find modules at MetaCpan
 _pkgreal=Devel-Cover
-pkgver=1.38
-pkgrel=1
+pkgver=1.40
+pkgrel=0
 pkgdesc="Code coverage metrics for Perl"
 url="https://metacpan.org/release/Devel-Cover/"
 arch="all"
 license="GPL-1.0-or-later OR Artistic-1.0-Perl"
-depends="perl perl-html-parser perl-b-debug"
+depends="perl perl-html-parser"
 makedepends="perl-dev"
 checkdepends="perl-test-differences"
 subpackages="$pkgname-doc"
@@ -34,5 +34,5 @@ package() {
 }
 
 sha512sums="
-3e4f1b625bd1b34afe93003c6e83189f1722b3e6392dccf3a1d28ecd7be943ad9af69c5a798ec7a9a604a18d2433fc4f406b2623315ed416ce110191cdf17bc1  Devel-Cover-1.38.tar.gz
+47aa19947372b9c4978fc995ffe9d2a8b0cb87b14885002085302f36784e6c9f193d80dfb1d020ef3b938620fbaf5ed0d8963a624fedd8fb5eafd19ed4038076  Devel-Cover-1.40.tar.gz
 "
