@@ -3,7 +3,7 @@
 pkgname=py3-argcomplete
 _pyname=argcomplete
 pkgver=2.0.5
-pkgrel=1
+pkgrel=2
 pkgdesc="Easy, extensible command line tab completion of arguments for your Python script"
 url="https://github.com/kislyuk/argcomplete"
 arch="noarch"
