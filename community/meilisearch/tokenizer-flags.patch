@@ -1,80 +1,112 @@
-Patch-Source: https://github.com/meilisearch/meilisearch/pull/2773
+Patch-Source: https://github.com/meilisearch/meilisearch/pull/3687 (rebased)
 --
-From 935f18efcfbad0196eb615bebfe7a71b7ea76bd4 Mon Sep 17 00:00:00 2001
+From 2fd515a34c8a9648f32320ececa09d68cc0b7719 Mon Sep 17 00:00:00 2001
 From: Jakub Jirutka <jakub@jirutka.cz>
-Date: Wed, 14 Sep 2022 20:57:13 +0200
-Subject: [PATCH 2/2] Allow building without specialized tokenizations
+Date: Mon, 24 Apr 2023 00:26:08 +0200
+Subject: [PATCH] Allow to disable specialized tokenizations (again)
 
-(Some of) these specialized tokenizations include huge dictionaries
-that currently account for 90% (!) of the meilisearch binary size.
+In PR #2773, I added the `chinese`, `hebrew`, `japanese` and `thai`
+feature flags to allow melisearch to be built without huge specialed
+tokenizations that took up 90% of the melisearch binary size.
+Unfortunately, due to some recent changes, this doesn't work anymore.
+The problem lies in excessive use of the `default` feature flag, which
+infects the dependency graph.
 
-This commit adds chinese, hebrew, japanese, and thai feature flags
-that are propagated via milli down to the charabia crate. To keep it
-backward compatible, they are enabled by default.
+Instead of adding `default-features = false` here and there, it's easier
+and more future-proof to not declare `default` in `milli` and
+`meilisearch-types`. I've renamed it to `all-tokenizers`, which also
+makes it a bit clearer what it's about.
 
-Related to meilisearch/milli#632
----
- meilisearch-auth/Cargo.toml |  2 +-
- meilisearch-http/Cargo.toml |  8 ++++++--
- meilisearch-lib/Cargo.toml  | 18 +++++++++++++++++-
- 3 files changed, 24 insertions(+), 4 deletions(-)
-
-diff --git a/meilisearch-auth/Cargo.toml b/meilisearch-auth/Cargo.toml
-index 470d5b8d1..3bbc09c4a 100644
---- a/meilisearch-auth/Cargo.toml
-+++ b/meilisearch-auth/Cargo.toml
-@@ -10 +10 @@ edition = "2021"
--milli = { git = "https://github.com/meilisearch/milli.git", tag = "v0.33.5" }
-+milli = { git = "https://github.com/meilisearch/milli.git", tag = "v0.33.5", default-features = false }
-diff --git a/meilisearch-http/Cargo.toml b/meilisearch-http/Cargo.toml
-index 38f9a83fc..baea8b578 100644
---- a/meilisearch-http/Cargo.toml
-+++ b/meilisearch-http/Cargo.toml
-@@ -49 +49 @@ jsonwebtoken = "8.0.1"
--meilisearch-lib = { path = "../meilisearch-lib" }
-+meilisearch-lib = { path = "../meilisearch-lib", default-features = false }
-@@ -90,7 +90,7 @@ urlencoding = "2.1.0"
- yaup = "0.2.0"
+diff --git a/benchmarks/Cargo.toml b/benchmarks/Cargo.toml
+index 5203a76014..0de81413b5 100644
+--- a/benchmarks/Cargo.toml
++++ b/benchmarks/Cargo.toml
+@@ -13,7 +13,7 @@ license.workspace = true
+ [dependencies]
+ anyhow = "1.0.65"
+ csv = "1.1.6"
+-milli = { path = "../milli", default-features = false }
++milli = { path = "../milli" }
+ mimalloc = { version = "0.1.29", default-features = false }
+ serde_json = { version = "1.0.85", features = ["preserve_order"] }
+ 
+@@ -31,7 +31,7 @@ flate2 = "1.0.24"
+ reqwest = { version = "0.11.12", features = ["blocking", "rustls-tls"], default-features = false }
  
  [features]
--default = ["analytics", "mini-dashboard"]
-+default = ["analytics", "meilisearch-lib/default", "mini-dashboard"]
- metrics = ["prometheus"]
- analytics = ["segment"]
- mini-dashboard = [
-@@ -105,4 +105,8 @@ mini-dashboard = [
-     "zip",
- ]
-+chinese = ["meilisearch-lib/chinese"]
-+hebrew = ["meilisearch-lib/hebrew"]
-+japanese = ["meilisearch-lib/japanese"]
-+thai = ["meilisearch-lib/thai"]
+-default = ["milli/default"]
++default = ["milli/all-tokenizations"]
  
- [package.metadata.mini-dashboard]
-diff --git a/meilisearch-lib/Cargo.toml b/meilisearch-lib/Cargo.toml
-index de967286c..bda3ecbc7 100644
---- a/meilisearch-lib/Cargo.toml
-+++ b/meilisearch-lib/Cargo.toml
-@@ -31 +31 @@ lazy_static = "1.4.0"
--milli = { git = "https://github.com/meilisearch/milli.git", tag = "v0.33.5" }
-+milli = { git = "https://github.com/meilisearch/milli.git", tag = "v0.33.5", default-features = false }
-@@ -64,3 +64,19 @@ nelson = { git = "https://github.com/meilisearch/nelson.git", rev = "675f1388554
- paste = "1.0.6"
- proptest = "1.0.0"
- proptest-derive = "0.3.0"
-+
-+[features]
-+# all specialized tokenizations
-+default = ["milli/default"]
-+
-+# chinese specialized tokenization
-+chinese = ["milli/chinese"]
-+
-+# hebrew specialized tokenization
-+hebrew = ["milli/hebrew"]
-+
-+# japanese specialized tokenization
-+japanese = ["milli/japanese"]
-+
-+# thai specialized tokenization
-+thai = ["milli/thai"]
+ [[bench]]
+ name = "search_songs"
+diff --git a/meilisearch-types/Cargo.toml b/meilisearch-types/Cargo.toml
+index 9828c5f493..b8a3f3bb44 100644
+--- a/meilisearch-types/Cargo.toml
++++ b/meilisearch-types/Cargo.toml
+@@ -22,7 +22,7 @@ file-store = { path = "../file-store" }
+ flate2 = "1.0.24"
+ fst = "0.4.7"
+ memmap2 = "0.5.7"
+-milli = { path = "../milli", default-features = false }
++milli = { path = "../milli" }
+ roaring = { version = "0.10.0", features = ["serde"] }
+ serde = { version = "1.0.145", features = ["derive"] }
+ serde-cs = "0.2.4"
+@@ -40,7 +40,7 @@ meili-snap = { path = "../meili-snap" }
+ 
+ [features]
+ # all specialized tokenizations
+-default = ["milli/default"]
++all-tokenizations = ["milli/all-tokenizations"]
+ 
+ # chinese specialized tokenization
+ chinese = ["milli/chinese"]
+diff --git a/meilisearch/Cargo.toml b/meilisearch/Cargo.toml
+index d4b7723224..c9aa7850ff 100644
+--- a/meilisearch/Cargo.toml
++++ b/meilisearch/Cargo.toml
+@@ -106,7 +106,7 @@ vergen = { version = "7.4.2", default-features = false, features = ["git"] }
+ zip = { version = "0.6.2", optional = true }
+ 
+ [features]
+-default = ["analytics", "meilisearch-types/default", "mini-dashboard"]
++default = ["analytics", "meilisearch-types/all-tokenizations", "mini-dashboard"]
+ analytics = ["segment"]
+ mini-dashboard = ["actix-web-static-files", "static-files", "anyhow", "cargo_toml", "hex", "reqwest", "sha-1", "tempfile", "zip"]
+ chinese = ["meilisearch-types/chinese"]
+--- a/milli/Cargo.toml
++++ b/milli/Cargo.toml
+@@ -19 +19 @@
+-charabia = { version = "0.7.1", default-features = false }
++charabia = { version = "0.7.2", default-features = false }
+@@ -68,7 +68,7 @@ rand = {version = "0.8.5", features = ["small_rng"] }
+ fuzzcheck = "0.12.1"
+ 
+ [features]
+-default = [ "charabia/default" ]
++all-tokenizations = [ "charabia/default" ]
+ 
+ # Use POSIX semaphores instead of SysV semaphores in LMDB
+ # For more information on this feature, see heed's Cargo.toml
+--- a/milli/src/update/index_documents/mod.rs
++++ b/milli/src/update/index_documents/mod.rs
+@@ -1558,7 +1558,7 @@
+     use super::*;
+     use crate::index::tests::TempIndex;
+ 
+-    #[cfg(feature = "default")]
++    #[cfg(feature = "japanese")]
+     #[test]
+     fn test_kanji_language_detection() {
+         let index = TempIndex::new();
+--- a/milli/src/search/mod.rs
++++ b/milli/src/search/mod.rs
+@@ -451,7 +451,7 @@
+     use super::*;
+     use crate::index::tests::TempIndex;
+ 
+-    #[cfg(feature = "default")]
++    #[cfg(feature = "japanese")]
+     #[test]
+     fn test_kanji_language_detection() {
+         let index = TempIndex::new();

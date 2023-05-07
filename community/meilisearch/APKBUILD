@@ -1,43 +1,64 @@
 # Contributor: Jakub Jirutka <jakub@jirutka.cz>
 # Maintainer: Jakub Jirutka <jakub@jirutka.cz>
 pkgname=meilisearch
-pkgver=0.29.2
+pkgver=1.1.1
 pkgrel=0
 pkgdesc="A lightning-fast search engine that fits into your apps, websites and workflow"
 url="https://www.meilisearch.com/"
-# ppc64le, s390x: fails to build ring crate
-# riscv64: blocked by rust
-arch="all !ppc64le !riscv64 !s390x"
+# ppc64le, riscv64, s390x: fails to build ring crate
+# armhf, armv7, x86: unsupported by upstream
+arch="all !armhf !armv7 !ppc64le !riscv64 !s390x !x86"
 license="MIT"
+depends="ca-certificates"
 makedepends="
 	cargo
 	libgit2-dev
-	lmdb-dev
 	mimalloc2-dev
 	"
 pkgusers="meilisearch"
 pkggroups="meilisearch"
-install="$pkgname.pre-install"
+install="$pkgname.pre-install $pkgname.post-upgrade"
 subpackages="$pkgname-openrc"
+_actixtls_ver=tls-v3.0.3
+_deserr_rev=4657d42d2c6efb839345718182ab193730db5817
 source="https://github.com/meilisearch/meilisearch/archive/v$pkgver/meilisearch-$pkgver.tar.gz
+	https://github.com/actix/actix-net/archive/$_actixtls_ver/actix-net-$_actixtls_ver.tar.gz
+	https://github.com/meilisearch/deserr/archive/$_deserr_rev/deserr-$_deserr_rev.tar.gz
+	unbundle-ca-certs.patch
 	tokenizer-flags.patch
-	update-lmdb-rkv-sys.patch
+	deserr-features.patch
 	syslog.patch
+	config.patch
 	$pkgname.initd
 	$pkgname.confd
 	"
-options="!check"  # FIXME: tests are broken?
-
-export CARGO_PROFILE_RELEASE_OPT_LEVEL=2
+options="!check"  # FIXME: tests run out of file descriptors
 
 # Disable analytics (telemetry / data collection), mini-dashboard (JS project)
 # and specialized tokenizers (they are huge).
 _cargo_opts="--frozen --no-default-features"
 
-export CARGO_REGISTRIES_CRATES_IO_PROTOCOL="sparse"
+export CARGO_PROFILE_RELEASE_OPT_LEVEL=2
 
 prepare() {
+	cargo fetch --target="$CTARGET" --locked
+
+	mkdir -p vendor
+	mv "$srcdir"/actix-net-$_actixtls_ver vendor/actix-net
+	mv "$srcdir"/deserr-$_deserr_rev vendor/deserr
+
 	default_prepare
+
+	# Build with patched actix-tls and deserr.
+	# NOTE: Web patch actix-tls to get rid of f*cking bundled CA certificates
+	#   (https://github.com/actix/actix-net/issues/462).
+	# TODO: Remove deserr after https://github.com/meilisearch/deserr/pull/35 is released.
+	cat >> Cargo.toml <<-EOF
+
+		[patch.crates-io]
+		actix-tls = { path = "./vendor/actix-net/actix-tls" }
+		deserr = { path = "./vendor/deserr" }
+	EOF
 
 	# Rust target triple.
 	local target=$(rustc -vV | sed -n 's/host: //p')
@@ -49,7 +70,7 @@ prepare() {
 		mimalloc = { rustc-link-lib = ["mimalloc"] }
 	EOF
 
-	cargo fetch --target="$CTARGET" --locked
+	cargo fetch --target="$CTARGET"  # update after patching
 }
 
 build() {
@@ -62,6 +83,7 @@ check() {
 
 package() {
 	install -D -m755 target/release/$pkgname -t "$pkgdir"/usr/bin/
+	install -D -m640 -g "$pkggroups" config.toml "$pkgdir"/etc/meilisearch/config.toml
 
 	install -D -m755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
 	install -D -m644 "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
@@ -70,10 +92,14 @@ package() {
 }
 
 sha512sums="
-8a74d84020e906eeb062c4335a7d177798c35d7fafe5870af28dc6bc4985e4dd9b505ed2420673f34edab3462cd0743955337d374a195b2f9bfe4bd38638da65  meilisearch-0.29.2.tar.gz
-87073b9f89c655c59e45b040035ff45fed31761c3116e4763d97e657a6e6361c346d11e3bd0dd1c89ef2a75c7d56198f700803b89884edccfc4638402b7e8679  tokenizer-flags.patch
-56232bbe1990049f7718453257cb0be2f484ac544348042261ddc924924344d1e67d74c3315375900079d5900cb8ebfa5818418cf472e9bd847d91f9b6d09809  update-lmdb-rkv-sys.patch
-2bdd3d12a23186981c84f03486d1b625c3f5e655e94f1a3f6296b03cab7e5f3729b771800411d00f37bb956f7686023fe4fd125b8b78c2599b5c26dfcdfa1709  syslog.patch
-a04dbf28cf82ed4db71b0aa4d78714fdccc3d8113b8f49ed218181353d5c7349e4734d20e93179ae27c19d7ec690271f6e2b994ed3f883c1df0591cbb1988bac  meilisearch.initd
-d837da26f39ee7dc74a58a5b3e27f0ed8a9971f2c97d77519b3183d0869e2ec5a5d8da167ee8442645e0b65e1e97a5e634e7146021ac8c586ff53b0ca130dde2  meilisearch.confd
+22508f10b782c72609d114b5629bc245331c4d5b03306286f25a96ce27c3ce5038b0f1821184bbd3de926ec5884dcaf7d156d3b3206e8cc2db719cf59ae419fa  meilisearch-1.1.1.tar.gz
+52bb0556cf9e7462d267ec9878d2222d14bbee7176b80acc68d9b35005efa07375d4428b7cad2814d28895f43e6c35b5057ef2276bd3e252a04eed46e7e47a59  actix-net-tls-v3.0.3.tar.gz
+332f36c2f3a2615cefd5fcf211e96b4da83921881b7faf761bbf1552170b76870fc70d780534f258e4eb4961f0bd95d47832c33a203d457e98941fac1c58eeb1  deserr-4657d42d2c6efb839345718182ab193730db5817.tar.gz
+63e29d8bb477431d1f5cf9b9589ca77694edba97f695e01beb5dc2041544cee72dc13ced786445173409c06d44488163aceb230233795140f93081420b00595b  unbundle-ca-certs.patch
+62f74c28a2e755bf2f9e65653b71281e5065ff7276993ed98e2457eca4315a2729181b8238af1ec74911b98c80a4a2955d19223d507215d14f98ebf05f4c44e9  tokenizer-flags.patch
+1e934f6ac31352b1c57a90e4c50fc26b1483134f2edaabd8c981f118c9c2a7729213aab6704f8f61e371429a8c59d80df5309075f7be66fbe746ce38a4baec2e  deserr-features.patch
+bacc82d2d4654930cff3173fb09ece051c45adcb288458fce4be1930c80b59cdac5c4efaa81c2997be0f3833a96811a2485a0f1ef318eabffaa4b6b3ae964eac  syslog.patch
+8281d064f109c3014f3bd9d311632017f850a79fc92a2ddd390541356e582d7ac53d961fc3c8cce2461ff9f92987d0e30d9f1c30da5c9e59ab324f32b1a50e93  config.patch
+cc2ca5cc2d7baa3d17bb2d0798211599264d11017e2f8139bec07e719b6bf99de2bb0e2eb64ba99f74ed0c299c30f12a7867c76abfe57279a714a14c030e8543  meilisearch.initd
+601a8cd3509a6fc24a6445fd09acca00f082e7767db1d36bfa496ab06c91414a43881e3cdcd2176620c9844776e4a2f1954051a4ec34cc13bba6d5316a0c9e96  meilisearch.confd
 "
