@@ -14,6 +14,14 @@ metadata_dir = "/var/lib/garage/meta"
 # The directory in which Garage will store the data blocks of objects.
 data_dir = "/var/lib/garage/data"
 
+# The database engine to store metadata on-disk: "sled" (default)
+# or "lmdb" (recommended).
+# NOTE: Run 'garage-migrate-to-lmdb' to migrate from sled to lmdb.
+#db_engine = "sled"
+
+# The block size for stored objects.
+#block_size = 1048576
+
 # Refer to the reference manual.
 replication_mode = "none"
 
@@ -72,3 +80,5 @@ root_domain = ""
 # The token for accessing the Metrics endpoint. If not set, the Metrics
 # endpoint can be accessed without access control!
 #metrics_token = ""
+# or read it from the file.
+#metrics_token_file = ""
