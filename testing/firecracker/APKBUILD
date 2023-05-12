@@ -1,8 +1,8 @@
 # Contributor: Dennis Przytarski <dennis@przytarski.com>
 # Maintainer: Dennis Przytarski <dennis@przytarski.com>
 pkgname=firecracker
-pkgver=1.2.0
-pkgrel=1
+pkgver=1.3.2
+pkgrel=0
 pkgdesc="Secure and fast microVMs for serverless computing"
 url="https://github.com/firecracker-microvm/firecracker"
 arch="aarch64 x86_64"
@@ -12,8 +12,9 @@ subpackages="
 	$pkgname-seccompiler
 	$pkgname-rebase-snap:rebase_snap
 	"
-source="$pkgname-$pkgver.tar.gz::https://github.com/firecracker-microvm/firecracker/archive/v$pkgver.tar.gz"
-
+source="$pkgname-$pkgver.tar.gz::https://github.com/firecracker-microvm/firecracker/archive/v$pkgver.tar.gz
+	userfaultfd.patch
+	"
 
 prepare() {
 	default_prepare
@@ -27,6 +28,7 @@ prepare() {
 }
 
 build() {
+	export CARGO_PROFILE_RELEASE_OPT_LEVEL=2
 	cargo build \
 		--package firecracker \
 		--package jailer \
@@ -74,5 +76,6 @@ rebase_snap() {
 }
 
 sha512sums="
-a5cf97ee9b06495972410081b41134534031f6a91f15e2cfa3a32a7e6f0b3edecf7237456cab45563f5ddaf7de68dfeec74260020bb6f0f6e6387938f0963227  firecracker-1.2.0.tar.gz
+9c5e4d1fc4e6ce0eacd13f552545824114e2723465b7bc501a33a98f7b4d5efd4f078f1dc064a96f1e70847a8a19316d6e16dc317c2ce51695c251a9293a83c5  firecracker-1.3.2.tar.gz
+921fa0b124504fa382c1566f8acaa5360401d1adbe138d32e1915c2aa7ed83341d9c992eefd5b5250fded70b8748274e5b838e166370795e602caf51958cf9e5  userfaultfd.patch
 "
