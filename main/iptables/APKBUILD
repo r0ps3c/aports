@@ -1,16 +1,26 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=iptables
 pkgver=1.8.9
-pkgrel=2
+pkgrel=4
 pkgdesc="Linux kernel firewall, NAT and packet mangling tools"
 url="https://www.netfilter.org/projects/iptables/index.html"
 arch="all"
 license="GPL-2.0-or-later"
 depends_dev="linux-headers"
+install="$pkgname.post-upgrade"
 makedepends="$depends_dev libnftnl-dev bison flex autoconf automake"
-subpackages="ip6tables $pkgname-doc $pkgname-dev $pkgname-openrc ip6tables-openrc:ip6tables_openrc"
-provides="ebtables=$pkgver-r$pkgrel" # for backards compat
-replaces="ebtables"
+subpackages="
+	iptables-legacy
+	libip4tc
+	libip6tc
+	libipq
+	libxtables
+	$pkgname-doc
+	$pkgname-dev
+	$pkgname-openrc
+	"
+provides="ip6tables=$pkgver-r$pkgrel ebtables=$pkgver-r$pkgrel" # for backards compat
+replaces="ip6tables ebtables"
 source="https://www.netfilter.org/projects/iptables/files/iptables-$pkgver.tar.xz
 	format-security.patch
 	use-sh-iptables-apply.patch
@@ -47,6 +57,7 @@ package() {
 	mkdir -p "$pkgdir"/usr/include/libiptc \
 		"$pkgdir"/usr/lib \
 		"$pkgdir"/var/lib/iptables \
+		"$pkgdir"/var/lib/ip6tables \
 		"$pkgdir"/etc/iptables
 
 	install -m644 include/iptables.h include/ip6tables.h \
@@ -55,27 +66,55 @@ package() {
 
 	install -D -m755 "$srcdir"/iptables.initd "$pkgdir"/etc/init.d/iptables
 	install -D -m644 "$srcdir"/iptables.confd "$pkgdir"/etc/conf.d/iptables
+	install -D -m755 "$srcdir"/iptables.initd "$pkgdir"/etc/init.d/ip6tables
+	install -D -m644 "$srcdir"/ip6tables.confd "$pkgdir"/etc/conf.d/ip6tables
 	install -D -m755 "$srcdir"/ebtables.initd "$pkgdir"/etc/init.d/ebtables
 	install -D -m644 "$srcdir"/ebtables.confd "$pkgdir"/etc/conf.d/ebtables
+
+	ln -sfv xtables-nft-multi "$pkgdir"/sbin/iptables
+	ln -sfv xtables-nft-multi "$pkgdir"/sbin/iptables-save
+	ln -sfv xtables-nft-multi "$pkgdir"/sbin/iptables-restore
+	ln -sfv xtables-nft-multi "$pkgdir"/sbin/ip6tables
+	ln -sfv xtables-nft-multi "$pkgdir"/sbin/ip6tables-save
+	ln -sfv xtables-nft-multi "$pkgdir"/sbin/ip6tables-restore
 }
 
-ip6tables() {
-	mkdir -p "$subpkgdir"
-	cd "$subpkgdir"
+legacy() {
+	pkgdesc="$pkgdesc (legacy xtables-legacy binaries)"
 
-	mkdir -p sbin \
-		var/lib/ip6tables \
-		usr/lib/xtables
-
-	mv "$pkgdir"/sbin/ip6* sbin/
-	mv "$pkgdir"/usr/lib/xtables/libip6* usr/lib/xtables/
+	amove \
+		sbin/*legacy* \
+		usr/bin/iptables-xml
 }
 
-ip6tables_openrc() {
+libip4tc() {
+	pkgdesc="$pkgdesc (legacy libip4tc library)"
+
+	amove usr/lib/libip4tc.so.*
+}
+
+libip6tc() {
+	pkgdesc="$pkgdesc (legacy libip6tc library)"
+
+	amove usr/lib/libip6tc.so.*
+}
+
+libipq() {
+	pkgdesc="$pkgdesc (legacy libipq library)"
+
+	amove usr/lib/libipq.so.*
+}
+
+libxtables() {
+	pkgdesc="$pkgdesc (xtables library)"
+
+	amove usr/lib/libxtables.so.*
+}
+
+openrc() {
 	default_openrc
-
-	install -D -m755 "$srcdir"/iptables.initd "$subpkgdir"/etc/init.d/ip6tables
-	install -D -m644 "$srcdir"/ip6tables.confd "$subpkgdir"/etc/conf.d/ip6tables
+	provides="ip6tables-openrc=$pkgver-r$pkgrel"
+	replaces="ip6tables-openrc"
 }
 
 sha512sums="

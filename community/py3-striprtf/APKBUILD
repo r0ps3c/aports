@@ -2,8 +2,8 @@
 # Maintainer: Iztok Fister, Jr. <iztok@iztok-jr-fister.eu>
 pkgname=py3-striprtf
 _pkgorig=striprtf
-pkgver=0.0.22
-pkgrel=2
+pkgver=0.0.24
+pkgrel=0
 pkgdesc="Stripping rtf to plain old text"
 url="https://github.com/joshy/striprtf"
 arch="noarch"
@@ -28,5 +28,5 @@ package() {
 }
 
 sha512sums="
-0d4a51d6c246225054b029617b45b490fa2ca44ad70d4a41e7183395efa118f5692219e094a0184c0a7487cfb2b3d69d80fda1e44cba18d9cf5ca589e6729bbd  py3-striprtf-0.0.22.tar.gz
+9528516efb745b162817c1eb9f43989af1a8f2cb1a3ad989bf1b1e4183ae771b165f81710edae087bee900dbbbe93a86ac6cf69b53a4f3dbb2f9461325a89924  py3-striprtf-0.0.24.tar.gz
 "
