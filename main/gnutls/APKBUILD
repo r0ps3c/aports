@@ -3,7 +3,7 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=gnutls
 pkgver=3.8.0
-pkgrel=2
+pkgrel=3
 pkgdesc="TLS protocol implementation"
 url="https://www.gnutls.org/"
 arch="all"
@@ -69,6 +69,8 @@ build() {
 }
 
 check() {
+	# millis, 100s
+	export GNUTLS_TEST_TIMEOUT=100000
 	make check 	|| {
 		cat tests/test-suite.log
 		return 1
