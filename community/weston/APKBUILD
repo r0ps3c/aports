@@ -1,11 +1,11 @@
 # Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
 # Maintainer: Valery Kartel <valery.kartel@gmail.com>
 pkgname=weston
-pkgver=11.0.1
+pkgver=12.0.0
 pkgrel=0
 _libname=lib$pkgname
 _libdir=$_libname-${pkgver%%.*}
-pkgdesc="The reference Wayland server"
+pkgdesc="Reference Wayland server"
 url="https://wayland.freedesktop.org/"
 arch="all"
 license="MIT"
@@ -13,7 +13,6 @@ depends_dev="$pkgname=$pkgver-r$pkgrel"
 makedepends="
 	colord-dev
 	dbus-dev
-	elogind-dev
 	freerdp-dev
 	glu-dev
 	gst-plugins-base-dev
@@ -22,25 +21,32 @@ makedepends="
 	libevdev-dev
 	libinput-dev
 	libjpeg-turbo-dev
+	libseat-dev
 	libunwind-dev
 	libva-dev
 	libwebp-dev
+	libxcb-dev
 	libxcursor-dev
 	libxkbcommon-dev
 	linux-pam-dev
 	meson
 	mtdev-dev
+	neatvnc-dev
 	pango-dev
 	pipewire-dev
-	libseat-dev
 	wayland-dev
 	wayland-protocols
+	xcb-util-cursor-dev
 	xkeyboard-config
 	"
 _shell="shell-desktop shell-fullscreen shell-ivi"
 _client="terminal wcap-decode"
-_backend="backend-drm backend-headless
-	backend-x11 backend-wayland backend-rdp
+_backend="
+	backend-drm
+	backend-headless
+	backend-rdp
+	backend-wayland
+	backend-x11
 	"
 for _sub in $_shell $_client $_backend; do
 	subpackages="$subpackages $pkgname-$_sub:_sub"
@@ -54,7 +60,7 @@ subpackages="
 	$pkgname-xwayland
 	$pkgname-desktop-x11:_x11:noarch
 	"
-source="https://gitlab.freedesktop.org/wayland/weston/uploads/f5648c818fba5432edc3ea63c4db4813/weston-$pkgver.tar.xz"
+source="https://gitlab.freedesktop.org/wayland/weston/-/releases/$pkgver/downloads/weston-$pkgver.tar.xz"
 options="!check"
 install="$pkgname.pre-install"
 
@@ -68,7 +74,7 @@ prepare() {
 build() {
 	abuild-meson \
 		-Db_lto=true \
-		-Dlauncher-logind=true \
+		-Dlauncher-libseat=true \
 		-Dsystemd=false \
 		build
 	meson compile ${JOBS:+-j ${JOBS}} -C build
@@ -135,10 +141,9 @@ _sub() {
 		pkgdesc="Weston client: $name"
 		;;
 	esac
-	mkdir -p "$subpkgdir"/$path
-	mv "$pkgdir"/$path/$name "$subpkgdir"/$path
+	amove $path/$name
 }
 
 sha512sums="
-d451230fc260b45aaaadb5cf0aa360629e45e72e3b3676c6ec040d6c6549dbb57d05683effd962c3b2d61482b47a6c990d12cc736c896b501d982c8c4d34834c  weston-11.0.1.tar.xz
+a3079be86e173ea3a216cf9c30738097fcf5e1b7c2de4c413a0fd4eb9f28d97fa4e378359a3f59485d282f9b2d7914584d0497a3436d4c3f22bc9bebf9733157  weston-12.0.0.tar.xz
 "

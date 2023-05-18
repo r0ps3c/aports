@@ -1,8 +1,8 @@
 # Contributor: Jake Buchholz Göktürk <tomalok@gmail.com>
 # Maintainer: Jake Buchholz Göktürk <tomalok@gmail.com>
 pkgname=docker-cli-compose
-pkgver=2.17.3
-pkgrel=2
+pkgver=2.18.1
+pkgrel=0
 pkgdesc="A Docker CLI plugin for extended build capabilities"
 url="https://docs.docker.com/compose/cli-command"
 arch="all"
@@ -47,5 +47,5 @@ package() {
 }
 
 sha512sums="
-a8ee444f742d22db0179de3c9dd0d78eca31c0c746923f076789c83463ae05f1b846523897683d0faae2d74bd1e3529e1e3c9952849aadfd2350c29c4398e637  docker-cli-compose-2.17.3.tar.gz
+0540a57607ca126ce410b3a8c4221859407e0d6998c8b5d72446885c462dc7be34e1bba63e2f164122b0a2fcb4b8484bb0700ab8baf1a32e5fa58b2842c02060  docker-cli-compose-2.18.1.tar.gz
 "
