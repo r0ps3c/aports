@@ -2,14 +2,14 @@
 # Maintainer: guddaff <alpine@guddaff.de>
 pkgname=mqttui
 pkgver=0.18.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Subscribe to a MQTT Topic or publish something quickly from the terminal"
 url="https://github.com/EdJoPaTo/mqttui"
 # ppc64le: blocked by ring
 # riscv64, s390x: blocked by cargo/rust
 arch="all !ppc64le !riscv64 !s390x"
 license="GPL-3.0-or-later"
-makedepends="cargo"
+makedepends="cargo cargo-auditable"
 subpackages="
 	$pkgname-bash-completion
 	$pkgname-fish-completion
@@ -19,7 +19,6 @@ source="https://github.com/EdJoPaTo/mqttui/archive/v$pkgver/mqttui-$pkgver.tar.g
 	deps.patch
 	"
 
-
 prepare() {
 	default_prepare
 
@@ -27,7 +26,7 @@ prepare() {
 }
 
 build() {
-	cargo build --release --frozen
+	cargo auditable build --release --frozen
 }
 
 check() {
@@ -35,8 +34,7 @@ check() {
 }
 
 package() {
-	cargo install --locked --path . --root="$pkgdir/usr"
-	rm "$pkgdir"/usr/.crates*
+	install -Dm755 target/release/mqttui -t "$pkgdir"/usr/bin/
 
 	install -Dm644 "target/completions/$pkgname.bash" "$pkgdir"/usr/share/bash-completion/completions/$pkgname
 	install -Dm644 "target/completions/$pkgname.fish" -t "$pkgdir"/usr/share/fish/completions/

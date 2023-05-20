@@ -3,13 +3,13 @@
 # Maintainer: TBK <alpine@jjtc.eu>
 pkgname=tree-sitter
 pkgver=0.20.8
-pkgrel=0
+pkgrel=1
 pkgdesc="Incremental parsing system for programming tools"
 url="https://tree-sitter.github.io/"
 license="MIT"
 arch="all"
 depends_dev="jq"  # needed for abuild-tree-sitter
-makedepends="bash"
+makedepends="bash cargo-auditable"
 checkdepends="cargo nodejs"
 subpackages="
 	$pkgname-static
@@ -19,6 +19,7 @@ subpackages="
 source="https://github.com/tree-sitter/tree-sitter/archive/v$pkgver/tree-sitter-$pkgver.tar.gz
 	abuild-tree-sitter
 	"
+options="!check" # tests require git cloning remote fixtures
 
 case "$CARCH" in
 	s390x | riscv64)
@@ -58,7 +59,7 @@ build() {
 	#script/build-wasm
 
 	if $_with_cli; then
-		cargo build -p tree-sitter-cli --frozen --release
+		cargo auditable build -p tree-sitter-cli --frozen --release
 	fi
 }
 
@@ -71,21 +72,26 @@ check() {
 package() {
 	make DESTDIR="$pkgdir" PREFIX=/usr install
 
+	install -Dm755 "$srcdir"/abuild-tree-sitter -t "$pkgdir"/usr/bin/
 	# Prepare directory for grammars provided by other aports.
 	mkdir -p "$pkgdir"/usr/lib/tree-sitter
+
+	if $_with_cli; then
+		install -Dm755 target/release/tree-sitter -t "$pkgdir"/usr/bin/
+	fi
 }
 
 dev() {
 	default_dev
-	install -D -m755 "$srcdir"/abuild-tree-sitter -t "$subpkgdir"/usr/bin/
+
+	amove usr/bin/abuild-tree-sitter
 }
 
 cli() {
 	pkgdesc="$pkgdesc (Rust based CLI)"
 	depends=""
 
-	cd "$builddir"
-	install -D -m755 target/release/tree-sitter -t "$subpkgdir"/usr/bin/
+	amove usr/bin/tree-sitter
 }
 
 grammars() {

@@ -2,7 +2,7 @@
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=sequoia-sqv
 pkgver=1.1.0
-pkgrel=0
+pkgrel=1
 pkgdesc="simple signature verification program"
 url="https://sequoia-pgp.org/"
 arch="all"
@@ -25,6 +25,8 @@ esac
 prepare() {
 	default_prepare
 
+	cargo update -p buffered-reader --precise 1.2.0
+	cargo update -p sequoia-openpgp --precise 1.16.0
 	cargo fetch --target="$CTARGET" --locked
 }
 

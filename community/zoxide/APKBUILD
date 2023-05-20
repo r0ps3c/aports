@@ -2,13 +2,13 @@
 # Maintainer: Jakub Jirutka <jakub@jirutka.cz>
 pkgname=zoxide
 pkgver=0.9.1
-pkgrel=0
-pkgdesc="A faster way to navigate your filesystem"
+pkgrel=2
+pkgdesc="Faster way to navigate your filesystem"
 url="https://github.com/ajeetdsouza/zoxide"
 # s390x: https://github.com/nix-rust/nix/issues/1968
 arch="all !s390x"
 license="MIT"
-makedepends="cargo"
+makedepends="cargo cargo-auditable"
 checkdepends="dash bash fish shfmt zsh"
 subpackages="
 	$pkgname-doc
@@ -24,7 +24,6 @@ export CARGO_PROFILE_RELEASE_OPT_LEVEL="z"
 
 [ "$CARCH" = "riscv64" ] && options="$options textrels"
 
-
 prepare() {
 	default_prepare
 
@@ -32,7 +31,7 @@ prepare() {
 }
 
 build() {
-	cargo build --release --frozen
+	cargo auditable build --release --frozen
 }
 
 check() {
@@ -40,8 +39,7 @@ check() {
 }
 
 package() {
-	cargo install --locked --offline --path . --root="$pkgdir/usr"
-	rm "$pkgdir"/usr/.crates*
+	install -Dm755 target/release/zoxide -t "$pkgdir"/usr/bin/
 
 	install -Dm644 man/man1/*.1 -t "$pkgdir"/usr/share/man/man1/
 
