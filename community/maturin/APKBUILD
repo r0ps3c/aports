@@ -1,8 +1,8 @@
 # Contributor: omni <omni+alpine@hack.org>
 # Maintainer: messense <messense@icloud.com>
 pkgname=maturin
-pkgver=0.15.1
-pkgrel=1
+pkgver=0.15.3
+pkgrel=0
 pkgdesc="Build and publish crates with pyo3, rust-cpython and cffi bindings"
 url="https://github.com/PyO3/maturin"
 arch="all"
@@ -10,13 +10,20 @@ license="Apache-2.0 OR MIT"
 makedepends="
 	cargo
 	dbus-dev
-	openssl-dev>3
+	openssl-dev
 	py3-gpep517
 	py3-setuptools
 	py3-setuptools-rust
 	py3-wheel
 	"
-checkdepends="py3-virtualenv py3-pyo py3-cffi libffi-dev python3-dev"
+checkdepends="
+	libffi-dev
+	patchelf
+	py3-cffi
+	py3-pyo
+	py3-virtualenv
+	python3-dev
+	"
 subpackages="
 	$pkgname-bash-completion
 	$pkgname-fish-completion
@@ -24,6 +31,7 @@ subpackages="
 	py3-$pkgname:py3:noarch
 	"
 source="$pkgname-$pkgver.tar.gz::https://github.com/PyO3/maturin/archive/v$pkgver.tar.gz"
+options="net"
 
 _features="--features=full,native-tls"
 
@@ -89,5 +97,5 @@ py3() {
 }
 
 sha512sums="
-e298abb3cbfeae266c5f7c4bc8e57154527a5d040bf0276afe6e63e6d56978101ef399ab4883e7a5826d5eaa31f03019130200ca519b08d4e3bb0a12bee8eb77  maturin-0.15.1.tar.gz
+a23ffda02afad59a11ce81ee62fcd455be7d410b922fac9af36a8eb355d86a8de58a1e13608f535c4312e5bed22869f48ccc811a3a8921293dee3e7d54e77906  maturin-0.15.3.tar.gz
 "
