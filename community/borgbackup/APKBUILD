@@ -3,8 +3,8 @@
 # Maintainer: Jakub Jirutka <jakub@jirutka.cz>
 pkgname=borgbackup
 _pkgname=borg
-pkgver=1.2.2
-pkgrel=1
+pkgver=1.2.4
+pkgrel=0
 pkgdesc="Deduplicating backup program"
 url="https://www.borgbackup.org/"
 # armhf: Bus error in tests
@@ -24,6 +24,7 @@ makedepends="
 	py3-setuptools
 	py3-setuptools_scm
 	python3-dev
+	xxhash-dev
 	zstd-dev
 	"
 checkdepends="
@@ -39,7 +40,18 @@ subpackages="
 	"
 source="https://github.com/borgbackup/borg/releases/download/$pkgver/borgbackup-$pkgver.tar.gz"
 
+export BORG_LIBLZ4_PREFIX="/usr/include"
+export BORG_LIBXXHASH_PREFIX="/usr/include"
+export BORG_LIBZSTD_PREFIX="/usr/include"
 export BORG_OPENSSL_PREFIX="/usr/include/openssl"
+
+prepare() {
+	default_prepare
+
+	# Remove bundled libs to ensure these don't end up in our binaries.
+	cd src/borg/algorithms/
+	rm -rf lz4 xxh64 zstd
+}
 
 build() {
 	# https://github.com/borgbackup/borg/issues/4891#issuecomment-615838317
@@ -49,11 +61,27 @@ build() {
 
 check() {
 	PYTHONPATH="$(echo "$builddir"/build/lib.linux-*)" pytest -v \
-	--benchmark-skip --pyargs borg.testsuite
+		--benchmark-skip --pyargs borg.testsuite
+
+	_delete_testsuite
+
+	# Run selftest to ensure that we haven't deleted some testsuite module that
+	# is needed for selftest. Note that borg runs selftest automatically before
+	# every operation, so it's crucial.
+	PYTHONPATH="$(echo build/lib.linux-*)" python3 -B <<-PYTHON
+		from borg.selftest import selftest
+		import logging
+
+		logging.basicConfig(level=logging.DEBUG)
+		selftest(logging)
+	PYTHON
 }
 
 package() {
-	python3 setup.py install --prefix=/usr --root="$pkgdir"
+	# Run it again for the case we skipped check.
+	_delete_testsuite
+
+	python3 setup.py install --skip-build --prefix=/usr --root="$pkgdir"
 
 	install -Dm644 -t "$pkgdir"/usr/share/man/man1 docs/man/*.1
 
@@ -71,6 +99,20 @@ package() {
 	find . -name '*.h' -delete -o -name '*.c' -delete -o -name '*.pyx' -delete
 }
 
+# Delete testsuite but keep modules required for selftest (see src/borg/selftest.py).
+_delete_testsuite() {
+	cd build/lib.linux-*
+
+	find borg/testsuite/ -type f ! \( \
+		-name '__init__.*' -or \
+		-name 'crypto.*' -or \
+		-name 'chunker.*' -or \
+		-name 'hashindex.*' \) -delete
+	rm -f borg/testsuite/__pycache__/*-pytest-*.pyc
+
+	cd - >/dev/null
+}
+
 sha512sums="
-9ba040dc659b123e09d1814ea158eb06bd802dbb4961e258910a586f88c5e92e8f32a72c1858f7a8d9d79c3e985b12cf0245436f46a474f627cfd70a59a7e29d  borgbackup-1.2.2.tar.gz
+9326a58605a085f521ba75a2eecfb4bdb790d3da18c77076bddaeae641678cc08171d997a758182a739ec6b145bb04d982f8314ae60f93c3ff093eca15515dfd  borgbackup-1.2.4.tar.gz
 "

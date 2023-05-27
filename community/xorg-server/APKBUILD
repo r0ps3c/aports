@@ -1,7 +1,7 @@
 # Contributor: Łukasz Jendrysik <scadu@yandex.com>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=xorg-server
-pkgver=21.1.6
+pkgver=21.1.8
 pkgrel=0
 pkgdesc="X.Org X servers"
 url="https://www.x.org/wiki"
@@ -20,49 +20,52 @@ subpackages="
 # the modesetting driver is now shipped with xorg server
 replaces="xf86-video-modesetting"
 depends="
-	font-misc-misc
 	font-cursor-misc
-	xkeyboard-config
-	xkbcomp
+	font-misc-misc
+	mesa-egl
 	xinit
+	xkbcomp
+	xkeyboard-config
 	xorg-server-common
 	"
 depends_dev="
 	libepoxy-dev
+	libpciaccess-dev
 	libxfont2-dev
 	mesa-dev
-	libpciaccess-dev
 	"
 makedepends="
 	$depends_dev
-	meson
-	xorgproto
-	xtrans
-	libxshmfence-dev
-	pixman-dev
-	xkbcomp-dev
-	libxkbfile-dev
-	nettle-dev
-	wayland-dev
-	wayland-protocols
+	eudev-dev
 	libdrm-dev
-	libxext-dev
 	libx11-dev
 	libxau-dev
-	libxcvt-dev
-	eudev-dev
 	libxcb-dev
+	libxcvt-dev
+	libxdmcp-dev
+	libxext-dev
+	libxkbfile-dev
+	libxshmfence-dev
+	meson
+	nettle-dev
+	pixman-dev
+	wayland-dev
+	wayland-protocols
 	xcb-util-dev
 	xcb-util-image-dev
 	xcb-util-keysyms-dev
 	xcb-util-renderutil-dev
 	xcb-util-wm-dev
-	libxdmcp-dev
+	xkbcomp-dev
+	xorgproto
+	xtrans
 	"
 source="https://www.x.org/releases/individual/xserver/xorg-server-$pkgver.tar.xz
 	ms-rotate.patch"
 
 # secfixes:
+#   21.1.7-r0:
+#     - CVE-2023-0494
 #   21.1.5-r0:
 #     - CVE-2022-4283
 #     - CVE-2022-46340
@@ -165,25 +168,25 @@ package() {
 	# Don't conflict with xf86-input-evdev
 	rm -f "$pkgdir"/usr/share/X11/xorg.conf.d/10-evdev.conf
 
-	install -m755 -d "$pkgdir"/var/lib/xkb
+	install -Dm0644 xkb/README.compiled -t "$pkgdir"/var/lib/xkb
 }
 
 xvfb() {
 	pkgdesc="Virtual Framebuffer 'fake' X server"
-	mkdir -p "$subpkgdir"/usr/bin
-	mv "$pkgdir"/usr/bin/Xvfb "$subpkgdir"/usr/bin/
+
+	amove usr/bin/Xvfb
 }
 
 xephyr() {
 	pkgdesc="kdrive based X Server which targets a window on a host X Server as its framebuffer"
-	mkdir -p "$subpkgdir"/usr/bin
-	mv "$pkgdir"/usr/bin/Xephyr "$subpkgdir"/usr/bin/
+
+	amove usr/bin/Xephyr
 }
 
 xnest() {
 	pkgdesc="A nested Xorg server"
-	mkdir -p "$subpkgdir"/usr/bin
-	mv "$pkgdir"/usr/bin/Xnest "$subpkgdir"/usr/bin/
+
+	amove usr/bin/Xnest
 }
 
 common() {
@@ -191,11 +194,9 @@ common() {
 	pkgdesc="Xorg server common files"
 
 	amove usr/lib/xorg/protocol.txt
-
-	install -Dm0644 "$builddir"/xkb/README.compiled -t "$pkgdir"/var/lib/xkb
 }
 
 sha512sums="
-5e3cf879facf3a04aa64b7f6129226ea68a97109a7daca5146b57b4c707cc76a4fbad1924997dd319efd8c8c20eb5bb59570a719101b76ae07e923b7e9656239  xorg-server-21.1.6.tar.xz
+6104b3620ed2e1e27d9a8e963388bbe8785a764585b1bc03dbf5d719a92894773dda580d377ca18ceeab353e65a5d23cc947bab84a4012f9dd1eca31cac36937  xorg-server-21.1.8.tar.xz
 9ed9c731a7275a3821476eedd55f453027fdf9bcdfd8f259259a5d053c73e8b9298f048cbb009a4fb05230fb2a9ab7cc38a44d708973f09daa8570fae376236e  ms-rotate.patch
 "

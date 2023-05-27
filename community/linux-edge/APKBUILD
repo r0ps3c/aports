@@ -4,7 +4,7 @@ _flavor=edge
 pkgname=linux-${_flavor}
 # NOTE: this kernel is intended for testing
 # please resist urge to upgrade it blindly
-pkgver=6.1.2
+pkgver=6.3.0
 case $pkgver in
 	*.*.*)	_kernver=${pkgver%.*};;
 	*.*) _kernver=$pkgver;;
@@ -114,7 +114,7 @@ build() {
 	export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 	for i in $_flavors; do
 		cd "$builddir"
-		make ARCH="$_carch" CC="${CC:-gcc}" \
+		make ARCH="$_carch" DTC_FLAGS="-@" CC="${CC:-gcc}" \
 			KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-Alpine"
 	done
 }
@@ -266,10 +266,9 @@ _doc() {
 }
 
 sha512sums="
-6ed2a73c2699d0810e54753715635736fc370288ad5ce95c594f2379959b0e418665cd71bc512a0273fe226fe90074d8b10d14c209080a6466498417a4fdda68  linux-6.1.tar.xz
-f2463224fa59022b56a30ed601c64a25c60b28f29db28fc94c66dd9d82f94a177de0d47c7a4b26822bc8541f6e230053431b1c8884996cd0ddaa7c9ea4f3a9f6  patch-6.1.2.xz
-15862c3bcab6fbd4dea958a3d6bb6b5adbb74dd7be449858a6b396a477e4287498d872d5b2b0dc597e0318764d0c37120f6aa3f0c8798fe60622dd7156556b85  config-edge.aarch64
-72c62c868830d3ab53618acc79920dd96ad4d75ae3e513f8ff399cc2e891b855019e8a9b7e9121a833034b2daaaa6e9badb4033aeb40916e12b1220ed018b0e4  config-edge.armv7
-3ad9883d54cf6b90d93066636d8ad60e0831e15ff1dcb4bf1cb42c38798ba448cf1e6df7f88dc0457ecfa9bae9d5d466d2e6d302b04cf3db9b3513df6db2d042  config-edge.x86_64
-bb098ad2c41bf3ee308e1d92211c1a68fddba9880d98a417d4b91b20783614858d864743d5b1285eaf31f3f1f5eefd8db9f3f7d6c244e7a7cf8fe77b8ec22991  config-edge.riscv64
+768979440f4907ba64d4481b383d6101faf208f27a0b897156123aa278c5743fe3c4f61945b2541429c532d45382aaee8899ea9d44a1d2895bfbb79bfd937f65  linux-6.3.tar.xz
+b4995df7250139269db657619d0270db42559610ec8b7b1908bc694340afa29cbf1860582a3348d42e1fb3739732c919d736cb9d8d5eb009753c48e028544b1f  config-edge.aarch64
+f32e8ee4be8a59eba4028505fcc6b4ffb74fa831e092c7cea6ec69da83998c189e5695d81fb05f513fa61d40d5d4417c5df3ece9f1ab9f7e66289f2b1d25e6db  config-edge.armv7
+d45c4376dc2ceff65e0cfbb00ea20de261c26cb0dd947c24e3ed5d0783b1725c06a13d80c3db17bde4b33180d10b3b14c1fc76d892d2e62110700c63d62e11b1  config-edge.x86_64
+e0ef93a4570e768abe2e84636c4d3461b83c11a00773f277cee068fc73991393053bb92ad1ef6c1ded0deaa497dffd7945e6d8a429cb5ca73ffb0c60222741dd  config-edge.riscv64
 "

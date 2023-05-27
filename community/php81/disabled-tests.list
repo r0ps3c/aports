@@ -163,6 +163,7 @@ sapi/phpdbg/tests/watch_006.phpt
 Zend/tests/fibers/no-switch-force-close-finally.phpt
 Zend/tests/fibers/suspend-in-force-close-fiber-after-shutdown.phpt
 Zend/tests/fibers/throw-in-multiple-destroyed-fibers-after-shutdown.phpt
+Zend/tests/gh9916-009.phpt
 
 
 #
@@ -192,3 +193,6 @@ ext/sockets/tests/socket_sendrecvmsg_error.phpt
 ext/sockets/tests/mcast_ipv4_send.phpt
 ext/sockets/tests/mcast_ipv4_send_error.phpt
 ext/sockets/tests/mcast_ipv6_send.phpt
+
+# openssl 1 and unstable
+ext/openssl/tests/openssl_error_string_basic.phpt

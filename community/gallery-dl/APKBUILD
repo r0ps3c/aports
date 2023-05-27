@@ -1,7 +1,7 @@
 # Contributor: Hoang Nguyen <folliekazetani@protonmail.com>
 # Maintainer: Hoang Nguyen <folliekazetani@protonmail.com>
 pkgname=gallery-dl
-pkgver=1.24.2
+pkgver=1.24.5
 pkgrel=0
 pkgdesc="CLI tool to download image galleries"
 url="https://github.com/mikf/gallery-dl"
@@ -36,5 +36,5 @@ package() {
 }
 
 sha512sums="
-2b8780d9ebf868635f76315a5f7a426ed72b4db4e7a12f97ebc86520fa6d5908f39fb26e876cbc46e8249b083f3bf5dc4d38a3c2ddb27873c473c80bac0af415  gallery-dl-1.24.2.tar.gz
+648707e5be450501aa66f34b89aae1cf7b80c93bee5105c9eeae4fa19e34df41b231066a23113e963119105050e6aed8e654d10d107086ab5a815095dcf562c2  gallery-dl-1.24.5.tar.gz
 "

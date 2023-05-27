@@ -1,7 +1,7 @@
 # Contributor: Rasmus Thomsen <oss@cogitri.dev>
 # Maintainer: Rasmus Thomsen <oss@cogitri.dev>
 pkgname=gnome-desktop
-pkgver=43
+pkgver=43.2
 pkgrel=0
 pkgdesc="GNOME desktop core libraries"
 url="https://gitlab.gnome.org/GNOME/gnome-desktop"
@@ -46,5 +46,5 @@ package() {
 	DESTDIR="$pkgdir" meson install --no-rebuild -C output
 }
 sha512sums="
-01244bf397d8ef4d9424ef9289789efde148c38f4588fe3a9094cbdd4612c56fbbff079182d6c85083462d2f3ae9771e463c5cb86995a1aef29b2f5cfd023713  gnome-desktop-43.tar.xz
+b1a84f75dd793ad856a4f4995cc2d87a5ed91e1bb498229587defb139b8b988b1087610026576c34a51f1f9439ae36efa01544857deed1c8b6ec25cd68f0bc30  gnome-desktop-43.2.tar.xz
 "

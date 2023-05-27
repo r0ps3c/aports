@@ -2,12 +2,25 @@
 # Contributor: Natanael Copa <ncopa@alpinelinux.org>
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=chromium
-pkgver=108.0.5359.125
+pkgver=112.0.5615.165
 pkgrel=0
+# https://source.chromium.org/chromium/chromium/src/+/main:third_party/test_fonts/test_fonts.tar.gz.sha1
+# (for the given version, when it changes)
+_testfonts=336e775eec536b2d785cc80eff6ac39051931286
 pkgdesc="Chromium web browser"
 url="https://www.chromium.org/Home"
 arch="aarch64 armv7 x86_64"
 license="BSD-3-Clause"
+# explicit depends for --headless
+# XXX: eudev-libs replaced by so:libudev.so.1 to allow installation with libudev-zero
+# take care if libudev.so ever updates somajor..
+depends="
+	font-opensans
+	gtk+3.0
+	mesa-dri-gallium
+	so:libudev.so.1
+	xdg-utils
+	"
 makedepends="
 	alsa-lib-dev
 	aom-dev
@@ -48,6 +61,7 @@ makedepends="
 	libcap-dev
 	libevent-dev
 	libexif-dev
+	libffi-dev
 	libgcrypt-dev
 	libjpeg-turbo-dev
 	libusb-dev
@@ -79,16 +93,10 @@ makedepends="
 	snappy-dev
 	speex-dev
 	sqlite-dev
-	wayland-dev
-	wayland-protocols
 	woff2-dev
 	xcb-proto
 	zlib-dev
 	"
-# explicit depends for --headless
-# XXX: eudev-libs replaced by so:libudev.so.1 to allow installation with libudev-zero
-# take care if libudev.so ever updates somajor..
-depends="xdg-utils so:libudev.so.1 gtk+3.0 font-opensans"
 options="suid !check" # broken
 subpackages="
 	$pkgname-dbg
@@ -103,40 +111,26 @@ source="https://commondatastorage.googleapis.com/chromium-browser-official/chrom
 	chromium.conf
 	google-api.keys
 
-	angle-wayland-include.patch
-	canonicalize-file-name.patch
 	chromium-VirtualCursor-standard-layout.patch
 	chromium-revert-drop-of-system-java.patch
 	chromium-use-alpine-target.patch
-	credentials-sys-types-header.patch
-	default-pthread-stacksize.patch
-	dns-resolver.patch
-	fix-crashpad.patch
 	fix-missing-cstdint-include-musl.patch
-	fix-narrowing-cast.patch
 	fstatat-32bit.patch
 	gdbinit.patch
-	icu-72-1.patch
-	icu-72-2.patch
 	lto-core-count.patch
-	memory-tagging-arm64.patch
+	import-version.patch
+	mman.patch
 	musl-sandbox.patch
 	musl-tid-caching.patch
 	musl-v8-monotonic-pthread-cont_timedwait.patch
 	no-execinfo.patch
-	no-glibc-version.patch
 	no-mallinfo.patch
 	no-res-ninit-nclose.patch
-	no-stat-redefine.patch
 	partition-atfork.patch
 	quiche-arena-size.patch
-	roll-src-third_party-ffmpeg-102.patch
 	roll-src-third_party-ffmpeg-106.patch
 	scoped-file-no-close.patch
-	system-zlib.patch
-	systypes.patch
 	temp-failure-retry.patch
-	wtf-stacksize.patch
 	"
 
 # backwards compat (merged into primary)
@@ -470,6 +464,7 @@ prepare() {
 	ln -s /usr/bin/node third_party/node/linux/node-linux-x64/bin/
 
 	# reusable system library settings
+	# libavif - https://github.com/AOMediaCodec/libavif/commit/4d2776a3
 	local use_system="
 		brotli
 		dav1d
@@ -481,7 +476,6 @@ prepare() {
 		icu
 		jsoncpp
 		libaom
-		libavif
 		libdrm
 		libevent
 		libjpeg
@@ -565,8 +559,11 @@ build() {
 		;;
 	esac
 
+	# pgo phase needs llvm16
+	# shellcheck disable=2089
 	local gn_config="
 		blink_enable_generated_code_formatting=false
+		chrome_pgo_phase=0
 		clang_base_path=\"/usr\"
 		clang_use_chrome_plugins=false
 		custom_toolchain=\"//build/toolchain/linux/unbundle:default\"
@@ -581,7 +578,7 @@ build() {
 		google_default_client_id=\"$_google_default_client_id\"
 		google_default_client_secret=\"$_google_default_client_secret\"
 		host_toolchain=\"//build/toolchain/linux/unbundle:default\"
-		icu_use_data_file=true
+		icu_use_data_file=false
 		is_cfi=false
 		is_component_ffmpeg=true
 		is_debug=false
@@ -601,10 +598,8 @@ build() {
 		use_system_harfbuzz=true
 		use_system_lcms2=true
 		use_system_libdrm=true
+		use_system_libffi=true
 		use_system_libjpeg=true
-		use_system_libwayland=true
-		use_system_wayland_scanner=true
-		use_system_wayland_scanner=true
 		use_system_zlib=true
 		use_thin_lto=$lto
 		use_vaapi=true
@@ -619,6 +614,8 @@ build() {
 	# final link needs lots of file descriptors
 	ulimit -n 4096
 
+	ninja -C out/$_buildtype \
+		gen/components/feed/core/proto/v2/wire/chrome_feed_response_metadata.pb.h
 	ninja -C out/$_buildtype \
 		chrome \
 		chrome_sandbox \
@@ -853,43 +850,29 @@ swiftshader() {
 }
 
 sha512sums="
-6081600e779334a0284d2826c8cf35bea0277f937bd604e4ce1c6c61f1f16968a89c69670576b25302289274f6aaed0394bbbf8f2b9e27ec0183b123561b15f4  chromium-108.0.5359.125.tar.xz
+51cd011a612bbd83c31f69666d87597dbf0d277cbb043855623afd5d3d1f26326201251ca8aa18d891a6ca0c7daf177d07bd56a2969ba390318348077636ed7c  chromium-112.0.5615.165.tar.xz
 f554ccc5d8a5c066634357878c89944cc591809ea6f6c6ef5b35e970e9674e0b3be8fddb06c0d333ddc65211fa09ae5e0b4b483ca70048156c29607c5487c017  test_fonts-cd96fc55dc243f6c6f4cb63ad117cad6cd48dceb.tar.gz
 b9a810416dd7a8ffc3a5ced85ad9acebda1665bd08a57eec7b189698cc5f74d2c3fd69044e20fcb83297a43214b2772a1312b2c6122ea0eb716abacf39524d60  chromium-launcher.sh
 9cfcb41d69c5a515b6f9fe2a629579fa499e1f48eb58a0ce4ec8e5029d450bcafb6d963019aaac9a6838244bee9f9ba7fe5ef6146a0ca6b20fcda4ab7f059476  chromium.conf
 2d8237a940ea691bd10b08315429677a587f7ef9692a0cca53bfd066eae82998a6c71f402a8669e9de39f94d7f3280745d1628ea6eac5d76ca7116844d4e0dac  google-api.keys
-f19ba0c0f542115e6f53019659df256471e811a23d2f37569c9d4dfa265c0c1ace3e62c74d7507f82e6b7b4152c704e651810a00616f8f531592b14bb2af01d9  angle-wayland-include.patch
-252b37a2ecc5e7a25385943045f426dc2e30991b28d206ceaff1be7fd8ffeeb024310a8fca6b3e69a4b1c57db535d51c570935351053525f393682d5ecd0f9a9  canonicalize-file-name.patch
-ac0a80174f95d733f33ddc06fc88cdcf7db0973378c28d8544dc9c19e2dabeac47f91c99b3e7384f650b3405554a9e222543f0860b6acc407c078a8c9180d727  chromium-VirtualCursor-standard-layout.patch
-c4654d5b23c6f5d9502507e534fe1951d6749c62251e49b6adfe10d1569431e7f7a5a6fa5ff09ec30984415ced27a5e20985df8c91295de34af3c84557fa5b91  chromium-revert-drop-of-system-java.patch
-6d1b3476ef09a501aedb67e086c9539ee9555e894bb7697fbc7ce5d99f4c798768a4cbe71d4044d5d8aaa4606351dd8e880af244e77acf671a17eca6f6ecf534  chromium-use-alpine-target.patch
-274858323d040ac8c51bac90b6ef91bb075d7b8d92d73952ed700c10a8bae2c2115fb2a9cc6912de79be226c141d7106839fc3486e22c0206e75cb6d8ff65ee6  credentials-sys-types-header.patch
-22da17c649ae9845d6a174187f2b666245a10db8a997169fc214c430fbba10143cfb57f8f6ece5acf856cd9ea09f293a1aca90cdf3e64fd9423b78beac53f517  default-pthread-stacksize.patch
-082d5391c177f6e559963f19f79b6d5277af8dd3d9df600b2450e3fcc12025ade76ad97ee147a0b77442824714bfd9ef17ac5b105281ec008a144d58129b3ca2  dns-resolver.patch
-9d1edb1e0624ee61825e3af23fbb8c5dbc09d2b92d7769d19f8ca618edae8de8a3e051fedf4ad92c230e1373dc8495922c46971aef93a580c04ad80bc33516c0  fix-crashpad.patch
-8bebf4a9d5225c6e47edc5b07c4b97be24a45cc221f49632836915ceeb4ecb69b7f79a31ea7f82171cde3443f45fec541f409892542cf1014e81aa6acd01566d  fix-missing-cstdint-include-musl.patch
-efe97b9dd2ec5965fa0cdf1b2a3c01253835c2df710da7ea105c4ce008c11f9caaf8b4321736a2b91f06d8d61972c08e225b16509dc05176a2c39337688ad5b9  fix-narrowing-cast.patch
+c6da0bb70b643c54f653ddee3565b2e1f8c36a806d1b51ab7291c313bc90ab3375a74e262d5893c82b4b233fc259d1c3ba1d9f805bf2f3b9ae8c9c8d21879a62  chromium-VirtualCursor-standard-layout.patch
+29bb685e03356a77df5fd347cdf55194cc8b3265c421cc76e54d64edefc329dbcb052deb26b22e8f587ce68456876c071de1b7d258dd0fcc6ee66c875ec4a020  chromium-revert-drop-of-system-java.patch
+fa291e941076146d0edd5b96c088240a44a6e0aca3dfc744929655607182d2dc47e6c35ecb419f7c623fcf7f26dc3c4dd924dbf5ed10c3b986283f5ef2f72573  chromium-use-alpine-target.patch
+9200f78bad70e95c648a5e8392d50642190600f655c6baa366ff6467ebad52d3b3f305dad58f3610da67136f4b723557653b174ec5c25be8d8737ee04d9ee09f  fix-missing-cstdint-include-musl.patch
 c63dee5044353eb306a39ca1526158c0f003ab310ecb03d1c368dc2a979454590c84b8d3c15484517d5e66bb8add9b231da9abbadf2e50850abd72ac1345c4ab  fstatat-32bit.patch
-82f2bd4aa613e792d3af6e7a8632e0920cf48504a7572fb97d5480ea182fa125fe526e7df1ce4311b5d139a3f78da0f0b54605fbd09d7cd43135906a7639e47f  gdbinit.patch
-fa301a13c336a624bb2ee5616b49b18464f51259605cf79afad334b48e2455f1c4f3995d5197b6fff9d0ab2ab5d2750c415ff3bca5ccbdcba2340e3db857d42b  icu-72-1.patch
-869d6d2d00b9ae7de66690a522d0388d332585e327df482595547be85f70163ad391229ae691e0ab235a6234fdceedad7868b34508a452df61ba851fed1443b2  icu-72-2.patch
+33ee60863cc438ef57ffef92ba4cf67a856a5ffc16138bce241bcf87e47b15154aa86918e793c26f7ec4dc62a445257ad5673ed7001daf22c4043cf6cc57da7f  gdbinit.patch
 1e004d2390a8031125345d39a98e03aab7fa5120317b632cfb250f705bd2983292f41e9c29637b2ea284d095b5747ac2d9664bf0a309e13967283b505f134a29  lto-core-count.patch
-63e5b25c49af484964b3ac723da1c2f348812572a2e24ad412d2fb9eb7eec9ddc0e76568e76d1f352cdc562bc5003c93e04ee519a82e8568f48484d1682e237f  memory-tagging-arm64.patch
-28d5fc208bba81bda3a7a2a93528dfac15fc649ea0df46887facc1b32951b3c99907b5c06590b05fecea4fc7e327c35834a6260095a38e8fb530fa990d6597b3  musl-sandbox.patch
-a018cf58b9e34f73d588961f2f9a36de67267060fb2e77ebc562974c6c92a59009161e374cf9bbdc35e8bf1a7e90f0b90117a0d494dcd2e2bb2f5e6534925d0b  musl-tid-caching.patch
-556cc2ba28184a75745f13c673605327f5be590be179eb3f941dc0abded854a814e5da1432a28fb8d4dcdcd66ffd4c94ee1a8824d2cd93b632f48e9310dbc3fa  musl-v8-monotonic-pthread-cont_timedwait.patch
-3f90f888f015efd04636eee0e8431d41e073d432563553298d7b8be7650c397eb7d43a5bf682df1f66ffd7182852d4b836adb7dcd934f9b45247cdd99046e45c  no-execinfo.patch
-caf9c4e4533b94dfe6b28350f8ea9654311b684dfd0c5ba768ab14775e0164f577dfd356cd507bcad9f378ec2c180c8e6edbde9bba62caf70fbac5a642edc61b  no-glibc-version.patch
-994afbb078b68884674324434c3e0cd030a6ded9e3f28e7453de553d7647017bc9f30fb3630d495d7e63e2c71232fe3533c49fe976b13e64ba0dfdf1342cc37d  no-mallinfo.patch
-3319fa42bd582679f449151de5905c582e156cf8dff850326cfbd7a97c92afea0b074ff1275e1ec923ed1491db2adec632d4222fed0f7f1c6607aee930ec9559  no-res-ninit-nclose.patch
-0c0d3ed0a8f2bcecb2bf4eb56130fcd71031bb63744fb56e1b5a6b9dfbe16680607ff592e24602fe045b819509a70556e240b6fe0e876710977d60185f682df4  no-stat-redefine.patch
-ad563e29ac7d83c203f5af966c4ed3ebdeb5c997835a45fb28ecde08dde5231d0a775fb413f44867af28724504c42316b27d5a6aaa602057642dcbdf7ec20a7a  partition-atfork.patch
-d315ef36952f35f834742a063b11b312b3adc2b86fc34a73a6906652f4042e6537789aeae5aade3c60523a80eac8d9751eecac3716831b99a2f8725d4ce50df3  quiche-arena-size.patch
-128ec0fd14349e065c8bb0910d53cbea7423182a06e06f7b7765f3cba1e5ba5e7a8bccbcdab079335b5235abb7bf0d46dee21ecc8c221be7e1c5c6d9795f958e  roll-src-third_party-ffmpeg-102.patch
-1063e68f477645914ddf5641eabdd3eaf744e569635d645ea860c3546f67a7ef91eded99331378ee75071b67ecfe9bd4be307bd3da7c7ad93509e2bd634d1ec3  roll-src-third_party-ffmpeg-106.patch
-9c44875bcc5dd5431226568ba52d225f086b321325371d9e9e01d1fd892049e5aff324a89ba8268f32c59ce1a47e0b0d5448c9162a45ee5a60a58eecb69ca788  scoped-file-no-close.patch
-70ca4fef99b3bd8e533b6a223a6d6f4989ffba890728453434e5828565d0373319a7dfc7f272cbab9064308ab35b32cf9a7b0c34e13cf71fab0de913e73392aa  system-zlib.patch
-88770718f93f5eaa617d9a8163c9c292afb9572b6ce05e65bcc38a409ffac8868005d430943f24ec15f542d94cbb51a2a3f03fa559c88c451dbbf473db0b8160  systypes.patch
-ece751cd29d28772dd0955c84f5553a6858ac24d06ccb66ac75fcfc6b13460cf5c1f27392c094487e20e08e621d2099c3b5cc9a2a819a458e8c56c78fea11269  temp-failure-retry.patch
-1d4e8c6e65205e6b72af47b9a2fa6f96aaada9b7d5a74f4e11a345a885df3078b523d02aaf8e9dac3aa30d72bbbd07cd6dc7edcf44fb9ae57a7f81251c398f65  wtf-stacksize.patch
+8de65109ece27ea63bd469f2220c56b8c752ba0a50fdf390082a2d5ae74b8e010199126175569f6d5084270dd4e0571e68aec32c0bca8211a6699925b3a09124  import-version.patch
+0e991842e23a4b9133898125eeb39e45e3f86f886eef5d2f0d9a72ee143a3e124b3b4f60be94edd57ce4185bcd69704edb51f76d08fdb6207f5559a08dd41ab0  mman.patch
+2e30cfe800e9307d010748dabd43edcb2a4ba5bf7c51ab19c9dade6aeeacc3dc98e8115c27f3e28bf4ce2b596a8d21f4ce76fc6b4e1810ea5a788cd5a784125c  musl-sandbox.patch
+e7163ac5810ac85366cef2447412287c856e3d67c6b77f219a6e5a418b1965b98e449c409424ad0704a5bded9355dd0aec3dc4585918ce5a2ab36c079707afe2  musl-tid-caching.patch
+92eb002718026611f5542362ad69b67f0a398ff71b3fca5c05d55cb5c6f9f29334e5e127bb4860cfaa3fba0f0d4c901e2b98808217e7dc02e254a64a5c9521aa  musl-v8-monotonic-pthread-cont_timedwait.patch
+d72d9a1526d6cd4006a7beb488ac0cd89911016ea4a176ca60d10c06d734040cb060a3b02324031cdca79601311cd77c727779a6c81b4797da6d37d6a3db638e  no-execinfo.patch
+ceff4ff8ddb42cabce8e8d9842dc013612e5bb9b0cac7efd7e4b70f3f6e07a1943a329b9e0743a8cfb1779aa442e1ef83704bd2cb29bc1b6e6f707a49c5833e8  no-mallinfo.patch
+e4c4e5bc6f828f9c883dd418c0ba01887949c29c311f76206a1ec29f620b0c0ba0452949dc2778a9c46ea066405857536964a36436a68eecf7da7952736333cf  no-res-ninit-nclose.patch
+677d455b817172be351214bff502f554c164b6da011b1a5a41e7ade8166d4a22a728bdf6f5a494c2182a320e9a69ccaa415487359c67e5f140e54ac8aeba70d2  partition-atfork.patch
+2bc334352cdf0e523003c882e1a29623896bf3f3543469b23a532cb5ff32a75e7f23dc94abfaed4a97e24d26bdc51b780728583f1e7e7860f00c49e4d91edfa9  quiche-arena-size.patch
+674dc3290f31fb6f3f5e8a042f9a2d4dca3537414053a37ea5180f9da228ae462e6a7341caafc370acca3c41cec48b060deee66d8be76a3b76881dbbf3f1467e  roll-src-third_party-ffmpeg-106.patch
+8c33808ede31dd3b8eb951991e034751949756c4e6c2cd0e19823e95fddf5f9d94424bbd73ffe6dd965df2b0887fc5c42ab8a97c64b553d47662e90651b84f13  scoped-file-no-close.patch
+e48693e6b7aeebf69a5acbf80d9a35defe4c23835121dfeb58b051ac7c527e758a41004f4d193274fe1b01c0bfb1dbc77b09cb6a404a3fdee507a2918afb0edb  temp-failure-retry.patch
 "

@@ -5,7 +5,7 @@
 pkgname=openssh
 pkgver=9.1_p1
 _myver=${pkgver%_*}${pkgver#*_}
-pkgrel=1
+pkgrel=3
 pkgdesc="Port of OpenBSD's free SSH release"
 url="https://www.openssh.com/portable.html"
 arch="all"
@@ -46,6 +46,7 @@ subpackages="$pkgname-dbg
 	"
 
 source="https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-$_myver.tar.gz
+	CVE-2023-28531.patch
 	fix-utmp.patch
 	sftp-interactive.patch
 	disable-forwarding-by-default.patch
@@ -55,11 +56,15 @@ source="https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-$_myver.tar
 	default-internal-sftp.patch
 	fix-always-use-compat-getentropy.patch
 
+	fix-double-free.patch
+
 	sshd.initd
 	sshd.confd
 	"
 
 # secfixes:
+#   9.1_p1-r3:
+#     - CVE-2023-28531
 #   8.8_p1-r0:
 #     - CVE-2021-41617
 #   8.5_p1-r0:
@@ -275,6 +280,7 @@ _server_with_flavor() {
 
 sha512sums="
 a1f02c407f6b621b1d0817d1a0c9a6839b67e416c84f3b76c63003b119035b24c19a1564b22691d1152e1d2d55f4dc7eb1af2d2318751e431a99c4efa77edc70  openssh-9.1p1.tar.gz
+6c2461b3c34803a5df5efd1dd44f2fc28f0dac67e685e9d8c029568db4f36ac12246059aa57680125465d6908fe3b83005c5fcffa7f1e788b55c1cbb3c8b728b  CVE-2023-28531.patch
 b10a9eb167cfbb23b144fdb03f30a0363be9a715ceb3c202c971ec4f36160e434cc6bbad91d0e49106189e07152067f7e227df28b5a1b82f3901cb36cba321b5  fix-utmp.patch
 c1d09c65dbc347f0904edc30f91aa9a24b0baee50309536182455b544f1e3f85a8cecfa959e32be8b101d8282ef06dde3febbbc3f315489339dcf04155c859a9  sftp-interactive.patch
 8df35d72224cd255eb0685d2c707b24e5eb24f0fdd67ca6cc0f615bdbd3eeeea2d18674a6af0c6dab74c2d8247e2370d0b755a84c99f766a431bc50c40b557de  disable-forwarding-by-default.patch
@@ -283,6 +289,7 @@ e85754b2b6c4c37b432d166e63d6293e58c9c8bb6ebd8d3527c83afa2337f14c06d6a4e008ffcc0a
 f659641b841981f78b03281b7a01add9fbf35b91c0f21c11335a56d7e389ddf965d83d18d73b724385311cdb597b6d6c46446cbc702cdd4d15e8f43591306cb3  gss-serv.c.patch
 1fb55aae445dfd9ededeba1f204a0c3e4a752128ad0a388f473ace074e68b040112f309192243621fd4f16b0d1cce4f083612b1639c3e18166abf92babe52c93  default-internal-sftp.patch
 6af82768322c848a769ccba97d3cc247384e783cb9f3985983c78b92af8a805937bc1334c58f58348d5638fcf36699476b51332e0c6482ec49471f117036525f  fix-always-use-compat-getentropy.patch
+5cd54eae57683c781530f8b7c26c4763c43236210c110696a206e0d79e333d19f8abb54cfaaddf36a0fcf31a6a55732d333f8c8eb52771d8d8859361cdea23ed  fix-double-free.patch
 50e407d72bfafc7fb276a1e56b1701f8cd91dfcbad2304bec516d69fc5e8334857ef96510dff76d0c407f29955dc2b18570d6f7b557688ceb641280f8279af83  sshd.initd
 be7dd5f6d319b2e03528525a66a58310d43444606713786b913a17a0fd9311869181d0fb7927a185d71d392674857dea3c97b6b8284886227d47b36193471a09  sshd.confd
 "

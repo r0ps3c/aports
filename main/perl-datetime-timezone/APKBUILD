@@ -4,7 +4,7 @@
 pkgname=perl-datetime-timezone
 #_pkgreal is used by apkbuild-cpan to find modules at MetaCpan
 _pkgreal=DateTime-TimeZone
-pkgver=2.56
+pkgver=2.60
 pkgrel=0
 pkgdesc="Time zone object base class and factory"
 url="https://metacpan.org/release/DateTime-TimeZone/"
@@ -36,5 +36,5 @@ package() {
 
 
 sha512sums="
-0ee4a7aed9a2377102d693eb0c98df43a9add5d329570e835d5b8bbe4bbfee7df793d6847f2ef9fb0ad958327ad8b688968d0f57ec4ae3033d1d866ab385498d  DateTime-TimeZone-2.56.tar.gz
+c3fc0dbed3aaa8250f8031de4fc2e9201d1229c42d59dd6fcdbded0bcc51184bf126a090e371dd4997133a3c174b6324115ce78e7725917953b7236e4a0a8526  DateTime-TimeZone-2.60.tar.gz
 "

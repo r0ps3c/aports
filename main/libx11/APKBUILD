@@ -1,6 +1,6 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=libx11
-pkgver=1.8.3
+pkgver=1.8.4
 pkgrel=0
 pkgdesc="X11 client-side library"
 url="http://xorg.freedesktop.org/"
@@ -46,5 +46,5 @@ package() {
 }
 
 sha512sums="
-bc862338fed855986659e9ffa641db6b36c3ac9abced590d1b164e3cc24446671936e3688cdca18393129c4ea41777977eeb37e87d8edc14d6cc5d194a9c0325  libX11-1.8.3.tar.xz
+3150a47498b0cb012482ee02efeaae16d9e736288f2b3f917be912e1613d56ad6b4ab180de8820305deb2b95dfd993633f43a65344d75979d6b86bdf110cb63e  libX11-1.8.4.tar.xz
 "
