@@ -9,7 +9,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: r0ps3c/fork-sync@fe3f81fe015ef4c42426fb6acb779caf3fc8a53c
+      - uses: r0ps3c/fork-sync@653640a977423d333e6c617e76bf24896a1df51a
         with:
           base: 3.17-stable
           head: 3.17-stable-test
