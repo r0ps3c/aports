@@ -1,8 +1,8 @@
 # Contributor: August Klein <amatcoder@gmail.com>
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=py3-cryptography
-pkgver=40.0.2
-pkgrel=1
+pkgver=41.0.1
+pkgrel=0
 pkgdesc="Cryptographic recipes and primitives for Python"
 url="https://cryptography.io/"
 arch="all"
@@ -32,6 +32,7 @@ source="https://files.pythonhosted.org/packages/source/c/cryptography/cryptograp
 	https://files.pythonhosted.org/packages/source/c/cryptography_vectors/cryptography_vectors-$pkgver.tar.gz
 	"
 builddir="$srcdir/cryptography-$pkgver"
+options="net"
 
 replaces="py-cryptography" # Backwards compatibility
 provides="py-cryptography=$pkgver-r$pkgrel" # Backwards compatibility
@@ -51,16 +52,15 @@ build() {
 
 	# prepare cryptography vectors for testing
 	cd "$srcdir/cryptography_vectors-$pkgver"
-	python3 setup.py build
+	gpep517 build-wheel \
+		--wheel-dir dist \
+		--output-fd 3 3>&1 >&2
 }
 
 check() {
 	python3 -m venv --clear --without-pip --system-site-packages test-env
 	test-env/bin/python3 -m installer dist/cryptography*.whl
-	(
-		cd "$srcdir"/cryptography_vectors-$pkgver
-		"$builddir"/test-env/bin/python3 setup.py install
-	)
+	test-env/bin/python3 -m installer "$srcdir"/cryptography_vectors-$pkgver/dist/cryptography*.whl
 	test-env/bin/python3 -m pytest -n $JOBS
 }
 
@@ -70,6 +70,6 @@ package() {
 }
 
 sha512sums="
-391aba41fa75052d86182d39096c61eb37126a1e94499fe1934cc3307c8c7e819ead0e904c58c0b36fa4c4bc375b092d1b352217bc0d448f4aab587cff90528e  cryptography-40.0.2.tar.gz
-6f2a9ec715803760deb397ec810433df9e7862029b0f63ca661a9781b8dc5f18bd585438ca7781a566342967b855ce0371dbb3fc650be1fb6ca0ac6c744c05c0  cryptography_vectors-40.0.2.tar.gz
+7f944cc99f57db3e3e54eaea74ce65a4477c71fc9475dfb50247ca291d5e806dbf0323651edf9ce8ec3bf03de8912fb86f6c83b3b76f1d0e37369bd83e86805c  cryptography-41.0.1.tar.gz
+3371dea3898b9ce93599b6d37134bb7296442d9aa1318a6d933e73b7aea284c8c50fc93eac4fc2df9b31ff1c96e7bd45516a2c1399ca69e8e2e2d9d5a7ff12db  cryptography_vectors-41.0.1.tar.gz
 "
