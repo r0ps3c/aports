@@ -1,11 +1,12 @@
 # Maintainer: Peter van Dijk <peter.van.dijk@powerdns.com>
 pkgname=dnsdist
 pkgver=1.8.0
-pkgrel=4
+pkgrel=5
 pkgdesc="dnsdist is a highly DNS-, DoS-, and abuse-aware loadbalancer."
 url="https://dnsdist.org/"
 # s390x blocked by h2o
-arch="all !s390x"
+# riscv64: for some reason, gcc segfaults
+arch="all !s390x !riscv64"
 license="GPL-2.0-only WITH OpenSSL-Exception"
 depends="$pkgname-common !$pkgname-luajit"
 checkdepends="findutils"

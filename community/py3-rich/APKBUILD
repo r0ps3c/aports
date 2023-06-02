@@ -1,7 +1,7 @@
 # Contributor: Leo <thinkabit.ukim@gmail.com>
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=py3-rich
-pkgver=13.3.5
+pkgver=13.4.1
 pkgrel=0
 pkgdesc="Python library for rich text formatting and terminal formatting"
 url="https://rich.readthedocs.io/en/latest/"
@@ -35,5 +35,5 @@ package() {
 }
 
 sha512sums="
-7ade640e48605540b09264164376783eea4bf86bfc1238ab3b7aeada0b25f7fde0a0c2d34b54dfca135765d29d7c7d614d56003f45776f4623cc82ace43d9e9d  py3-rich-13.3.5.tar.gz
+655252e9f34da17df6bc7ce74560667f4472da4df6ed699d4302a02301857543ba8756153f48ea8d5a2df5e627ed3c4c8ab732b2b2b27baf66a10c798795a885  py3-rich-13.4.1.tar.gz
 "

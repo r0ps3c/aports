@@ -2,9 +2,9 @@
 # Maintainer: Keith Maxwell <keith.maxwell@gmail.com>
 pkgname=py3-ruamel.yaml
 _pyname=ruamel.yaml
-pkgver=0.17.28
+pkgver=0.17.31
 pkgrel=0
-pkgdesc="A YAML parser/emitter"
+pkgdesc="Python YAML parser/emitter"
 options="!check" # tests are not included in the latest artifact on PyPI
 url="https://sourceforge.net/projects/ruamel-yaml/"
 arch="noarch"
@@ -45,5 +45,5 @@ package() {
 }
 
 sha512sums="
-5195485270b7a66b228ccfa2956b172cd97712e950f148620d8fb17ba9bf4548a3328229308ffffe970e30fcc73b28ea0ebd2ac571691bc26f1620bcb3183dbe  ruamel.yaml-0.17.28.tar.gz
+b301d07b82e3dd547cb776e0565dc6f4d3d45321c49e38e21ec621dd6864f978d26a78b67b9ceded6af269108c33e6e90eacffd586ba2b245317d1a94e59ccbc  ruamel.yaml-0.17.31.tar.gz
 "

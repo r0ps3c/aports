@@ -2,7 +2,7 @@
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
 pkgname=qt6-qtwebengine
 pkgver=6.5.1
-pkgrel=0
+pkgrel=1
 pkgdesc="Provides support for web applications using the Chromium browser project"
 url="https://qt.io/"
 # riscv64 unknown current CPU
@@ -33,7 +33,6 @@ depends_dev="
 	qt6-qtpositioning-dev
 	qt6-qttools-dev
 	qt6-qtwebchannel-dev
-	re2-dev
 	snappy-dev
 	"
 makedepends="$depends_dev
