@@ -2,7 +2,7 @@
 # Maintainer: Patrycja Rosa <alpine@ptrcnull.me>
 pkgname=tigervnc
 pkgver=1.13.1
-pkgrel=1
+pkgrel=2
 _xorg_version=21.1.7
 pkgdesc="High performance, multi-platform VNC client and server"
 url="https://tigervnc.org/"
@@ -11,6 +11,7 @@ license="GPL-2.0-or-later"
 _makedepends_xorg="
 	autoconf
 	automake
+	ffmpeg-dev
 	font-util-dev
 	libepoxy-dev
 	libpciaccess-dev
@@ -50,7 +51,7 @@ makedepends="
 	pixman-dev
 	samurai
 	"
-subpackages="$pkgname-doc $pkgname-lang $pkgname-client"
+subpackages="$pkgname-openrc $pkgname-doc $pkgname-lang $pkgname-client"
 source="
 	https://github.com/TigerVNC/tigervnc/archive/refs/tags/v$pkgver/tigervnc-$pkgver.tar.gz
 	https://www.x.org/releases/individual/xserver/xorg-server-$_xorg_version.tar.xz
