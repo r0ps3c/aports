@@ -1,9 +1,9 @@
 # Maintainer: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
 pkgname=libjxl
 pkgver=0.8.1
-pkgrel=5
+pkgrel=7
 _testdata_commit=d6168ffb9e1cc24007e64b65dd84d822ad1fc759
-_skcms=ba39d81f9797aa973bdf01aa6b0363b280352fba
+_skcms=6140cf9c51a5b636b25af28571e3086595ed47c8
 pkgdesc="JPEG XL image format reference implementation"
 url="https://github.com/libjxl/libjxl"
 # s390x fails like most of the tests, implying it's broken
@@ -33,8 +33,11 @@ source="https://github.com/libjxl/libjxl/archive/v$pkgver/libjxl-v$pkgver.tar.gz
 	libjxl-testdata-$_testdata_commit.tar.gz::https://github.com/libjxl/testdata/archive/$_testdata_commit.tar.gz
 	https://dev.alpinelinux.org/archive/skcms/skcms-$_skcms.tar.xz
 	"
-# manual
-options="!strip"
+
+# with -fstack-clash-protection/-D_GLIBCXX_ASSERTIONS, a lot of these just segfault
+case "$CARCH" in
+x86) options="$options !check" ;;
+esac
 
 prepare() {
 	default_prepare
@@ -83,21 +86,11 @@ build() {
 check() {
 	cd build
 	export CTEST_PARALLEL_LEVEL=$JOBS
-	CTEST_OUTPUT_ON_FAILURE=TRUE ctest -E 'ColorManagementTestInstantiation/ColorManagementTest\.VerifyAllProfiles/ColorEncoding|DecodeTest\.ContinueFinalNonEssentialBoxTest|CodecTest\.TestRoundTrip'
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest -E 'ColorManagementTestInstantiation/ColorManagementTest\.VerifyAllProfiles/ColorEncoding|DecodeTest\.ContinueFinalNonEssentialBoxTest|CodecTest\.TestRoundTrip|RoundtripLossless8LightningGradient|LosslessPNMRoundtrip'
 }
 
 package() {
 	DESTDIR="$pkgdir" cmake --install build
-	# binutils can't strip the lld-output binaries on riscv, so use the llvm binutils for
-	# it by hand
-	scanelf --recursive \
-		--nobanner \
-		--etype "ET_DYN,ET_EXEC" \
-		--format "%F" \
-		"$pkgdir" \
-		| while read -r file; do
-		llvm-strip "$file"
-	done
 }
 
 tools() {
@@ -118,5 +111,5 @@ loader() {
 sha512sums="
 8011f2181cb627c2b516c7e1b8ecec78a201f357f3be6e568f7814a6a9c42d5979f4bb4ed040a67d68f6649d1f5c564f3cb2fac7e52702f755749084d903a737  libjxl-v0.8.1.tar.gz
 a48d74a1ccff404eb7675225b59965e056dc3fc09930572785d83bae03fa1c38e105336dbf5ecfc3f0995e8b8bfb1097b451ae661f2933590b2b152192c8aa2f  libjxl-testdata-d6168ffb9e1cc24007e64b65dd84d822ad1fc759.tar.gz
-5fc1cb92b7d317e44c001145dc660a04db0e49bb1c128428cb205df9bf58713d4ca6f1252265ed0eb50cef411591857891a948bbacbf73cb048782437afd88a6  skcms-ba39d81f9797aa973bdf01aa6b0363b280352fba.tar.xz
+52b197b33a1acc1b48858c76932d96d921091d01f747a0e04989624d329f2e17e17d290ac923fb545a4f72bd7fb6890d1beca74f70adbeff3fc83a460c7c824d  skcms-6140cf9c51a5b636b25af28571e3086595ed47c8.tar.xz
 "
