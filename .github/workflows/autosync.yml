@@ -2,8 +2,11 @@ name: Sync Fork
 
 on:
   schedule:
-    - cron: '31 4,16 * * *'
+    - cron: '20 4,11,16 * * *'
   workflow_dispatch: # on button click
+  workflow_run:
+    workflows: [Sync Fork]
+    branches: [master]
 
 jobs:
   sync:
