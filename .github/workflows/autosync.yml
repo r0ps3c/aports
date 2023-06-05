@@ -3,10 +3,13 @@ name: Sync 3.18-stable
 on:
   schedule:
     - cron: '20 4,11,16 * * *'
-  workflow_dispatch: # on button click
   workflow_run:
     workflows: [Sync Fork]
-    branches: [master]
+    types:
+      - completed
+    branches: 
+      - master
+  workflow_dispatch: # on button click
 
 jobs:
   sync:
