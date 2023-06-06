@@ -14,4 +14,4 @@ jobs:
           base: master
           head: master
   call-workflow:
-    uses: ./.github/workflows/autosync.yml@3.18-stable
+    uses: r0ps3c/aports/.github/workflows/autosync.yml@3.18-stable
