@@ -1,14 +1,6 @@
-name: Sync 3.18-stable
+name: Sync from upstream
 
 on:
-  schedule:
-    - cron: '20 4,11,16 * * *'
-  workflow_run:
-    workflows: [Sync Fork]
-    types:
-      - completed
-    branches: 
-      - master
   workflow_dispatch: # on button click
   workflow_call:
 
