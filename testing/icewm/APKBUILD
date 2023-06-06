@@ -1,8 +1,8 @@
 # Contributor: Paul Bredbury <brebs@sent.com>
 # Maintainer: gay <gay@disroot.org>
 pkgname=icewm
-pkgver=3.3.5
-pkgrel=0
+pkgver=3.4.0
+pkgrel=1
 pkgdesc="Window manager designed for speed, usability and consistency"
 url="https://github.com/ice-wm/icewm"
 arch="all"
@@ -30,7 +30,7 @@ makedepends="
 	perl
 	samurai
 	"
-source="https://github.com/ice-wm/icewm/releases/download/$pkgver/icewm-$pkgver.tar.lz"
+source="$pkgname-$pkgver-2.tar.lz::https://github.com/ice-wm/icewm/releases/download/$pkgver/icewm-$pkgver.tar.lz"
 
 build() {
 	cmake -B build -G Ninja \
@@ -50,5 +50,5 @@ package() {
 }
 
 sha512sums="
-954d4aeb766607cb00972e933dedc2d9d93c98896a3f4d2e25deb42cb08ba9682f199515c9caef6d0a83803bf82e2ad621d459c48dd76a6f305f66d728d5b4b5  icewm-3.3.5.tar.lz
+37c84a3942281720942834c59d589eeb5b9ee1a4a066e7f3b88b9e567eae8a118e2370d6fb43241d02c286ac5e91c9d7b57dfe453460d4d4654d3ccf764fea31  icewm-3.4.0-2.tar.lz
 "
