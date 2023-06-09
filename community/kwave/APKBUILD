@@ -1,8 +1,8 @@
 # Contributor: Bart Ribbers <bribbers@disroot.org>
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
 pkgname=kwave
-pkgver=23.04.1
-pkgrel=0
+pkgver=23.04.2
+pkgrel=1
 # armhf blocked by extra-cmake-modules
 arch="all !armhf"
 url="https://kwave.sourceforge.net/"
@@ -14,7 +14,6 @@ makedepends="
 	extra-cmake-modules
 	fftw-dev
 	flac-dev
-	imagemagick
 	karchive-dev
 	kcompletion-dev
 	kconfig-dev
@@ -36,6 +35,7 @@ makedepends="
 	pulseaudio-dev
 	qt5-qtbase-dev
 	qt5-qtmultimedia-dev
+	rsvg-convert
 	samurai
 	"
 checkdepends="xvfb-run"
@@ -43,19 +43,12 @@ source="https://download.kde.org/stable/release-service/$pkgver/src/kwave-$pkgve
 subpackages="$pkgname-libs $pkgname-doc $pkgname-lang"
 
 build() {
-
-	if [ "$CARCH" = s390x ]; then
-		doc_opts="-DWITH_DOC=OFF"
-	else
-		doc_opts="-DWITH_DOC=ON"
-	fi
 	cmake -B build -G Ninja \
 		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_INSTALL_LIBDIR=lib \
 		-DWITH_OSS=OFF \
-		-DWITH_MP3=OFF \
-		$doc_opts
+		-DWITH_MP3=OFF
 	cmake --build build
 }
 
@@ -69,5 +62,5 @@ package() {
 }
 
 sha512sums="
-3851ed68f9eea576abbe0351e1f7d4aeb924aed721f3426cee1b10a1b4908cf23506affe790d38c4969b16fa0ac0b0f6bbe5832359d438de73e28fe6773f02d2  kwave-23.04.1.tar.xz
+74ea3c73730a7b7779bb223de6f7a4ed8815317a8c01d6bb77bf4ad06cf3bd6883d84fd8781d28265c198cabf8686df6410908ac8b921c318684bc3983fdb1b9  kwave-23.04.2.tar.xz
 "
