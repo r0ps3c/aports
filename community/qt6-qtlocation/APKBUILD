@@ -1,31 +1,31 @@
 # Contributor: Bart Ribbers <bribbers@disroot.org>
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
-pkgname=qt6-qtpositioning
+pkgname=qt6-qtlocation
 pkgver=6.5.1
 pkgrel=1
-pkgdesc="Provides access to position, satellite and area monitoring classes"
+pkgdesc="Helps you create viable mapping solutions using the data available from some of the popular location services"
 url="https://qt.io/"
 arch="all"
 license="LGPL-2.1-only AND LGPL-3.0-only AND GPL-3.0-only AND Qt-GPL-exception-1.0"
 depends="xdg-utils"
-depends_dev="
-	qt6-qtbase-dev
-	qt6-qtdeclarative-dev
-	"
-makedepends="$depends_dev
+makedepends="
 	cmake
 	perl
+	qt6-qtpositioning-dev
+	qt6-qtbase-dev
+	qt6-qtdeclarative-dev
 	samurai
 	"
 subpackages="$pkgname-dev"
-builddir="$srcdir/qtpositioning-everywhere-src-${pkgver/_/-}"
+options="!check" # No tests
+builddir="$srcdir/qtlocation-everywhere-src-${pkgver/_/-}"
 
 case $pkgver in
 	*_alpha*|*_beta*|*_rc*) _rel=development_releases;;
 	*) _rel=official_releases;;
 esac
 
-source="https://download.qt.io/$_rel/qt/${pkgver%.*}/${pkgver/_/-}/submodules/qtpositioning-everywhere-src-${pkgver/_/-}.tar.xz"
+source="https://download.qt.io/$_rel/qt/${pkgver%.*}/${pkgver/_/-}/submodules/qtlocation-everywhere-src-${pkgver/_/-}.tar.xz"
 
 build() {
 	export CFLAGS="$CFLAGS -flto=auto"
@@ -43,14 +43,9 @@ build() {
 	cmake --build build --parallel
 }
 
-check() {
-	cd build
-	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
-}
-
 package() {
 	DESTDIR="$pkgdir" cmake --install build
 }
 sha512sums="
-67006663299b14a85a4a7cab2a03ec39f3b938c0f2f09520e3869509bedd24a2053e6f964bcca4d02df71c21d184b253f46cf1dd59e9da5c22cefbd1910ca305  qtpositioning-everywhere-src-6.5.1.tar.xz
+31190ca57feb4ed8b72d5bb5896a81da56632f873609470e760b390a3839f84bf8f6771c6acfcccec6781c694642b85ea34b0c7321528df5a0529af3d2bc5ad1  qtlocation-everywhere-src-6.5.1.tar.xz
 "
