@@ -2,7 +2,7 @@
 # Maintainer: Oleg Titov <oleg.titov@gmail.com>
 pkgname=cargo-c
 pkgver=0.9.20
-pkgrel=0
+pkgrel=1
 pkgdesc="cargo subcommand to build and install C-ABI compatibile dynamic and static libraries"
 url="https://github.com/lu-zero/cargo-c"
 arch="all"
@@ -29,7 +29,7 @@ prepare() {
 	default_prepare
 
 	cp "$srcdir"/$pkgname-$pkgver-Cargo.lock Cargo.lock
-	cargo update -p libc --precise 0.2.145
+	cargo update -p libc --precise 0.2.146
 	cargo fetch --target="$CTARGET" --locked
 }
 
