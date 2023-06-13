@@ -1,7 +1,7 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=xkeyboard-config
-pkgver=2.38
-pkgrel=0
+pkgver=2.39
+pkgrel=1
 pkgdesc="X keyboard configuration files"
 url="https://github.com/freedesktop/xkeyboard-config"
 arch="noarch"
@@ -23,8 +23,10 @@ check() {
 
 package() {
 	DESTDIR="$pkgdir" meson install --no-rebuild -C output
+	# FIXME: xkeyboard-config 2.39 seems to break qemu that relies on finding this
+	ln -sfv ara "$pkgdir"/usr/share/X11/xkb/symbols/ar
 }
 
 sha512sums="
-acb805adfcc9d66c29b43e09bc191bf8dcaf3cdea9f1357b6d0cd24cdca5810504dcf24a92219bf11aa56965b9d7c510eb1b1f8a552147de1ad7ca317c787313  xkeyboard-config-xkeyboard-config-2.38.tar.gz
+7b212f048f531b7157fe145132b10460632c6d76bfe485c370afc52ec689bbdcc52f5bdfddf496957aba9c720890880819744e64352aac54a17406b4b20b6892  xkeyboard-config-xkeyboard-config-2.39.tar.gz
 "
