@@ -1,15 +1,15 @@
 # Maintainer: Drew DeVault <sir@cmpwn.com>
 pkgname=py3-tqdm
 _pkgname=tqdm
-pkgver=4.64.1
-pkgrel=2
+pkgver=4.65.0
+pkgrel=0
 pkgdesc="Fast, Extensible Progress Meter"
-options="!check" # Broken on our current Python build due to setuptools version conflict
 url="https://pypi.org/project/tqdm"
 arch="noarch"
 license="MIT"
 depends="python3"
-makedepends="py3-setuptools"
+makedepends="py3-setuptools py3-setuptools_scm py3-gpep517 py3-wheel py3-installer"
+checkdepends="py3-pandas py3-pytest py3-pytest-asyncio py3-pytest-timeout"
 subpackages="$pkgname-pyc"
 source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
 builddir="$srcdir/$_pkgname-$pkgver"
@@ -25,30 +25,26 @@ prepare() {
 		s390x) rm tests/tests_perf.py;;
 		x86) rm tests/tests_synchronisation.py;;
 	esac
-
-	# Remove dep on py3-setuptools_scm
-	sed -e "s|use_scm_version=True|version='$pkgver'|" \
-		-i setup.py
-	sed -e '/setuptools_scm/d' -i setup.cfg
 }
 
 build() {
-	python3 setup.py build
+	export SETUPTOOLS_SCM_PRETEND_VERSION="$pkgver"
+	gpep517 build-wheel \
+		--wheel-dir .dist \
+		--output-fd 3 3>&1 >&2
 }
 
 check() {
-	python3 setup.py test
+	# 30s timeout
+	pytest -k 'not test_lock_args'
 }
 
 package() {
-	python3 setup.py install --skip-build --root="$pkgdir"
-
-	mv "$pkgdir"/usr/bin/tqdm "$pkgdir"/usr/bin/tqdm-3
-
-	mkdir -p "$pkgdir"/usr/bin
-	ln -s tqdm-3 "$pkgdir"/usr/bin/tqdm
+	python3 -m installer -d "$pkgdir" \
+		.dist/*.whl
+	ln -s tqdm "$pkgdir"/usr/bin/tqdm-3
 }
 
 sha512sums="
-bc7ab34145722229737d25d87895c8760b82271c345e1174c83f5896cc893f92a27901d83575472ad124329acdad69bd21e7d68e79aeeefb0e66c83b11989d18  tqdm-4.64.1.tar.gz
+86315b57d8ceec69ee8970b25372b26b03d2d37f6d06e037e712bf16c7f56eac1c4049291e451c7df62273b91ba7149b400efd0186ceee90268d854e7b476c47  tqdm-4.65.0.tar.gz
 "
