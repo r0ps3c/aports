@@ -1,8 +1,8 @@
 # Contributor: Patrycja Rosa <alpine@ptrcnull.me>
 # Maintainer: Patrycja Rosa <alpine@ptrcnull.me>
 pkgname=yoshimi
-pkgver=2.3.0
-pkgrel=0
+pkgver=2.3.0.2
+pkgrel=1
 pkgdesc="Sophisticated software synthesizer"
 url="https://yoshimi.github.io/"
 arch="all"
@@ -24,12 +24,11 @@ makedepends="
 	samurai
 	"
 subpackages="$pkgname-doc"
-source="https://github.com/Yoshimi/yoshimi/archive/$pkgver/yoshimi-$pkgver.tar.gz"
+source="$pkgname-$pkgver-2.tar.gz::https://github.com/Yoshimi/yoshimi/archive/$pkgver/yoshimi-$pkgver.tar.gz"
 options="!check" # not sure if they even exist
 
 build() {
-	# XXX: ninja fails with copy_if_different
-	cmake -B build -S src \
+	cmake -B build -G Ninja -S src \
 		-DCMAKE_BUILD_TYPE=MinSizeRel \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_INSTALL_LIBDIR=lib
@@ -41,5 +40,5 @@ package() {
 }
 
 sha512sums="
-a5ff3234a1cfa6fefe93eb1088b61e939fb2d89636dacb6ee7f5082532cc0bc04a701d6326b61a3d7d7ba3f4bd58acbf4cc806e9a693f4b89a6db1a8192d872c  yoshimi-2.3.0.tar.gz
+cfe679dca117c5510e8fece4b21044b38f8812699fefb2e340a9faf1fd1eba80c7a0c129cfeb5adab8f0b8cacced3d95de7dafe943b6c8c1395fdd533f3aec6c  yoshimi-2.3.0.2-2.tar.gz
 "
