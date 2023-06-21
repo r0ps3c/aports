@@ -1,7 +1,7 @@
 # Maintainer: Marian Buschsieweke <marian.buschsieweke@ovgu.de>
 # Contributor: Marian Buschsieweke <marian.buschsieweke@ovgu.de>
 pkgname=kicad
-pkgver=7.0.4
+pkgver=7.0.5
 pkgrel=0
 pkgdesc="A Cross Platform and Open Source Electronics Design Automation Suite"
 url="https://www.kicad.org/"
@@ -37,8 +37,10 @@ provides="$pkgname-opencascade=$pkgver-r$pkgrel"
 replaces="$pkgname-opencascade"
 
 build() {
+	# XXX: GLIBCXX_ASSERTIONS causes link errors and symbols are missing
+	# -DKICAD_STDLIB_LIGHT_DEBUG also enables this, maybe that works instead
 	CFLAGS="$CFLAGS -O2" \
-	CXXFLAGS="$CXXFLAGS -O2" \
+	CXXFLAGS="$CXXFLAGS -U_GLIBCXX_ASSERTIONS -O2" \
 	cmake -B build -G Ninja -Wno-dev \
 		-DCMAKE_BUILD_TYPE=None \
 		-DCMAKE_INSTALL_PREFIX=/usr \
@@ -70,5 +72,5 @@ doc() {
 }
 
 sha512sums="
-1d9cf56aa63f4ce91ce067e133b3009dd2e0033355ac053433de46ae9eb9dd7ed194177bfa7b223f7d1dfb4f37d825515687bc1f80ce6d1f96b525463c4619a8  kicad-7.0.4.tar.gz
+36e8eece2804eb3c36c9b785f6c5204220122d5dcb6f7f93c55d76f9ac0df45e730e20f351cc5a7d79fd8934af47cd1b067a7f32b0efe21832a791ac6e28e9c9  kicad-7.0.5.tar.gz
 "

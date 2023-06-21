@@ -1,8 +1,8 @@
 # Contributor: Jakub Jirutka <jakub@jirutka.cz>
 # Maintainer: Jakub Jirutka <jakub@jirutka.cz>
 pkgname=httm
-pkgver=0.26.5
-pkgrel=1
+pkgver=0.29.4
+pkgrel=0
 pkgdesc="Interactive, file-level Time Machine-like tool for ZFS/btrfs"
 url="https://github.com/kimono-koans/httm"
 # riscv64: TODO
@@ -12,8 +12,7 @@ license="MPL-2.0"
 makedepends="cargo acl-dev cargo-auditable"
 subpackages="$pkgname-doc"
 source="https://github.com/kimono-koans/httm/archive/refs/tags/$pkgver/httm-$pkgver.tar.gz"
-options="!check"  # no tests provided
-
+options="net !check"  # no tests provided
 
 prepare() {
 	default_prepare
@@ -31,5 +30,5 @@ package() {
 }
 
 sha512sums="
-4ff878b17dfdd13f4683ae5cb1282b2d820ca8dbcffa7700e83462b9fbf053a3297323510a50435d830574c98856b55fc2ebb73714eab0ed5d5622218e2110c1  httm-0.26.5.tar.gz
+6b88c51756efdf8f94f620ebf7b87b01fad7ecd612c3eb82fb4eb2cefd781b065fa72f77a9aacb549a3eb69a32191605b5724433edcad880c4dcee4c78c0dbd0  httm-0.29.4.tar.gz
 "
