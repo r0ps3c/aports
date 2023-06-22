@@ -2,7 +2,7 @@
 # Maintainer: John Gebbie <me@johngebbie.com>
 pkgname=vosk-api
 pkgver=0.3.45
-pkgrel=2
+pkgrel=5
 _kaldi=93ef0019b847272a239fbb485ef97f29feb1d587
 pkgdesc="Offline speech recognition toolkit"
 url="https://alphacephei.com/vosk"
@@ -14,9 +14,13 @@ makedepends="
 	libgfortran
 	openblas-dev
 	openfst-dev
+	py3-cffi
+	py3-gpep517
+	py3-setuptools
+	py3-wheel
 	"
 checkdepends="vosk-model-small-en-us"
-subpackages="$pkgname-dev"
+subpackages="$pkgname-dev py3-$pkgname-pyc py3-$pkgname:_py3:noarch"
 source="https://github.com/alphacep/vosk-api/archive/v$pkgver/vosk-api-$pkgver.tar.gz
 	kaldi-$_kaldi.tar.gz::https://github.com/alphacep/kaldi/archive/$_kaldi.tar.gz
 	kaldi-to-openblas-0.3.21.patch.noauto
@@ -59,21 +63,40 @@ build() {
 		USE_SHARED_MATH=1 \
 		HAVE_OPENBLAS=1 \
 		HAVE_OPENBLAS_CLAPACK=0
+
+	cd "$builddir/python"
+	gpep517 build-wheel \
+		--wheel-dir .dist \
+		--output-fd 3 3>&1 >&2
 }
 
 package() {
 	install -Dm644 src/vosk_api.h -t "$pkgdir"/usr/include
 	install -Dm644 src/libvosk.so -t "$pkgdir"/usr/lib
+
+	cd "$builddir/python"
+	python3 -m installer -d "$pkgdir" \
+		.dist/*.whl
 }
 
 check() {
 	cd c
 	ln -sfv /usr/share/vosk-models/small-en-us model
 	ln -sfv ../python/example/test.wav .
-	make LDFLAGS="-L../src -lvosk -ldl -lpthread -lopenblas -lgfortran -Wl,-rpath,../src $LDFLAGS"
+	make LDFLAGS="-L../src -lvosk -pthread -lopenblas -lgfortran -Wl,-rpath,../src $LDFLAGS"
 	./test_vosk | grep -q '"text" : "zero one eight zero three"'
 }
 
+_py3() {
+	depends="
+		py3-requests
+		py3-srt
+		py3-tqdm
+		py3-websockets
+		"
+	amove usr/lib/python*
+	ln -sfv ../../../libvosk.so "$subpkgdir"/usr/lib/python*/site-packages/vosk/libvosk.so
+}
 
 sha512sums="
 cf55ddb4abf078c1a16a5ae149d3ac141da9fd88ccd9bed018df5f5c0fd489517ffe0a1dc9b20b4f5b07738cfac771f9c08637c9e92e8d494727124b76772eb1  vosk-api-0.3.45.tar.gz
