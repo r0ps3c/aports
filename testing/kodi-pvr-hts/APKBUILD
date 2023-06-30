@@ -3,11 +3,11 @@
 pkgname=kodi-pvr-hts
 pkgver=20.6.2
 _realname=Nexus
-pkgrel=0
+pkgrel=1
 pkgdesc="Kodi's Tvheadend HTSP client addon"
 options="!check" # no test suite
 url="https://github.com/kodi-pvr/pvr.hts"
-arch="x86 x86_64 aarch64 armv7" # kodi
+arch="x86_64 aarch64 armv7" # kodi is available only on these architectures
 license="GPL-2.0-only"
 makedepends="cmake kodi-dev samurai"
 source="$pkgname-$pkgver-$_realname.tar.gz::https://github.com/kodi-pvr/pvr.hts/archive/$pkgver-$_realname.tar.gz
