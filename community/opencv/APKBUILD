@@ -2,7 +2,7 @@
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
 pkgname=opencv
 pkgver=4.8.0
-pkgrel=1
+pkgrel=3
 pkgdesc="Open source computer vision and machine learning library"
 url="https://opencv.org/"
 # s390x blocked by vtk -> netcdf
@@ -38,12 +38,16 @@ makedepends="
 	lld
 	samurai
 	python3-dev
+	py3-gpep517
 	py3-numpy-dev
+	py3-setuptools
+	py3-wheel
 	"
 subpackages="
 	$pkgname-dbg
 	$pkgname-dev
 	$pkgname-doc
+	py3-$pkgname-pyc
 	py3-$pkgname:_py3
 	libopencv_aruco:_lib
 	libopencv_calib3d:_lib
@@ -110,7 +114,6 @@ build() {
 		;;
 	esac
 
-	export SETUPTOOLS_USE_DISTUTILS=stdlib
 	# reduce size of debug syms
 	CFLAGS="$CFLAGS -g1" CXXFLAGS="$CXXFLAGS -g1" \
 	LDFLAGS="$LDFLAGS -fuse-ld=lld" \
@@ -135,7 +138,7 @@ build() {
 		-DBUILD_EXAMPLES=OFF \
 		-DINSTALL_C_EXAMPLES=OFF \
 		-DINSTALL_PYTHON_EXAMPLES=OFF \
-		-DOPENCV_SKIP_PYTHON_LOADER=ON \
+		-DOPENCV_SKIP_PYTHON_LOADER=OFF \
 		-DOPENCV_GENERATE_PKGCONFIG=ON \
 		-DOPENCV_ENABLE_NONFREE=OFF \
 		-DOPENCV_GENERATE_SETUPVARS=OFF \
@@ -144,6 +147,11 @@ build() {
 		-DPYTHON_EXECUTABLE=/usr/bin/python3 \
 		$extra_cmake_flags
 	cmake --build build
+
+	cd modules/python/package
+	gpep517 build-wheel \
+		--wheel-dir "$builddir"/.dist \
+		--output-fd 3 3>&1 >&2
 }
 
 check() {
@@ -152,15 +160,16 @@ check() {
 }
 
 package() {
-	export SETUPTOOLS_USE_DISTUTILS=stdlib
+	python3 -m installer -d "$pkgdir" \
+		.dist/*.whl
 	DESTDIR="$pkgdir" cmake --install build
+	python3 -m compileall -fq "$pkgdir"/usr/lib/python*
 }
 
 samples() {
 	pkgdesc="OpenCV Samples"
-	depends="$pkgname=$pkgver"
-	mkdir -p "$subpkgdir/usr/share/opencv4"
-	mv "$pkgdir/usr/share/opencv4/samples" "$subpkgdir/usr/share/opencv4"
+	depends="$pkgname=$pkgver-r$pkgrel"
+	amove usr/share/opencv4/samples
 }
 
 _py3() {

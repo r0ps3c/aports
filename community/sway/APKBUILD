@@ -4,7 +4,7 @@
 # Maintainer: Michał Polański <michal@polanski.me>
 pkgname=sway
 pkgver=1.8.1
-pkgrel=2
+pkgrel=3
 pkgdesc="i3-compatible window manager for Wayland"
 url="https://swaywm.org/"
 license="MIT"
@@ -46,7 +46,7 @@ source="$pkgname-$pkgver.tar.gz::https://github.com/swaywm/sway/archive/$pkgver.
 	remove-aports-git-version.patch
 	no-werror.patch
 	"
-options="!check" # no test suite
+options="setcap !check" # no test suite
 
 provides="sway-virtual"
 provider_priority=100
@@ -68,10 +68,6 @@ package() {
 
 	install -D -m644 "$srcdir"/sway.desktop \
 		-t "$pkgdir"/usr/share/wayland-sessions/
-
-	# move fish completion files where they are expected
-	mv "$pkgdir"/usr/share/fish/vendor_completions.d \
-		"$pkgdir"/usr/share/fish/completions
 }
 
 wallpapers() {

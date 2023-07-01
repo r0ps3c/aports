@@ -2,9 +2,9 @@
 # Contributor: psykose <alice@ayaya.dev>
 # Maintainer: team/gnome <alice@ayaya.dev>
 pkgname=epiphany
-pkgver=44.3
-pkgrel=1
-pkgdesc="A simple, clean, beautiful view of the web"
+pkgver=44.5
+pkgrel=0
+pkgdesc="Simple, clean, beautiful view of the web"
 url="https://wiki.gnome.org/Apps/Web"
 arch="all"
 license="GPL-3.0-or-later"
@@ -72,5 +72,5 @@ package() {
 }
 
 sha512sums="
-ed92eaf1300b1d6b0190aa613ed77e39d7978b8169edaa560404b1b64a1ee1d496f2cffbda83553a2faed2496e535dc99e219fc7fb22e41eacd19451ad868f23  epiphany-44.3.tar.xz
+cf3a25676e8129d362234c87c8199a5973b80e3cc87e801be2199da4474042e840b63a156324eaa40485b5a24aa15835104a46ef041b6c7b400ed623422e99ec  epiphany-44.5.tar.xz
 "
