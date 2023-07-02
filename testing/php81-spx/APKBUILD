@@ -1,13 +1,13 @@
 # Maintainer: Andy Postnikov <apostnikov@gmail.com>
-pkgname=php8-spx
+pkgname=php81-spx
 _extname=spx
 pkgver=0.4.13
 pkgrel=0
-pkgdesc="A simple & straight-to-the-point PHP 8.0 profiling extension with its built-in web UI"
+pkgdesc="A simple & straight-to-the-point PHP 8.1 profiling extension with its built-in web UI"
 url="https://github.com/NoiseByNorthwest/php-spx"
 arch="x86_64 aarch64"
 license="GPL-3.0-or-later"
-_phpv=8
+_phpv=81
 _php=php$_phpv
 depends="$_php-common"
 makedepends="$_php-dev zlib-dev"
