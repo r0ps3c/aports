@@ -2,7 +2,7 @@
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
 pkgname=kosmindoormap
 pkgver=23.04.2
-pkgrel=0
+pkgrel=1
 # armhf blocked by qt5-qtdeclarative
 arch="all !armhf"
 url="https://invent.kde.org/libraries/kosmindoormap"
@@ -26,6 +26,7 @@ source="https://download.kde.org/stable/release-service/$pkgver/src/kosmindoorma
 subpackages="$pkgname-dev $pkgname-lang"
 
 build() {
+	LDFLAGS="$LDFLAGS -Wl,--copy-dt-needed-entries" \
 	cmake -B build -G Ninja \
 		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 		-DCMAKE_INSTALL_PREFIX=/usr \
