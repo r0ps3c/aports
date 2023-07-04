@@ -1,15 +1,15 @@
 # Contributor: Adam Thiede <me@adamthiede.com>
 # Maintainer: Adam Thiede <me@adamthiede.com>
 pkgname=reader
-pkgver=0.4.0
-pkgrel=5
+pkgver=0.4.1
+pkgrel=1
 pkgdesc="reader parses a web page for its actual content and displays it in nicely highlighted text on the command line."
 url="https://github.com/mrusme/reader"
 arch="all"
 # not specified if -only
 license="GPL-3.0"
 makedepends="go"
-source="$pkgname-$pkgver.tar.gz::https://github.com/mrusme/reader/archive/v$pkgver.tar.gz"
+source="$pkgname-$pkgver-2.tar.gz::https://github.com/mrusme/reader/archive/v$pkgver.tar.gz"
 options="!check" # no tests
 
 export GOCACHE="${GOCACHE:-"$srcdir/go-cache"}"
@@ -25,5 +25,5 @@ package() {
 }
 
 sha512sums="
-210798d4ef7d95de3fe5a3d93b0082ae6837ddc66d5e032d04721a8cdd9498945c51cf234ca5b37c8db0da7958ba0d11ad0c8c5592ee4eb99e674aa27f150294  reader-0.4.0.tar.gz
+f69cb9bb807051b7e9368f4471ce88dc3a1d4fad68e238e2d8e4361ec8574ed564869695672299dd5af5efa3bd68e8994ea153ad41b05d506f40fed3e4b122ad  reader-0.4.1-2.tar.gz
 "

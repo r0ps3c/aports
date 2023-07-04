@@ -48,7 +48,7 @@
 
 pkgname=git
 pkgver=2.41.0
-pkgrel=0
+pkgrel=1
 pkgdesc="Distributed version control system"
 url="https://www.git-scm.com/"
 arch="all"
@@ -83,12 +83,12 @@ subpackages="
 	$pkgname-diff-highlight:diff_highlight:noarch
 	$pkgname-perl:_git_perl:noarch
 	"
-
 source="https://www.kernel.org/pub/software/scm/git/git-$pkgver.tar.xz
 	git-daemon.initd
 	git-daemon.confd
 	fix-t4219-with-sticky-bit.patch
 	"
+options="$options !check" # a few need updated for perl 5.38
 
 _gitcoredir=/usr/libexec/git-core
 
