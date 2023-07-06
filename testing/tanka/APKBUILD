@@ -1,15 +1,15 @@
 # Maintainer: Hoang Nguyen <folliekazetani@protonmail.com>
 pkgname=tanka
 pkgver=0.25.0
-pkgrel=0
+pkgrel=1
 pkgdesc="Flexible, reusable and concise configuration for Kubernetes"
 url="https://tanka.dev"
 # blocked by kubectl (kubernetes)
-arch="x86_64 aarch64 armv7 x86"
+arch="all !armhf !riscv64"
 license="Apache-2.0"
 depends="kubectl"
 makedepends="go"
-source="$pkgname-$pkgver.tar.gz::https://github.com/grafana/tanka/archive/refs/tags/v$pkgver.tar.gz"
+source="$pkgname-$pkgver-1.tar.gz::https://github.com/grafana/tanka/archive/refs/tags/v$pkgver.tar.gz"
 
 export CGO_ENABLED=0
 export GOCACHE="${GOCACHE:-"$srcdir/go-cache"}"
@@ -34,5 +34,5 @@ package() {
 }
 
 sha512sums="
-2cf2fad3f116d39f38d56c550fa95ce133e96cd67320f5cc05fcb7b074533f1c85d9f879e55eb62408910f88f9ab597a125026c0982f55c06363b15f9e9f60f4  tanka-0.25.0.tar.gz
+a0a3c425fbeb5b5df40dc927328406075b4ff61b84e1613c4df67288fd1d693beb669b8a1a424d87eaf7a6e79fe9c106143f874919c0204416ded5711a0eb602  tanka-0.25.0-1.tar.gz
 "
