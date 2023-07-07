@@ -12,13 +12,9 @@ jobs:
         with:
           base: 3.18-stable
           head: 3.18-stable
-      - name: Trigger Workflow
-        uses: actions/github-script@v6
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
         with:
-          script: |
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: 'docker-s3ql',
-              workflow_id: 'docker-publish.yml',
-              ref: 'main',
-            })
+          token: ${{ secrets.CALL_REPO_DISPATCH }}
+          repository: r0ps3c/docker-s3ql
+          event-type: parent-updated
