@@ -3,6 +3,9 @@ name: Sync from upstream
 on:
   workflow_dispatch: # on button click
   workflow_call:
+    secrets:
+      CALL_REPO_DISPATCH:
+        required: false
 
 jobs:
   sync:
