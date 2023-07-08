@@ -15,3 +15,5 @@ jobs:
           head: master
   call-workflow:
     uses: r0ps3c/aports/.github/workflows/autosync.yml@3.18-stable
+    secrets:
+      CALL_REPO_DISPATCH: ${{ secrets.CALL_REPO_DISPATCH }}
