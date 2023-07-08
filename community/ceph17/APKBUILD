@@ -4,7 +4,7 @@
 # Maintainer: Duncan Bellamy <dunk@denkimushi.com>
 _pkgname=ceph
 pkgver=17.2.6
-pkgrel=6
+pkgrel=7
 _majorver=${pkgver%%.*}
 pkgname=$_pkgname$_majorver
 pkgdesc="Ceph is a distributed object store and file system, version $_majorver"
@@ -223,12 +223,13 @@ _py3_sitelib() {
 build() {
 	export CEPH_BUILD_VIRTUALENV="$builddir"
 	export NPM_REGISTRY="https://npm.open-registry.dev"
-	export CFLAGS="${CFLAGS/-fno-plt}"
-	export CXXFLAGS="${CXXFLAGS/-fno-plt} -DSTATX_INO=0x100U -Wno-deprecated-declarations"
+	export CFLAGS="${CFLAGS/-fno-plt} -O2 -DNDEBUG"
+	# XXX: LARGEFILE64
+	export CXXFLAGS="${CXXFLAGS/-fno-plt} -D_LARGEFILE64_SOURCE -O2 -DNDEBUG -DSTATX_INO=0x100U -Wno-deprecated-declarations"
 
 	case "$CARCH" in
-		s390x) _par="OFF" ;;
-		*)     _par="ON"  ;;
+	s390x) local par="OFF" ;;
+	*) local par="ON" ;;
 	esac
 
 	cmake -B build -G Ninja \
@@ -244,7 +245,7 @@ build() {
 		-DWITH_MANPAGE=ON \
 		-DWITH_PYTHON3=3 \
 		-DWITH_RADOSGW_AMQP_ENDPOINT=OFF \
-		-DWITH_RADOSGW_SELECT_PARQUET="$_par" \
+		-DWITH_RADOSGW_SELECT_PARQUET="$par" \
 		-DWITH_RDMA=OFF \
 		-DWITH_REENTRANT_STRSIGNAL=ON \
 		-DWITH_SPDK=OFF \
