@@ -11,13 +11,13 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - id: fork_sync
+      - id: sync
         uses: r0ps3c/fork-sync@v3
         with:
           base: 3.18-stable
           head: 3.18-stable
       - name: Repository Dispatch
-        if: ${{steps.fork_sync.updated == "true"}} 
+        if: steps.sync.outputs.updated == true
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.CALL_REPO_DISPATCH }}
