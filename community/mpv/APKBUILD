@@ -8,9 +8,9 @@ pkgname=mpv
 # https://github.com/mpv-player/mpv#release-cycle
 # the stable releases are just arbitrary git, so we can update more often.
 # it's the same stability policy regardless
-pkgver=0.35.1_git20230706
+pkgver=0.35.1_git20230709
 pkgrel=0
-_gitrev=2da0c0b33f120180f96ea895aae0a6513177de64
+_gitrev=ab3002851e4109e031c1b361f3afe8454cf7dee8
 pkgdesc="Video player based on MPlayer/mplayer2"
 url="https://mpv.io/"
 license="GPL-2.0-or-later"
@@ -123,5 +123,5 @@ package() {
 }
 
 sha512sums="
-1c92bea8f8e46ca0249d240920128c39e88a59d1f101829afe33d8cc4ff2c2f4da205a2974f319f523b1602b1c028f09e871b27366bcf27a329f2d4fc22630dd  mpv-2da0c0b33f120180f96ea895aae0a6513177de64.tar.gz
+6444ef224462500e1a53facff1e6e6c504c1ebcddef74e22ce9e42ae9e7a8e20e090937004a45b83f26d3fb628b60833d5d5f10493593dbd17770aea6c9bcca2  mpv-ab3002851e4109e031c1b361f3afe8454cf7dee8.tar.gz
 "
