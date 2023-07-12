@@ -1,0 +1,29 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Sören Tempel <soeren+alpine@soeren-tempel.net>
+pkgname=edward
+pkgver=1.0.0
+pkgrel=0
+pkgdesc="Implementation of the ed text editor in Scheme"
+url="https://github.com/nmeum/edward"
+arch="all"
+license="GPL-3.0-or-later"
+makedepends="chicken"
+checkdepends="ed"
+subpackages="$pkgname-doc"
+source="https://github.com/nmeum/edward/releases/download/$pkgver/edward-$pkgver.tar.gz"
+
+build() {
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make PREFIX=/usr DESTDIR=$pkgdir install
+}
+
+sha512sums="
+4370c308ea435c593b0d2e7d35245f2ebb6740b6bd2adf4605b98bd465529120857e7a4112235e2bec1ed8f579da6a3bddb3524650cb0d4984b824321e735dc1  edward-1.0.0.tar.gz
+"
