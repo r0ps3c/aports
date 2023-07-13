@@ -2,13 +2,13 @@
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=boringproxy
 pkgver=0.10.0
-pkgrel=4
+pkgrel=5
 pkgdesc="Simple tunneling reverse proxy with a fast web UI and auto HTTPS"
 url="https://github.com/boringproxy/boringproxy"
 options="!check" # no tests
 arch="all"
 license="MIT"
-makedepends="go inkscape libcap-utils"
+makedepends="go inkscape"
 source="$pkgname-$pkgver.tar.gz::https://github.com/boringproxy/boringproxy/archive/refs/tags/v$pkgver.tar.gz"
 
 export GOCACHE="${GOCACHE:-"$srcdir/go-cache"}"
@@ -25,7 +25,6 @@ build() {
 
 package() {
 	install -Dm0755 boringproxy -t "$pkgdir"/usr/bin
-	setcap cap_net_bind_service=+ep "$pkgdir"/usr/bin/boringproxy
 }
 
 sha512sums="

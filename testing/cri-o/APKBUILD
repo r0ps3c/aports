@@ -4,7 +4,7 @@
 # Maintainer: ungleich <foss@ungleich.ch>
 pkgname=cri-o
 pkgver=1.27.0
-pkgrel=2
+pkgrel=3
 pkgdesc="OCI-based implementation of Kubernetes Container Runtime Interface"
 url="https://github.com/cri-o/cri-o/"
 arch="all"
@@ -14,8 +14,8 @@ license="Apache-2.0"
 options="net chmod-clean !check"
 depends="
 	cni-plugins
-	conntrack-tools
 	conmon
+	conntrack-tools
 	containers-common
 	iproute2
 	iptables
@@ -33,6 +33,7 @@ makedepends="
 	libselinux-dev
 	lvm2-dev
 	ostree-dev
+	sqlite-dev
 	tzdata
 	"
 checkdepends="bats cri-tools jq parallel sudo conmon"
@@ -69,7 +70,7 @@ export GOBIN="$GOPATH/bin"
 
 build() {
 	# https://github.com/cri-o/cri-o/blob/master/install.md#build-tags
-	make BUILDTAGS="seccomp selinux apparmor containers_image_openpgp containers_image_ostree_stub"
+	make BUILDTAGS="libsqlite3 seccomp selinux apparmor containers_image_openpgp containers_image_ostree_stub"
 }
 
 check() {
@@ -77,11 +78,17 @@ check() {
 }
 
 package() {
-	make DESTDIR="$pkgdir" PREFIX=/usr CRICTL_CONFIG_DIR="/etc/crio" OCIUMOUNTINSTALLDIR="/etc/crio" FISHINSTALLDIR=/usr/share/fish/vendor_completions.d install
+	make \
+		DESTDIR="$pkgdir" \
+		PREFIX=/usr \
+		CRICTL_CONFIG_DIR="/etc/crio" \
+		OCIUMOUNTINSTALLDIR="/etc/crio" \
+		FISHINSTALLDIR=/usr/share/fish/vendor_completions.d \
+		install.bin-nobuild install.man-nobuild install.completions install.config-nobuild
 
 	# We want it in etc so apk does not overwrite it
 	mkdir -p  "$pkgdir"/usr/share/oci-umount/oci-umount.d/
-	ln -sf /etc/crio/crio-umount.conf "$pkgdir"/usr/share/oci-umount/oci-umount.d/crio-umount.conf
+	ln -sf ../../../../etc/crio/crio-umount.conf "$pkgdir"/usr/share/oci-umount/oci-umount.d/crio-umount.conf
 
 	# The CNI plugins are recommended to be installed as examples
 	install -Dm644 contrib/cni/*.conflist -t "$pkgdir"/usr/share/doc/cri-o/examples/cni/
