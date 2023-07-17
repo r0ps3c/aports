@@ -3,7 +3,7 @@
 # Maintainer: wener <wenermail@gmail.com>
 pkgname=grpc
 pkgver=1.56.2
-pkgrel=0
+pkgrel=2
 pkgdesc="The C based gRPC"
 url="https://grpc.io/"
 arch="all"
@@ -55,6 +55,12 @@ subpackages="
 	py3-grpcio-pyc
 	py3-grpcio:grpcio
 	ruby-grpc:_ruby
+	libaddress_sorting:lib
+	libgpr:lib
+	libgrpc:lib
+	libgrpc_authorization_provider:lib
+	libgrpc_unsecure:lib
+	libupb:lib
 	"
 _googletest_rev=0e402173c97aea7a00749e825b194bfede4f2e45
 
@@ -106,11 +112,11 @@ prepare() {
 }
 
 build() {
-	cmake -B _build \
-		-DCMAKE_BUILD_TYPE=MinSizeRel \
+	export CFLAGS="$CFLAGS -flto=auto -DNDEBUG -O2"
+	export CXXFLAGS="$CXXFLAGS -flto=auto -DNDEBUG -O2"
+	cmake -B _build -G Ninja \
+		-DCMAKE_BUILD_TYPE=None \
 		-DCMAKE_INSTALL_PREFIX=/usr \
-		-DCMAKE_CXX_FLAGS="$CXXFLAGS -w" \
-		-DCMAKE_C_FLAGS="$CFLAGS -w" \
 		-DCMAKE_CXX_STANDARD=17 \
 		-DBUILD_SHARED_LIBS=True \
 		-DgRPC_INSTALL=ON \
@@ -122,8 +128,7 @@ build() {
 		-DgRPC_BENCHMARK_PROVIDER=package \
 		-DgRPC_RE2_PROVIDER=package \
 		-DgRPC_BACKWARDS_COMPATIBILITY_MODE=OFF \
-		-DgRPC_BUILD_TESTS="$(want_check && echo ON || echo OFF)" \
-		-G Ninja
+		-DgRPC_BUILD_TESTS="$(want_check && echo ON || echo OFF)"
 	cmake --build _build
 
 	GRPC_PYTHON_CFLAGS="-std=c++17" \
@@ -246,6 +251,13 @@ _ruby() {
 		pb/src/ \
 		pb/test/ \
 		spec/
+}
+
+lib() {
+	pkgdesc="$pkgdesc ($subpkgname library)"
+	depends="$pkgname=$pkgver-r$pkgrel"
+
+	amove usr/lib/$subpkgname.so.*
 }
 
 sha512sums="

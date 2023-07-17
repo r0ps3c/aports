@@ -1,9 +1,9 @@
 # Contributor: Leo <thinkabit.ukim@gmail.com>
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
 pkgname=libquotient
-pkgver=0.7.2
-pkgrel=2
-pkgdesc="Qt5 library for cross-platform clients for Matrix"
+pkgver=0.8.0
+pkgrel=1
+pkgdesc="Qt library for cross-platform clients for Matrix"
 url="https://github.com/quotient-im/libQuotient"
 arch="all !armhf" # blocked by qt5-qtmultimedia
 license="LGPL-2.1-or-later"
@@ -17,32 +17,39 @@ makedepends="$depends_dev
 	cmake
 	samurai
 	"
-subpackages="$pkgname-dev"
+subpackages="$pkgname-qt5 $pkgname-dev"
 source="https://github.com/quotient-im/libQuotient/archive/$pkgver/libQuotient-$pkgver.tar.gz"
 builddir="$srcdir/libQuotient-$pkgver"
 
 build() {
+	CXXFLAGS="$CXXFLAGS -flto=auto" \
 	cmake -B build -G Ninja \
 		-DCMAKE_BUILD_TYPE=MinSizeRel \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_INSTALL_LIBDIR=lib \
 		-DBUILD_SHARED_LIBS=True \
 		-DBUILD_TESTING=True \
-		-DQuotient_ENABLE_E2EE=True
+		-DQuotient_ENABLE_E2EE=True \
+		-DQuotient_INSTALL_TESTS=False
 	cmake --build build
 }
 
 check() {
-	cd build
-
 	# testolmaccount requires a running Matrix homeserver
-	CTEST_OUTPUT_ON_FAILURE=TRUE ctest -E "testolmaccount"
+	ctest --test-dir build --output-on-failure -E "testolmaccount"
 }
 
 package() {
 	DESTDIR="$pkgdir" cmake --install build
+	# android only
+	rm -r "$pkgdir"/usr/share/ndk-modules
+}
+
+qt5() {
+	pkgdesc="$pkgdesc (qt5)"
+	amove usr/lib/libQuotient.so.*
 }
 
 sha512sums="
-ba849b938c0bf93e075da466a8360703fb903ac2735b35a7e83944a1288c9324ff76daaf57164144c55cef450fc658e42e6dcacfd23f87a4db455019e9c21f47  libQuotient-0.7.2.tar.gz
+5ea12d8c1e0091a0dd1a6130b9ca540f993ad560acbe6391522eacae6c38ef83665338bb407d0898d03bac5e0660b46db2f735b9ded35ff4b195a8d34c8c96ff  libQuotient-0.8.0.tar.gz
 "

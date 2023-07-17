@@ -2,18 +2,17 @@
 # Maintainer: Iztok Fister, Jr. <iztok@iztok-jr-fister.eu>
 pkgname=cffconvert
 pkgver=2.0.0
-_pkgorig=cff-converter-python
-pkgrel=3
+pkgrel=4
 pkgdesc="Command line program to validate and convert CITATION.cff files"
 url="https://github.com/citation-file-format/cff-converter-python"
 arch="noarch"
-license="Apache-2.0 license"
+license="Apache-2.0"
 depends="python3 py3-click py3-jsonschema py3-pykwalify py3-requests py3-ruamel.yaml"
-checkdepends="python3-dev py3-pytest"
+checkdepends="py3-pytest"
 makedepends="py3-setuptools"
 subpackages="$pkgname-pyc"
-source="$pkgname-$pkgver.tar.gz::https://github.com/citation-file-format/cff-converter-python/archive/$pkgver/$_pkgorig-$pkgver.tar.gz"
-builddir="$srcdir/$_pkgorig-$pkgver"
+source="$pkgname-$pkgver-2.tar.gz::https://github.com/citation-file-format/cff-converter-python/archive/$pkgver.tar.gz"
+builddir="$srcdir/cffconvert-$pkgver"
 options="!check" # a minor portion of tests are failing
 
 build() {
@@ -29,5 +28,5 @@ package() {
 }
 
 sha512sums="
-59a33af498a370390f2cfa78dc011d6488e7f71cb8d569213da74c7c61cfe641fffb6345f65d8b877287b4578fde238d93269c448dc19ddf5aaf0c9e314bf22b  cffconvert-2.0.0.tar.gz
+e2fa31ae8b9426c61f794316e2cfe51ec55b3583e57f80d447950aa2b2d500056801b17c53da53d3520560f07f160dad7bf2111d58bbf236537abebc097984e6  cffconvert-2.0.0-2.tar.gz
 "
