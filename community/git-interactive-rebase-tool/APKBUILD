@@ -1,8 +1,8 @@
 # Contributor: Jakub Jirutka <jakub@jirutka.cz>
 # Maintainer: Jakub Jirutka <jakub@jirutka.cz>
 pkgname=git-interactive-rebase-tool
-pkgver=2.2.1
-pkgrel=2
+pkgver=2.3.0
+pkgrel=0
 pkgdesc="Terminal based sequence editor for interactive rebase"
 url="https://gitrebasetool.mitmaro.ca"
 arch="all !s390x !riscv64" # limited by rust/cargo
@@ -16,6 +16,19 @@ export CARGO_PROFILE_RELEASE_OPT_LEVEL="z"
 
 prepare() {
 	default_prepare
+
+	# Rust target triple.
+	local target=$(rustc -vV | sed -n 's/host: //p')
+
+	# Build against system-provided libs
+	mkdir -p .cargo
+	cat >> .cargo/config.toml <<-EOF
+		[target.$target]
+		git2 = { rustc-link-lib = ["git2"] }
+	EOF
+
+	# open64
+	cargo update -p getrandom --precise 0.2.10
 
 	cargo fetch --target="$CTARGET" --locked
 }
@@ -36,5 +49,5 @@ package() {
 }
 
 sha512sums="
-beb4e41a99ea9a1ce47de324152c146b759abe6301b46203d4f7947fb064f4ddeb6dce437c30de29a5e3a0d4aa214eaad627f068a7e3f3ae5d5db32912213b48  git-interactive-rebase-tool-2.2.1.tar.gz
+11d4be71bf6f55f541046ea607b965ffd0f044e525ed3dfbfc37c8d986cda6819c1838d2852e7d6468f43f9482766a3cddb5b8305d09a0d6fd5596b85d6671af  git-interactive-rebase-tool-2.3.0.tar.gz
 "

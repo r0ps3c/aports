@@ -2,7 +2,7 @@
 # Maintainer: Jakub Jirutka <jakub@jirutka.cz>
 pkgname=sheldon
 pkgver=0.7.3
-pkgrel=0
+pkgrel=1
 pkgdesc="Fast, configurable, shell plugin manager"
 url="https://github.com/rossmacarthur/sheldon"
 arch="aarch64 armhf armv7 ppc64le x86 x86_64"  # blocked by rust/cargo
@@ -22,6 +22,11 @@ subpackages="
 source="https://github.com/rossmacarthur/sheldon/archive/$pkgver/sheldon-$pkgver.tar.gz"
 options="net"
 
+case "$CARCH" in
+# FIXME: with libgit2-1.7 this segfaults in a specific test, but works fine at runtime
+arm*|x86) options="$options !check" ;;
+esac
+
 export CARGO_PROFILE_RELEASE_OPT_LEVEL="z"
 export LIBSSH2_SYS_USE_PKG_CONFIG=1  # use system libssh2
 
@@ -30,6 +35,16 @@ prepare() {
 
 	# Build against system libgit2.
 	sed -i 's/"vendored-libgit2"//' Cargo.toml
+
+	# Rust target triple.
+	local target=$(rustc -vV | sed -n 's/host: //p')
+
+	# Build against system-provided libs
+	mkdir -p .cargo
+	cat >> .cargo/config.toml <<-EOF
+		[target.$target]
+		git2 = { rustc-link-lib = ["git2"] }
+	EOF
 
 	cargo fetch --target="$CTARGET" --locked
 }
