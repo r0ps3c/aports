@@ -2,7 +2,7 @@
 # Maintainer: psykose <alice@ayaya.dev>
 pkgname=aws-cli
 pkgver=2.13.3
-pkgrel=0
+pkgrel=1
 pkgdesc="Universal Command Line Interface for Amazon Web Services (v2)"
 url="https://github.com/aws/aws-cli"
 # s390x: py3-awscrt doesn't support big-endian
@@ -21,7 +21,7 @@ depends="
 	py3-jmespath
 	py3-urllib3
 	py3-prompt_toolkit
-	py3-ruamel.yaml
+	py3-ruamel.yaml<0.17.29
 	python3
 	"
 makedepends="
@@ -46,7 +46,6 @@ source="$pkgname-$pkgver.tar.gz::https://github.com/aws/aws-cli/archive/$pkgver.
 	fix-env.patch
 	tmpfile-index.patch
 	"
-options="!check" # re-enable later after fixing some crashhangs
 
 provides="aws-cli-v2=$pkgver-r$pkgrel"
 replaces="aws-cli-v2"
@@ -77,17 +76,18 @@ check() {
 
 	python3 -m venv --clear --without-pip --system-site-packages .testenv
 	.testenv/bin/python3 -m installer .dist/*.whl
+	timeout 1800 \
 	.testenv/bin/python3 -m pytest tests \
 		-n "$cores" \
 		--dist loadfile \
-		--deselect=tests/functional/autocomplete/test_main.py::test_smoke_test_completer \
 		--ignore=tests/backends \
 		--ignore=tests/integration \
-		--ignore=tests/functional/botocore/leak \
-		--ignore=tests/unit/customizations/wizard \
 		--ignore=tests/functional/eks \
 		--ignore=tests/functional/botocore/test_credentials.py \
-		-k 'not test_input_buffer_initialization and not test_doc_panel_content and not test_history_mode_switching and not test_user_agent'
+		--deselect=tests/functional/autocomplete/test_main.py::test_smoke_test_completer \
+		--deselect=tests/functional/botocore/test_credentials.py::SSOSessionTest::test_token_chosen_from_provider \
+		--deselect=tests/functional/eks/test_kubeconfig.py::TestKubeconfigLoader::test_load_empty \
+		--deselect=tests/functional/eks/test_kubeconfig.py::TestKubeconfigLoader::test_load_noexist
 }
 
 package() {
