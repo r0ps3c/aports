@@ -1,9 +1,9 @@
-# Maintainer: psykose <alice@ayaya.dev>
-pkgname=kde-sol
-pkgver=1.0.0
+# Maintainer:
+pkgname=kde-fiery
+pkgver=1.1.0
 pkgrel=0
 pkgdesc="KDE Convergent web browser"
-url="https://invent.kde.org/maui/sol"
+url="https://invent.kde.org/maui/fiery"
 # qt5-qtwebengine
 arch="x86_64 x86 aarch64 armv7"
 license="LicenseRef-KDE-Accepted-LGPL"
@@ -19,9 +19,11 @@ makedepends="
 	qt5-qtwebengine-dev
 	samurai
 	"
-source="https://invent.kde.org/maui/sol/-/archive/v$pkgver/sol-v$pkgver.tar.gz"
-builddir="$srcdir/sol-v$pkgver"
+source="https://invent.kde.org/maui/fiery/-/archive/v$pkgver/fiery-v$pkgver.tar.gz"
+builddir="$srcdir/fiery-v$pkgver"
 options="!check !spdx" # no tests
+provides="kde-sol=$pkgver-r$pkgrel"
+replaces="kde-sol"
 
 build() {
 	CXXFLAGS="$CXXFLAGS -flto=auto" \
@@ -36,5 +38,5 @@ package() {
 }
 
 sha512sums="
-deeb06fada8c82b452ad6f2aa4747115ef1341d077ee334a2a0108c79bf3811abb527583aeb819b1a4d7e92060a47d78dfc2979ea5a12cb940685132484b3544  sol-v1.0.0.tar.gz
+5ea789047f7f7636a147f9fa7b3849cc096c7db1388f463854fb0ff2759e8064046fa89cc777499988aae114f50d6fd7c9af25c94a2701fbbf83c67a88c6ae09  fiery-v1.1.0.tar.gz
 "
