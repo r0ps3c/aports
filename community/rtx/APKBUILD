@@ -1,12 +1,12 @@
 # Maintainer: Jeff Dickey <alpine@rtx.pub>
 pkgname=rtx
-pkgver=1.35.2
+pkgver=1.35.7
 pkgrel=0
 pkgdesc="Polyglot runtime and dev tool version manager"
 url="https://rtx.pub"
 arch="all !s390x !riscv64 !ppc64le" # limited by cargo
 license="MIT"
-makedepends="cargo bash direnv cargo-auditable"
+makedepends="cargo bash direnv cargo-auditable openssl-dev"
 source="$pkgname-$pkgver.tar.gz::https://github.com/jdxcode/rtx/archive/refs/tags/v$pkgver.tar.gz"
 
 prepare() {
@@ -16,11 +16,11 @@ prepare() {
 }
 
 build() {
-	cargo auditable build --release --frozen
+	cargo auditable build --release --frozen --bin rtx
 }
 
 check() {
-	cargo test --all-features --frozen
+	cargo test --frozen
 }
 
 package() {
@@ -29,5 +29,5 @@ package() {
 }
 
 sha512sums="
-b629036d033402d7e3e0225b857c2c57506ac51e48a04af4cfa22886f5ec8d76903d9fb41da2b987a6f9a7cdd309432af323997a96ebffbe49e9ad15df079b72  rtx-1.35.2.tar.gz
+471a2face853f4bd3c23c92d9e87324652fadd1ee366bd39f9afbe8e427fda295ecd6ea63de76a98d878e45c91ee03c1acdc5577a65986f83ec3e8b04040c043  rtx-1.35.7.tar.gz
 "
