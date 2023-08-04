@@ -1,0 +1,30 @@
+# Contributor: David Demelier <markand@malikania.fr>
+# Maintainer: David Demelier <markand@malikania.fr>
+pkgname=mkdocs-material-extensions
+pkgver=1.1.1
+pkgrel=1
+pkgdesc="Markdown extension resources for MkDocs Material"
+url="https://github.com/facelessuser/mkdocs-material-extensions"
+arch="noarch"
+license="MIT"
+depends="python3"
+makedepends="py3-gpep517 py3-hatchling py3-installer"
+subpackages="$pkgname-pyc"
+source="https://files.pythonhosted.org/packages/source/m/mkdocs-material-extensions/mkdocs_material_extensions-$pkgver.tar.gz"
+options="!check" # Recursive dependency with mkdocs-material
+builddir="$srcdir/mkdocs_material_extensions-$pkgver"
+
+build() {
+	gpep517 build-wheel \
+		--wheel-dir .dist \
+		--output-fd 3 3>&1 >&2
+}
+
+package() {
+	python3 -m installer -d "$pkgdir" \
+		.dist/*.whl
+}
+
+sha512sums="
+3a6df47066b0b518d3866aff7911eaa54d8c09adc8b0e4a1bfdd1e482cb3db6faf39d14f5f96f85bbd09200df54a0c69d4e0bffd02f58cc74d63df1c7564c8f4  mkdocs_material_extensions-1.1.1.tar.gz
+"
