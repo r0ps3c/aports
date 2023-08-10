@@ -38,6 +38,7 @@ makedepends="
 	samurai
 	"
 subpackages="$pkgname-lang"
+_repo_url="https://invent.kde.org/network/angelfish.git"
 source="https://download.kde.org/stable/release-service/$pkgver/src/angelfish-$pkgver.tar.xz"
 options="net" # net required to download Rust dependencies
 
@@ -45,7 +46,6 @@ provides="plasma-angelfish=$pkgver-r$pkgrel" # Backwards compatibility
 replaces="plasma-angelfish" # Backwards compatibility
 
 _commit=""
-_repo_url="https://invent.kde.org/network/angelfish.git"
 snapshot() {
 	clean
 	makedepends="git xz rsync tar" deps

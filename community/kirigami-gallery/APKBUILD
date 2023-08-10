@@ -21,11 +21,11 @@ makedepends="
 	qt5-qttools-dev
 	samurai
 	"
+_repo_url="https://invent.kde.org/sdk/kirigami-gallery.git"
 source="https://download.kde.org/stable/release-service/$pkgver/src/kirigami-gallery-$pkgver.tar.xz"
 subpackages="$pkgname-lang"
 
 _commit=""
-_repo_url="https://invent.kde.org/sdk/kirigami-gallery.git"
 snapshot() {
 	clean
 	makedepends="git xz rsync tar" deps

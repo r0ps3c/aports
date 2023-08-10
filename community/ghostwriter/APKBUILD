@@ -11,7 +11,6 @@ arch="aarch64 x86_64"
 license="GPL-3.0-or-later"
 depends="qt5-qtsvg"
 makedepends="
-	cmake
 	extra-cmake-modules
 	hunspell-dev
 	sonnet-dev
@@ -27,6 +26,7 @@ makedepends="
 	samurai
 	"
 subpackages="$pkgname-doc $pkgname-lang"
+_repo_url="https://invent.kde.org/office/ghostwriter.git"
 source="https://download.kde.org/stable/release-service/$pkgver/src/ghostwriter-$pkgver.tar.xz"
 options="!check" # no tests
 
