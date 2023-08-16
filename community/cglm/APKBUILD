@@ -1,0 +1,28 @@
+# Maintainer: Simon Zeni <simon@bl4ckb0ne.ca>
+pkgname=cglm
+pkgver=0.9.1
+pkgrel=0
+pkgdesc="Highly Optimized Graphics Math (glm) for C"
+url="http://cglm.readthedocs.io"
+arch="all"
+license="MIT"
+makedepends="meson"
+subpackages="$pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/recp/cglm/archive/v$pkgver.tar.gz"
+
+build() {
+	abuild-meson . build -Dbuild_tests=true
+	meson compile -C build
+}
+
+check() {
+	meson test --no-rebuild --print-errorlogs -C build
+}
+
+package() {
+	DESTDIR="$pkgdir" meson install --no-rebuild -C build
+}
+
+sha512sums="
+05c1e8d1dadafe1c9155db40dd1a4c209283c41ad2416c11b09967435f8047471afa5ee521ef6b8ef22c3e8b3988ab0865137057b33441e7851bc57979509dd6  cglm-0.9.1.tar.gz
+"
