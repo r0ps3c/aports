@@ -12,7 +12,7 @@
 # This is also a reason why we use prebuilt frontend archive.
 
 pkgname=grafana-frontend
-pkgver=10.0.3
+pkgver=10.1.0
 pkgrel=0
 pkgdesc="Open source, feature rich metrics dashboard and graph editor (frontend files)"
 url="https://grafana.com"
@@ -28,5 +28,5 @@ package() {
 }
 
 sha512sums="
-b7fd8cd79ec350e393d8aaea92d4b10fa513b60af1bf7859d93477458286e4b4cd91a7e7f18a4184c265662ede062aff155682bfc0be7df26fde7330fbd51dd4  grafana-frontend-10.0.3-bin.tar.gz
+fcd16cd42e50617bfe4a67e375e7ff3d386e00884f2dcc8580a6c45e62f8b98d47985150f036724cacbe34800e1a655924d5dda96790f3ac146463bb389d4fa5  grafana-frontend-10.1.0-bin.tar.gz
 "
