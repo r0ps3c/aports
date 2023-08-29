@@ -11,7 +11,7 @@ case "$pkgver" in
 	*.*.*.*) _pkgverminor=${pkgver%.*.*};;
 	*.*.*) _pkgverminor=${pkgver%.*};;
 esac
-pkgrel=11
+pkgrel=12
 _pigeonholever=0.5.19
 pkgdesc="IMAP and POP3 server"
 url="https://www.dovecot.org/"
@@ -36,6 +36,7 @@ makedepends="
 	libtool
 	linux-headers
 	lua5.3-dev
+	lz4-dev
 	mariadb-connector-c-dev
 	openldap-dev
 	openssl-dev>3
@@ -145,6 +146,13 @@ build() {
 		--with-pgsql \
 		--with-solr \
 		--with-lucene \
+		--with-bzlib \
+		--with-icu \
+		--with-lz4 \
+		--with-lzma \
+		--with-sodium \
+		--with-zlib \
+		--with-zstd \
 		--with-ssl=openssl \
 		--with-ssldir=/etc/ssl/dovecot \
 		--with-rundir=/run/dovecot
