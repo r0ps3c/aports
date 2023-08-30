@@ -2,7 +2,7 @@
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
 pkgname=dolphin-emu
 pkgver=5.0_git20230716
-pkgrel=0
+pkgrel=1
 _commit="d867e2baeb95f6fddd7aee2679d5c324a1c5bd1d"
 _commit_cubeb="27d2a102b0b75d9e49d43bc1ea516233fb87d778"
 _commit_gtest="58d77fa8070e8cec2dc1ed015d66b454c8d78850"
@@ -25,7 +25,7 @@ makedepends="
 	enet-dev
 	eudev-dev
 	ffmpeg-dev
-	fmt-dev
+	gtest-dev
 	hidapi-dev
 	libevdev-dev
 	libpng-dev
@@ -120,6 +120,7 @@ prepare() {
 		spirv_cross
 		xxhash
 		zlib-ng
+		fmt
 		"
 
 	# Move the libraries we want to keep out of the externals folder
@@ -158,7 +159,8 @@ build() {
 		-DENABLE_AUTOUPDATE=OFF \
 		-DENABLE_ANALYTICS=ON \
 		-DUSE_SANITIZERS=OFF \
-		-DWITH_SANITIZER=OFF
+		-DWITH_SANITIZER=OFF \
+		-DUSE_SYSTEM_FMT=OFF
 	cmake --build build
 }
 

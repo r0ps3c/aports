@@ -1,8 +1,8 @@
 # Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
 # Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
 pkgname=ansible-lint
-pkgver=6.17.2
-pkgrel=0
+pkgver=6.18.0
+pkgrel=1
 pkgdesc="check ansible playbooks"
 url="https://github.com/ansible/ansible-lint"
 arch="noarch"
@@ -63,6 +63,6 @@ package() {
 }
 
 sha512sums="
-3e7a6ec602b37972b5c8ddfbbd95a800069e22fee7e4f49bbc526870c44aa35a38b4a87a2a7b62998352895007458812c5ebf245d1a121590a14f5c600b8f845  ansible-lint-6.17.2.tar.gz
+664bff786ac673a1f0c7d369dfabaeb00b54ca6be00ab52e1d2002b21dcf881f31fa78ec49d1428efa1693d47b9880793e15316ec34e69ae396d7cdfd292cb8a  ansible-lint-6.18.0.tar.gz
 314fa02e0b30db8a8886824b0cce825ae4ffe227e2c5be434bc96e1c3ab8a6239548574d9ed0869def67b94c684a67abbf594f78aadbc64286fe8187502ba275  no-version-check.patch
 "
