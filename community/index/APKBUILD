@@ -24,12 +24,12 @@ makedepends="
 	qt5-qtdeclarative-dev
 	samurai
 	"
+_repo_url="https://invent.kde.org/maui/index-fm.git"
 source="https://download.kde.org/stable/maui/index/$pkgver/index-fm-$pkgver.tar.xz"
 options="!check" # No tests available
 builddir="$srcdir/$pkgname-fm-$pkgver"
 
 _commit=""
-_repo_url="https://invent.kde.org/maui/index-fm.git"
 snapshot() {
 	clean
 	makedepends="git xz rsync tar" deps

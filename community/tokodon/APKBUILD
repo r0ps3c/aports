@@ -4,13 +4,12 @@
 # The group tag is just to easily find this APKBUILD by some scripts for automation
 # group=kde-applications
 pkgname=tokodon
-pkgver=23.04.3
-pkgrel=1
+pkgver=23.08.0
+pkgrel=0
 pkgdesc="A Mastodon client for Plasma and Plasma Mobile"
 url="https://invent.kde.org/network/tokodon/"
 # armhf blocked by extra-cmake-modules
-# s390x and riscv64 blocked by qqc2-desktop-style
-arch="all !armhf !s390x !riscv64"
+arch="all !armhf"
 license="GPL-3.0-only AND CC0-1.0"
 depends="
 	kirigami-addons
@@ -26,13 +25,14 @@ makedepends="
 	kirigami-addons-dev
 	kirigami2-dev
 	knotifications-dev
+	mpv-dev
 	qqc2-desktop-style-dev
 	qt5-qtbase-dev
-	qtkeychain-dev
 	qt5-qtmultimedia-dev
 	qt5-qtquickcontrols2-dev
 	qt5-qtsvg-dev
 	qt5-qtwebsockets-dev
+	qtkeychain-dev
 	samurai
 	"
 subpackages="$pkgname-lang"
@@ -52,5 +52,5 @@ package() {
 }
 
 sha512sums="
-defc13e91088affc5c840921ae052b94f6da96dbd935e3ed43ea1b6f330139a64bc53d81e5d31bcbb19d0bef3bfbcda6cb85cdd8f42bba7aa68f8431a64784b1  tokodon-23.04.3.tar.xz
+2527f04b3766a9182df04c3b27efc0edb9508e06c75f2b21056e39defb21597f53d849384630bc1612df422255509939632decaf996c7aa874f4cec2f727e31b  tokodon-23.08.0.tar.xz
 "

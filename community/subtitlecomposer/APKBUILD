@@ -1,5 +1,8 @@
 # Contributor: Bart Ribbers <bribbers@disroot.org>
-# Maintainer: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: team/kde <bribbers@disroot.org>
+
+# The group tag is just to easily find this APKBUILD by some scripts for automation
+# group=kde-other
 pkgname=subtitlecomposer
 pkgver=0.7.1
 pkgrel=8
@@ -30,6 +33,7 @@ makedepends="
 	sonnet-dev
 	"
 checkdepends="xvfb-run"
+_repo_url="https://invent.kde.org/multimedia/subtitlecomposer.git"
 source="https://download.kde.org/stable/subtitlecomposer/subtitlecomposer-$pkgver.tar.xz
 	$pkgname-0001-Fix-invalid-memory-read.patch::https://invent.kde.org/multimedia/subtitlecomposer/-/commit/2ec9412ddf297ec7b64e780f3c107ec1678ef703.patch
 	$pkgname-0002-Fixed-crash-when-closing-subtitle.patch::https://invent.kde.org/multimedia/subtitlecomposer/-/commit/3fe2fb49c613641da78ac1d176415387af1573ff.patch
@@ -56,8 +60,7 @@ build() {
 }
 
 check() {
-	cd build
-	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+	xvfb-run ctest --test-dir build --output-on-failure
 }
 
 package() {
