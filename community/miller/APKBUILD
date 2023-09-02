@@ -1,8 +1,9 @@
 # Contributor: Richard Patel <me@terorie.dev>
-# Maintainer: John Kerl <kerl.john.r@gmail.com>
+# Contributor: John Kerl <kerl.john.r@gmail.com>
+# Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=miller
-pkgver=6.8.0
-pkgrel=2
+pkgver=6.9.0
+pkgrel=1
 pkgdesc="Name-indexed data processing tool"
 url="https://miller.readthedocs.io/"
 arch="all"
@@ -12,6 +13,11 @@ makedepends="go bash"
 checkdepends="tzdata"
 options="net"
 source="https://github.com/johnkerl/miller/archive/v$pkgver/miller-$pkgver.tar.gz"
+
+export GOFLAGS="$GOFLAGS -modcacherw"
+export GOCACHE="${GOCACHE:-"$srcdir/go-cache"}"
+export GOTMPDIR="${GOTMPDIR:-"$srcdir"}"
+export GOMODCACHE="${GOMODCACHE:-"$srcdir/go"}"
 
 build() {
 	go build github.com/johnkerl/miller/cmd/mlr
@@ -30,5 +36,5 @@ package() {
 }
 
 sha512sums="
-85f64ed07c8203c1ee189c22ee01a1ecf5693cac1ef3078f45f50d841b7b788d2deca231ce62c258c0fe04c25208f19b2975cdc99cf1f6cb969987c7c9779e89  miller-6.8.0.tar.gz
+213d7e1f9663e1adf8d50509901a9ac71f60129a1204c20e9e8a47e045208dc3132d11ed38afe3cf211bc47d82433d36f8c8988418687869f3dfcb83f4ebaa1c  miller-6.9.0.tar.gz
 "
