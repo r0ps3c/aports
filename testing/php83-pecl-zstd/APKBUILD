@@ -1,13 +1,13 @@
 # Maintainer: Andy Postnikov <apostnikov@gmail.com>
-pkgname=php82-pecl-zstd
+pkgname=php83-pecl-zstd
 _extname=zstd
 pkgver=0.13.0
 pkgrel=0
-pkgdesc="PHP 8.2 Zstandard extension - PECL"
+pkgdesc="PHP 8.3 Zstandard extension - PECL"
 url="https://pecl.php.net/package/zstd"
 arch="all"
 license="MIT"
-_phpv=82
+_phpv=83
 _php=php$_phpv
 depends="$_php-common"
 makedepends="$_php-dev $_php-pecl-apcu zstd-dev"
