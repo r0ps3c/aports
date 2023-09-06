@@ -23,3 +23,4 @@ jobs:
           token: ${{ secrets.CALL_REPO_DISPATCH }}
           repository: r0ps3c/docker-s3ql
           event-type: parent-updated
+          client-payload: '{"ref": "stable"}'
