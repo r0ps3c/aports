@@ -20,10 +20,9 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const workflow = await github.rest.actions.createWorkflowDispatch({
+            await github.rest.actions.createWorkflowDispatch({
               owner: 'r0ps3c',
               repo: 'docker-s3ql'
               workflow_id: 'docker-publish.yml',
               ref: 'stable',
             })
-            console.log(workflow)
