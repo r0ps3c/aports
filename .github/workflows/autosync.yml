@@ -25,5 +25,5 @@ jobs:
               repo: 'docker-s3ql'
               workflow_id: 'docker-publish.yml',
               ref: 'stable',
-            });
-            console.log(workflow);
+            })
+            console.log(workflow)
