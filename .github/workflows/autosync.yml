@@ -19,6 +19,7 @@ jobs:
       - name: Trigger Workflow
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.CALL_REPO_DISPATCH }}
           script: |
             const workflow = await github.rest.actions.createWorkflowDispatch({
               owner: 'r0ps3c',
