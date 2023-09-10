@@ -2,10 +2,13 @@
 # Maintainer: Piper McCorkle <piper@cloudflare.com>
 pkgname=cloudflared
 pkgver=2023.7.3
-pkgrel=0
+pkgrel=1
 pkgdesc="Cloudflare Tunnel client"
 url="https://github.com/cloudflare/cloudflared"
-arch="aarch64 x86 x86_64"
+# TODO: Doesn't compile with Go 1.21.
+# See: https://gitlab.alpinelinux.org/alpine/aports/-/issues/15252
+#arch="aarch64 x86 x86_64"
+arch=""
 license="Apache-2.0"
 makedepends="go gettext"
 subpackages="$pkgname-doc $pkgname-openrc"
