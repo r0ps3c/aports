@@ -1,13 +1,14 @@
 # Contributor: Galen Abell <galen@galenabell.com>
 # Maintainer: Galen Abell <galen@galenabell.com>
 pkgname=wob
-pkgver=0.14.2
+pkgver=0.15
 pkgrel=0
 pkgdesc="Lightweight overlay volume/backlight/progress/anything bar for Wayland"
 url="https://github.com/francma/wob"
 arch="all"
 license="ISC"
 makedepends="meson git inih-dev libseccomp-dev wayland-protocols wayland-dev scdoc"
+checkdepends="cmocka-dev"
 subpackages="$pkgname-doc"
 source="https://github.com/francma/wob/archive/$pkgver/wob-$pkgver.tar.gz"
 
@@ -25,5 +26,5 @@ package() {
 }
 
 sha512sums="
-933d6bb0469f3b446f8998738ebe7045a1d707a814345961848a025e53cd9bd367cf138c8c6deafe8906c887e783bef85f669e9f107c51c51d357f087aaad6b8  wob-0.14.2.tar.gz
+25e9ed86bd4f7aa5752357b9a3985d987b5277d8ade5b0698e7a9d5cbe0823722de207ccaf09eb6c388b76cf7c4702c942e754630a62f7442b404b243e8e5935  wob-0.15.tar.gz
 "
