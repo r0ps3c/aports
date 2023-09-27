@@ -2,10 +2,10 @@
 # Maintainer: Clayton Craft <clayton@craftyguy.net>
 pkgname=mercury
 pkgver=22.01.8
-pkgrel=0
+pkgrel=1
 pkgdesc="Compiler for the Mercury language"
 url="https://www.mercurylang.org"
-arch="all !riscv64" # hangs on configure tests
+arch="all"
 license="GPL-2.0-only"
 makedepends="autoconf automake bison flex"
 depends="$pkgname-libs"
@@ -19,13 +19,18 @@ options="!check"  # tests are unstable / flaky
 builddir="$srcdir"/mercury-srcdist-"$pkgver"
 
 build() {
-	./configure \
+	# TODO: The configure check for GCC labels causes a bug in qemu
+	# on riscv64. Need to create a minimal example and report that
+	# upstream. As a workaround, just skip the check by hardcoding
+	# the result.
+	mercury_cv_gcc_labels=yes ./configure \
 		--build=$CBUILD \
 		--host=$CHOST \
 		--prefix=/usr \
 		--mandir=/usr/share/man \
 		--infodir=/usr/share/info \
 		--enable-shared-libs \
+		--with-llds-base-grade=fast \
 		--enable-libgrades="hlc.gc"
 
 	make PARALLEL="$MAKEFLAGS"

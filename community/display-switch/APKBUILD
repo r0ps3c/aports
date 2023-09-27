@@ -5,10 +5,11 @@ pkgver=1.2.0
 pkgrel=3
 pkgdesc="utility for switching displays over DDC/CI on USB disconnect/connect events"
 url="https://github.com/haimgel/display-switch"
-arch="all !s390x !riscv64"  # no rust
+arch="all"
 license="MIT"
 makedepends="cargo eudev-dev libusb-dev cargo-auditable"
 install="$pkgname.pre-install"
+options="net"
 source="
 	$pkgname-$pkgver.tar.gz::https://github.com/haimgel/display-switch/archive/$pkgver.tar.gz
 	50-i2c.rules
