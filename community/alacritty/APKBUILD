@@ -1,11 +1,12 @@
 # Contributor:
 # Maintainer: Sören Tempel <soeren+alpine@soeren-tempel.net>
 pkgname=alacritty
-pkgver=0.12.2
+pkgver=0.12.3
 pkgrel=0
 pkgdesc="cross-platform, GPU-accelerated terminal emulator"
 url="https://github.com/alacritty/alacritty"
-arch="x86_64 armv7 armhf aarch64 x86 ppc64le" # limited by rust/cargo
+# s390x: incompatible with nix crate
+arch="all !s390x"
 license="Apache-2.0"
 # libxi and libcursor are both loaded via dlopen by x11-rs crate.
 depends="ncurses-terminfo-base wayland-libs-egl libxi libxcursor"
@@ -41,20 +42,7 @@ build() {
 }
 
 check() {
-	# On x86 and aarch64, a doc test of the alacritty_terminal
-	# package fails to compile with the following error message:
-	#
-	#   error: ran out of registers during register allocation
-	#   LLVM ERROR: Cannot emit physreg copy instruction
-	#
-	# This seems to be a problem with our rustc and not with
-	# alacritty, disable the doc test for now on these architectures.
-	local _opts=""
-	case $CARCH in
-	x86|aarch64) _opts="--exclude alacritty_terminal" ;;
-	esac
-
-	cargo test --workspace --release --frozen $_opts
+	cargo test --workspace --release --frozen
 }
 
 package() {
@@ -84,5 +72,5 @@ package() {
 }
 
 sha512sums="
-7d0866aed0228feb5ca17d631e28c4f0558acac27d64542f0c4e141ad34e2c7ad229dabd8917f479df2dafc29dcc215b49d2cfabcb974f6f58f73b61c0007110  alacritty-0.12.2.tar.gz
+9e3b35d0df0b357ef33ba49a918d6a6e0885a82bfec3a1d5b57784ab0102fa97fcdee5a79f6cf0e9fc3278a4bee5d9ee44a595625c0caf8b76491261eaa4561e  alacritty-0.12.3.tar.gz
 "
