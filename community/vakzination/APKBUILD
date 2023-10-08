@@ -5,7 +5,7 @@
 # group=kde-mobile
 pkgname=vakzination
 pkgver=23.01.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Vakzination manages your health certificates like vaccination, test, and recovery certificates"
 url="https://invent.kde.org/plasma-mobile/vakzination"
 # armhf blocked by extra-cmake-modules
@@ -14,17 +14,17 @@ arch="all !armhf !ppc64le"
 license="LGPL-2.0-or-later"
 depends="
 	kirigami2
-	prison
+	prison5
 	qt5-qtquickcontrols2
 	"
 makedepends="
 	extra-cmake-modules
-	kconfig-dev
+	kconfig5-dev
 	khealthcertificate-dev
-	ki18n-dev
+	ki18n5-dev
 	kirigami2-dev
 	kitinerary-dev
-	prison-dev
+	prison5-dev
 	qt5-qtbase-dev
 	qt5-qtdeclarative-dev
 	qt5-qtquickcontrols2-dev
