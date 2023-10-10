@@ -2,13 +2,13 @@
 # Contributor: Jakub Jirutka <jakub@jirutka.cz>
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=kitty
-pkgver=0.30.0
-pkgrel=0
+pkgver=0.30.1
+pkgrel=1
 pkgdesc="Modern, hackable, featureful, OpenGL based terminal emulator"
 url="https://sw.kovidgoyal.net/kitty/"
 arch="all"
 license="GPL-3.0-only"
-depends="less ncurses ncurses-terminfo-base py3-pygments"
+depends="less ncurses py3-pygments $pkgname-terminfo"
 checkdepends="font-dejavu py3-pytest"
 makedepends="
 	dbus-dev
@@ -35,7 +35,7 @@ makedepends="
 	zlib-dev
 	"
 install="$pkgname.post-install $pkgname.post-upgrade"
-subpackages="$pkgname-wayland $pkgname-x11 $pkgname-kitten $pkgname-pyc"
+subpackages="$pkgname-wayland $pkgname-x11 $pkgname-kitten $pkgname-pyc $pkgname-terminfo"
 source="$pkgname-$pkgver.tar.gz::https://github.com/kovidgoyal/kitty/archive/v$pkgver.tar.gz
 	disable-docs.patch
 	"
@@ -57,10 +57,6 @@ check() {
 package() {
 	mkdir -p "$pkgdir"
 	cp -r linux-package "$pkgdir"/usr/
-
-	# This is now included in ncurses-terminfo-base.
-	rm "$pkgdir"/usr/share/terminfo/x/xterm-kitty
-	rmdir -p "$pkgdir"/usr/share/terminfo/x 2>/dev/null || true
 
 	# remove useless "optimised" python
 	find "$pkgdir" \( -name "*.opt-1.pyc" -o -name "*.opt-2.pyc" \) -delete
@@ -96,7 +92,11 @@ pyc() {
 	amove $(find usr/lib/kitty -type d -name __pycache__)
 }
 
+terminfo() {
+	amove usr/share/terminfo/x
+}
+
 sha512sums="
-693737154c2e7d98f6086c7be11068cbaa88e040cc61ba69b0143b5656ce19f040f3908c4f2782d292e3477ddb68622a8c84d9a29c2513f3bc5787db5db2e95a  kitty-0.30.0.tar.gz
+105b857664254ff157c6e5f9722a876e413a2da365c9b61f428fc21efaed1805ac47d59d0915bc451ee4794cb555c9d5607d8d24aacc2adfeb3ea56ff59e8813  kitty-0.30.1.tar.gz
 1676b3d5272c14561660ccb7b89c30b65b6c044b4ce0f57ba4fe88d3c4aefe3becf480a70b593602d907c501cb785ae7481c612ce125610fecc751e2d31f8a7c  disable-docs.patch
 "

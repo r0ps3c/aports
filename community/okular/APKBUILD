@@ -5,7 +5,7 @@
 # group=kde-applications
 pkgname=okular
 pkgver=23.08.1
-pkgrel=1
+pkgrel=2
 # armhf blocked by extra-cmake-modules
 # ppc64le, s390x and riscv64 blocked by qt5-qtwebengine -> purpose
 arch="all !armhf !ppc64le !s390x !riscv64"
@@ -73,10 +73,8 @@ build() {
 }
 
 check() {
-	cd build
-
 	# All other tests are broken, require OpenGL, etc
-	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest -R "^shelltest"
+	xvfb-run ctest --test-dir build --output-on-failure -R "^shelltest"
 }
 
 package() {
@@ -103,7 +101,7 @@ common_qml() {
 }
 
 mobile() {
-	depends="$pkgname-common $pkgname-common-qml kirigami2 kitemmodels"
+	depends="$pkgname-common $pkgname-common-qml kirigami2 kitemmodels5"
 
 	amove usr/bin/okularkirigami
 	amove usr/share/applications/org.kde.okular.kirigami.desktop
