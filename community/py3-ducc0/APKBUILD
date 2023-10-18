@@ -2,15 +2,21 @@
 # Maintainer: Martin Reinecke <martin@mpa-garching.mpg.de>
 pkgname=py3-ducc0
 _pyname=ducc0
-pkgver=0.31.0
-_tagname=0_31_0
+pkgver=0.32.0
+_tagname="${pkgver//./_}"
 pkgrel=0
 pkgdesc="Efficient algorithms for Fast Fourier transforms and more"
 url="https://gitlab.mpcdf.mpg.de/mtr/ducc"
 arch="all"
 license="GPL-2.0-or-later"
 depends="python3"
-makedepends="py3-setuptools py3-pybind11-dev python3-dev"
+makedepends="
+	py3-gpep517
+	py3-pybind11-dev
+	py3-setuptools
+	py3-wheel
+	python3-dev
+	"
 checkdepends="py3-pytest-xdist py3-numpy"
 
 _pynametag="$_pyname"_"$_tagname"
@@ -18,17 +24,24 @@ source="https://gitlab.mpcdf.mpg.de/mtr/ducc/-/archive/$_pynametag/ducc-$_pyname
 builddir="$srcdir/ducc-$_pynametag"
 
 build() {
-	DUCC0_OPTIMIZATION=portable python3 setup.py build
+	DUCC0_OPTIMIZATION=portable \
+	gpep517 build-wheel \
+		--wheel-dir .dist \
+		--output-fd 3 3>&1 >&2
 }
 
 check() {
-	PYTHONPATH="$(echo $PWD/build/lib.*)" python3 -m pytest -n auto python/test
+	python3 -m venv --clear --without-pip --system-site-packages .testenv
+	.testenv/bin/python3 -m installer .dist/*.whl
+	.testenv/bin/python3 -m pytest -n auto python/test
 }
 
 package() {
-	DUCC0_OPTIMIZATION=portable python3 setup.py install --skip-build --root="$pkgdir"
+	DUCC0_OPTIMIZATION=portable \
+	python3 -m installer -d "$pkgdir" \
+		.dist/*.whl
 }
 
 sha512sums="
-3578ffe9ca1b4abe0bd9cdec59421be465e1096bec4f09c372bdfdbb01d7c787f348198745918eddcc8437f88dbad03b7be8cb5df74a5ec8d6854ae6d18324a0  ducc-ducc0_0_31_0.tar.gz
+1f05555dfa33d5b3243b08dcf4414852c85900c433233af022ec709f20f0353f4c804d4c922a74bf356102007f07d306e5127281f6d3530b8bd3a69f1d0386d9  ducc-ducc0_0_32_0.tar.gz
 "
