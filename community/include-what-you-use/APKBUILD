@@ -4,8 +4,8 @@ pkgname=include-what-you-use
 pkgver=0.20
 # Each release is made for particular LLVM version.
 # See https://include-what-you-use.org/downloads/.
-_llvmver=16
-pkgrel=1
+_llvmver=17
+pkgrel=2
 pkgdesc="A tool for use with clang to analyze #includes in C and C++ source files"
 url="https://include-what-you-use.org"
 arch="all"
@@ -15,9 +15,11 @@ depends="python3"
 # internals and some are exposed only in static libs.
 makedepends="
 	clang$_llvmver-dev
+	clang$_llvmver-extra-tools
 	clang$_llvmver-static
 	cmake
 	llvm$_llvmver-dev
+	llvm$_llvmver-gtest
 	llvm$_llvmver-static
 	samurai
 	"
@@ -46,6 +48,7 @@ build() {
 		-DBUILD_SHARED_LIBS=True \
 		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 		-DCMAKE_VERBOSE_MAKEFILE=ON \
+		-DCMAKE_PREFIX_PATH=/usr/lib/llvm$_llvmver \
 		$CMAKE_CROSSOPTS .
 	cmake --build build
 }
