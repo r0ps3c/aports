@@ -47,7 +47,7 @@
 
 pkgname=dotnet7-build
 pkgver=7.0.113
-pkgrel=0
+pkgrel=1
 _gittag=v$pkgver
 _giturl="https://github.com/dotnet/installer"
 _testtag=e1cc0f181ffd4d755756d30d985513897d592ba4
@@ -283,6 +283,8 @@ build() {
 	msg "Building $pkgname-$pkgver"
 
 	ulimit -n 4096
+
+	export PATH="$PATH:/usr/lib/llvm$_llvmver/bin"
 
 	# Disable use of LTTng as tracing on lttng <=2,13,0 is broken
 	# See https://github.com/dotnet/runtime/issues/57784.
