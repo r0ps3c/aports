@@ -1,8 +1,8 @@
 # Contributor: Chloe Kudryavtsev <code@toast.bunkerlabs.net>
-# Maintainer: Hoang Nguyen <folliekazetani@protonmail.com>
+# Contributor: Hoang Nguyen <folliekazetani@protonmail.com>
+# Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=minio-client
-_pkgname=mc
-pkgver=0.20231030.184332
+pkgver=0.20231106.041923
 # 0.20230323.200304 -> 2023-03-23T20-03-04Z
 _pkgver="${pkgver:2:4}-${pkgver:6:2}-${pkgver:8:2}T${pkgver:11:2}-${pkgver:13:2}-${pkgver:15:2}Z"
 pkgrel=0
@@ -12,7 +12,7 @@ arch="all"
 license="AGPL-3.0-or-later"
 makedepends="go"
 source="https://github.com/minio/mc/archive/RELEASE.$_pkgver/minio-client-$_pkgver.tar.gz"
-builddir="$srcdir/$_pkgname-RELEASE.$_pkgver"
+builddir="$srcdir/mc-RELEASE.$_pkgver"
 
 # secfixes:
 #   0.20230111.031416-r0:
@@ -49,5 +49,5 @@ package() {
 }
 
 sha512sums="
-ad25223fc1df5a79779cab8f191220b30596303bd4920593970cd7d52b95f884ce828d4836a9332efd13a60bc91e5192f4ea3f87cd65aa12d3cba536d4394758  minio-client-2023-10-30T18-43-32Z.tar.gz
+322af463866d346e89f3780c37ff48e0b6b5a962636cea115433d919860a5eeb009262d7331c49b995d833b6d93a619086d1e48c066e662aceabd77d7b92f0d3  minio-client-2023-11-06T04-19-23Z.tar.gz
 "
