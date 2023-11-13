@@ -1,0 +1,36 @@
+# Contributor: Coco Liliace <coco@liliace.dev>
+# Maintainer: Coco Liliace <coco@liliace.dev>
+pkgname=xremap-wlr
+pkgver=0.8.11
+pkgrel=0
+pkgdesc="Key remapper for Wayland"
+url="https://github.com/k0kubun/xremap"
+# nix
+arch="all !s390x !riscv64"
+license="MIT"
+makedepends="cargo cargo-auditable"
+replaces="xremap-sway"
+source="$pkgname-$pkgver.tar.gz::https://github.com/k0kubun/xremap/archive/v$pkgver.tar.gz"
+builddir="$srcdir/xremap-$pkgver"
+
+prepare() {
+	default_prepare
+
+	cargo fetch --target="$CTARGET" --locked
+}
+
+build() {
+	cargo auditable build --frozen --release --features wlroots
+}
+
+check() {
+	cargo test --frozen
+}
+
+package() {
+	install -Dm755 -t "$pkgdir"/usr/bin ./target/release/xremap
+}
+
+sha512sums="
+4b3af4729fa435797d0ebdeb70ccc6f3a584840684d50b34a740b7bac997537116bbf11c10c3ee6d477c97261b3d8995ee14095241ff4d726af537e650821a5e  xremap-wlr-0.8.11.tar.gz
+"
