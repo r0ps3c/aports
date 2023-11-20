@@ -1,7 +1,7 @@
 # Maintainer: Pedro Lucas Porcellis <porcellis@eletrotupi.com>
 pkgname=powerctl
 pkgver=1.1
-pkgrel=3
+pkgrel=4
 pkgdesc="CLI tool to manage Linux power management states"
 url="https://sr.ht/~sircmpwn/powerctl/"
 arch="x86_64 aarch64" # Hare
@@ -9,13 +9,13 @@ license="GPL-3.0-only"
 makedepends="hare scdoc"
 subpackages="$pkgname-doc"
 source="
-	$pkgname-$pkgver.tar.gz::https://git.sr.ht/~sircmpwn/$pkgname/archive/$pkgver.tar.gz
+	$pkgname-$pkgver.tar.gz::https://git.sr.ht/~sircmpwn/powerctl/archive/$pkgver.tar.gz
 	new-hare-strings.patch
 	getopts-fs-flags.patch
 "
 install="$pkgname.post-install"
 # Hare does not support PIE
-options="$options !check suid suid-nopie"
+options="$options !check suid"
 
 build() {
 	make -j1 PREFIX=/usr
