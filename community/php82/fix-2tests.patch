@@ -1,4 +1,4 @@
-Patch-Source: https://github.com/php/php-src/commit/e6fef2944b55a62a1c006ee30cc30c8f381ea51b
+Patch-Source: https://github.com/php/php-src/commit/fbda6b50a3ed8b9dc238d817e902b7771ca3e2cf
 
 diff --git a/ext/pcre/tests/gh11374.phpt b/ext/pcre/tests/gh11374.phpt
 index 07f8f4bccfd0a..29f6485cc0440 100644
@@ -17,7 +17,7 @@ index 07f8f4bccfd0a..29f6485cc0440 100644
  <?php
  
 diff --git a/ext/sqlite3/tests/sqlite3_defensive.phpt b/ext/sqlite3/tests/sqlite3_defensive.phpt
-index b386f61ce04b2..f61ef2df1a6c9 100644
+index 033e661d8a393..056f716170c4c 100644
 --- a/ext/sqlite3/tests/sqlite3_defensive.phpt
 +++ b/ext/sqlite3/tests/sqlite3_defensive.phpt
 @@ -20,7 +20,6 @@ var_dump($db->exec('CREATE TABLE test (a, b);'));
@@ -28,20 +28,23 @@ index b386f61ce04b2..f61ef2df1a6c9 100644
  
  // Should be 1
  var_dump($db->querySingle('SELECT COUNT(*) FROM sqlite_master;'));
-@@ -35,7 +34,6 @@ var_dump($db->querySingle('SELECT COUNT(*) FROM sqlite_master;'));
+@@ -35,8 +34,7 @@ var_dump($db->querySingle('SELECT COUNT(*) FROM sqlite_master;'));
  bool(true)
  bool(true)
  int(1)
 -int(1)
  
- Warning: SQLite3::querySingle(): Unable to prepare statement: table sqlite_master may not be modified in %s on line %d
+ Warning: SQLite3::querySingle(): Unable to prepare statement: 1, table sqlite_master may not be modified in %s on line %d
  bool(false)
+-int(1)
+\ No newline at end of file
++int(1)
 diff --git a/ext/zend_test/test.c b/ext/zend_test/test.c
-index 131b5119868fc..9375658ede010 100644
+index 4371459a910bd..bbdec8df96920 100644
 --- a/ext/zend_test/test.c
 +++ b/ext/zend_test/test.c
-@@ -655,6 +655,16 @@ static ZEND_FUNCTION(get_open_basedir)
- 	}
+@@ -501,6 +501,16 @@ static ZEND_FUNCTION(zend_test_crash)
+ 	php_printf("%s", invalid);
  }
  
 +static ZEND_FUNCTION(zend_test_is_pcre_bundled)
@@ -58,10 +61,10 @@ index 131b5119868fc..9375658ede010 100644
  {
  	zend_object *obj = zend_objects_new(class_type);
 diff --git a/ext/zend_test/test.stub.php b/ext/zend_test/test.stub.php
-index 2b4f29581d247..23b95fe9440ac 100644
+index eaed7e2794aeb..d877dac726d52 100644
 --- a/ext/zend_test/test.stub.php
 +++ b/ext/zend_test/test.stub.php
-@@ -239,6 +239,8 @@ function get_open_basedir(): ?string {}
+@@ -175,6 +175,8 @@ function zend_test_crash(?string $message = null): void {}
  #if defined(HAVE_LIBXML) && !defined(PHP_WIN32)
  function zend_test_override_libxml_global_state(): void {}
  #endif
@@ -71,17 +74,17 @@ index 2b4f29581d247..23b95fe9440ac 100644
  
  namespace ZendTestNS {
 diff --git a/ext/zend_test/test_arginfo.h b/ext/zend_test/test_arginfo.h
-index 5f7cba8a94f37..809b17ae52f4f 100644
+index 72b89ef33342f..34f56f3d95040 100644
 --- a/ext/zend_test/test_arginfo.h
 +++ b/ext/zend_test/test_arginfo.h
 @@ -1,5 +1,5 @@
  /* This is a generated file, edit the .stub.php file instead.
-- * Stub hash: fe312caaaedac29794ab90e4210eaaad667c391c */
-+ * Stub hash: 1ac529029c01af5d6698f06c7e5f74b7149ea749 */
+- * Stub hash: 37c6d5e5e28a60b3d1cf89c1a2f82a0196fceae7 */
++ * Stub hash: a272e1920e36041da1c20eaf3afe1d6032164d24 */
  
  ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_zend_test_array_return, 0, 0, IS_ARRAY, 0)
  ZEND_END_ARG_INFO()
-@@ -141,16 +141,18 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_zend_test_override_libxml_global
+@@ -109,16 +109,18 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_zend_test_override_libxml_global
  ZEND_END_ARG_INFO()
  #endif
  
@@ -102,19 +105,16 @@ index 5f7cba8a94f37..809b17ae52f4f 100644
  
  #define arginfo_ZendTestNS2_ZendSubNS_namespaced_deprecated_func arginfo_zend_test_void_return
  
-@@ -179,9 +181,9 @@ ZEND_END_ARG_INFO()
+@@ -143,7 +145,7 @@ ZEND_END_ARG_INFO()
  ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class__ZendTestChildClass_returnsThrowable, 0, 0, Exception, 0)
  ZEND_END_ARG_INFO()
- 
--#define arginfo_class_ZendAttributeTest_testMethod arginfo_ZendTestNS2_namespaced_func
-+#define arginfo_class_ZendAttributeTest_testMethod arginfo_zend_test_is_pcre_bundled
  
 -#define arginfo_class__ZendTestTrait_testMethod arginfo_ZendTestNS2_namespaced_func
 +#define arginfo_class__ZendTestTrait_testMethod arginfo_zend_test_is_pcre_bundled
  
  ZEND_BEGIN_ARG_INFO_EX(arginfo_class_ZendTestParameterAttribute___construct, 0, 0, 1)
  	ZEND_ARG_TYPE_INFO(0, parameter, IS_STRING, 0)
-@@ -258,6 +260,7 @@ static ZEND_FUNCTION(get_open_basedir);
+@@ -208,6 +210,7 @@ static ZEND_FUNCTION(zend_test_crash);
  #if defined(HAVE_LIBXML) && !defined(PHP_WIN32)
  static ZEND_FUNCTION(zend_test_override_libxml_global_state);
  #endif
@@ -122,7 +122,7 @@ index 5f7cba8a94f37..809b17ae52f4f 100644
  static ZEND_FUNCTION(ZendTestNS2_namespaced_func);
  static ZEND_FUNCTION(ZendTestNS2_namespaced_deprecated_func);
  static ZEND_FUNCTION(ZendTestNS2_ZendSubNS_namespaced_func);
-@@ -329,6 +332,7 @@ static const zend_function_entry ext_functions[] = {
+@@ -265,6 +268,7 @@ static const zend_function_entry ext_functions[] = {
  #if defined(HAVE_LIBXML) && !defined(PHP_WIN32)
  	ZEND_FE(zend_test_override_libxml_global_state, arginfo_zend_test_override_libxml_global_state)
  #endif
