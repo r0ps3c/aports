@@ -1,7 +1,7 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 
 pkgname=linux-rpi
-pkgver=6.1.60
+pkgver=6.6.3
 case $pkgver in
 *.*.*)	_kernver=${pkgver%.*};;
 *.*)	_kernver=$pkgver;;
@@ -9,7 +9,7 @@ esac
 pkgrel=0
 pkgdesc="Linux kernel with Raspberry Pi patches"
 url=https://github.com/raspberrypi/linux
-depends="initramfs-generator linux-firmware-brcm linux-firmware-cypress"
+depends="initramfs-generator linux-firmware-brcm"
 _depends_dev="perl gmp-dev elfutils-dev bash mpc1-dev mpfr-dev"
 makedepends="$_depends_dev gcc>=13.1.1_git20230603 sed installkernel bc linux-headers linux-firmware
 	bison flex openssl-dev>3 findutils xz
@@ -21,27 +21,17 @@ source="https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/linux-$_kernver
 	https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/patch-$pkgver.xz
 	https://dev.alpinelinux.org/archive/rpi-patches/rpi-$pkgver-alpine.patch
 
-	config-changes-rpi.armhf
-	config-changes-rpi.armv7
-	config-changes-rpi.aarch64
-	config-changes-rpi2.armhf
-	config-changes-rpi2.armv7
-	config-changes-rpi4.armv7
-	config-changes-rpi4.aarch64
+	common-changes.config
 	"
 arch="armhf armv7 aarch64"
-license="GPL-2.0"
-_flavors=
-for _i in $source; do
-	case $_i in
-	config-*.$CARCH)
-		_f=${_i%.$CARCH}
-		_f=${_f#config-changes-}
-		_flavors="$_flavors $_f"
-		[ "linux-$_f" != "$pkgname" ] && subpackages="$subpackages linux-$_f::$CBUILD_ARCH"
-		subpackages="$subpackages linux-$_f-dev:_dev:$CBUILD_ARCH"
-		;;
-	esac
+license="GPL-2.0-only"
+_flavors="rpi"
+
+for _f in $_flavors; do
+	if [ "linux-$_f" != "$pkgname" ]; then
+		subpackages="$subpackages linux-$_f::$CBUILD_ARCH"
+	fi
+	subpackages="$subpackages linux-$_f-dev:_dev:$CBUILD_ARCH"
 done
 
 case "$CARCH" in
@@ -81,7 +71,7 @@ prepare() {
 
 	local flavor=
 	for flavor in $_flavors; do
-		local _builddir="$srcdir"/build-$flavor
+		local _builddir="$srcdir"/build-$flavor.$CARCH
 		mkdir -p "$_builddir"
 		echo "-$pkgrel-$flavor" > "$_builddir"/localversion-alpine
 		_genconfig $flavor
@@ -94,18 +84,17 @@ prepare() {
 }
 
 # generate config from defconfig and apply local changes.
-# config-changes-$flavor.$CARCH holds a list of = delimited
+# common-changes.config holds a list of = delimited
 # config command and values used by kernel scripts/config script.
 _genconfig() {
 	local flavor=$1 defconfig=
-	local builddir="$srcdir"/build-$flavor
+	local builddir="$srcdir"/build-$flavor.$CARCH
 	local defconfig=
-	case $flavor in
-		rpi) defconfig=bcmrpi_defconfig
-		[ "$CARCH" = "aarch64" ] && defconfig=bcmrpi3_defconfig ;;
-		rpi2) defconfig=bcm2709_defconfig ;;
-		rpi4) defconfig=bcm2711_defconfig ;;
-		*) die "Unknown flavor: $flavor" ;;
+	case "$CARCH" in
+		armhf) defconfig=bcmrpi_defconfig;;
+		armv7) defconfig=bcm2709_defconfig;;
+		aarch64) defconfig=bcm2711_defconfig;;
+		*) die "Unknown CARCH: $CARCH" ;;
 	esac
 
 	cp "$srcdir"/linux-$_kernver/arch/$_carch/configs/$defconfig \
@@ -130,13 +119,13 @@ _genconfig() {
 		"$srcdir"/linux-$_kernver/scripts/config \
 			--file "$builddir"/.config \
 			--$cmd "$option" "${str//\"/}"
-	done < "$srcdir"/config-changes-$flavor.$CARCH
+	done < "$srcdir"/common-changes.config
 }
 
 # verify if options are set to correct value
 _verifyconfig() {
 	local flavor=$1
-	local builddir="$srcdir"/build-$flavor
+	local builddir="$srcdir"/build-$flavor.$CARCH
 	while read line; do
 		[ ${line:0:1} = "#" ] && continue
 		local option=${line%%=*} str= invert=
@@ -151,7 +140,7 @@ _verifyconfig() {
 		esac
 		grep -q $invert "^$str" "$builddir"/.config || \
 			die "Config: $option not properly set!"
-	done < "$srcdir"/config-changes-$flavor.$CARCH
+	done < "$srcdir"/common-changes.config
 }
 
 build() {
@@ -160,7 +149,7 @@ build() {
 	# -Werror=format-security breaks some stuff
 	unset CFLAGS CPPFLAGS CXXFLAGS
 	for i in $_flavors; do
-		cd "$srcdir"/build-$i
+		cd "$srcdir"/build-$i.$CARCH
 		local _kver=$(make kernelversion)
 		if [ "$_kver" != "$pkgver" ]; then
 			error "Version in Makefile ($_kver) does not correspond with pkgver ($pkgver)"
@@ -173,10 +162,10 @@ build() {
 
 _package() {
 	local _buildflavor="$1" _outdir="$2"
-	local _abi_release=$pkgver-$pkgrel-$_buildflavor
+	local _builddir="$srcdir"/build-$_buildflavor.$CARCH
 
-	cd "$srcdir"/build-$_buildflavor
-
+	cd "$_builddir"
+	local _abi_release="$(make -s kernelrelease)"
 	mkdir -p "$_outdir"/boot "$_outdir"/lib/modules
 
 	local _install
@@ -192,7 +181,6 @@ _package() {
 		;;
 	esac
 
-	cd "$srcdir"/build-$_buildflavor
 	# modules_install seems to regenerate a defect Modules.symvers. Work
 	# around it by backing it up and restore it after modules_install
 	cp Module.symvers Module.symvers.backup
@@ -212,6 +200,9 @@ _package() {
 	install -D -m644 include/config/kernel.release \
 		"$_outdir"/usr/share/kernel/$_buildflavor/kernel.release
 
+	# allow the initramfs generators to know the package name the kernel came from
+	echo "${subpkgname:-$pkgname}" > "$_outdir"/lib/modules/$_abi_release/pkgname
+
 	if [ "$CARCH" = "aarch64" ]; then
 		mv -f "$INSTALL_DTBS_PATH"/broadcom/*.dtb \
 			"$INSTALL_DTBS_PATH"
@@ -219,43 +210,28 @@ _package() {
 	fi
 }
 
-genpatch() {
-	local RPI_REPO_PATH="$HOME/repositories/linux-rpi"
-	msg "Checking out/pulling the Linux kernel git repository.."
-	mkdir -p "$RPI_REPO_PATH" && cd "$RPI_REPO_PATH"
-	git clone "$_linux_repo" "$RPI_REPO_PATH" 2>/dev/null || git pull
-	msg "Fetching raspberry git repository.."
-	git remote add rpi "$_rpi_repo" 2>/dev/null || true
-	git fetch rpi
-	msg "Generating rpi patch: rpi-$pkgver.patch"
-	mkdir -p "$srcdir"
-	git diff v$pkgver remotes/rpi/rpi-${pkgver%.*}.y > \
-		"$srcdir"/rpi-$pkgver.patch
-	msg "Sending patch to dev.alpinelinux.org.."
-	scp "$srcdir"/rpi-$pkgver.patch \
-		dev.alpinelinux.org:/archive/rpi-patches/rpi-$pkgver-alpine.patch
-	cd "$startdir" && abuild checksum
-}
-
 # main flavor installs in $pkgdir
 package() {
+	case "$CARCH" in
+	armv7)
+		provides="linux-rpi2=$pkgver-r$pkgrel"  # for backward compatibility
+		replaces="linux-rpi2"  # for backward compatibility
+	;;
+	aarch64)
+		provides="linux-rpi4=$pkgver-r$pkgrel"  # for backward compatibility
+		replaces="linux-rpi4"  # for backward compatibility
+	;;
+	esac
 	_package rpi "$pkgdir"
 }
 
-# subflavors install in $subpkgdir
-rpi2() {
-	depends="initramfs-generator linux-firmware-brcm linux-firmware-cypress"
-	_package rpi2 "$subpkgdir"
-}
-
-rpi4() {
-	depends="initramfs-generator linux-firmware-brcm linux-firmware-cypress"
-	_package rpi4 "$subpkgdir"
-}
 
 _dev() {
 	local _flavor=$(echo $subpkgname | sed -E 's/(^linux-|-dev$)//g')
-	local _abi_release=$pkgver-$pkgrel-$_flavor
+	local _builddir="$srcdir"/build-$_flavor.$CARCH
+
+	cd "$_builddir"
+	local _abi_release="$(make -s kernelrelease)"
 	# copy the only the parts that we really need for build 3rd party
 	# kernel modules and install those as /usr/src/linux-headers,
 	# simlar to what ubuntu does
@@ -265,15 +241,33 @@ _dev() {
 	#
 	pkgdesc="Headers and script for third party modules for $_flavor kernel"
 	depends="$_depends_dev"
+
+	# handle backward compatibility with legacy flavors
+	case "$_flavor" in
+		rpi)
+			case "$CARCH" in
+				armv7)
+					provides="linux-rpi2-dev=$pkgver-r$pkgrel"
+					replaces="linux-rpi2-dev"
+				;;
+				aarch64)
+					provides="linux-rpi4-dev=$pkgver-r$pkgrel"
+					replaces="linux-rpi4-dev"
+				;;
+			esac
+			;;
+		*) die "Unknown flavor: $flavor" ;;
+	esac
+
 	local dir="$subpkgdir"/usr/src/linux-headers-$_abi_release
 
 	# first we import config, run prepare to set up for building
 	# external modules, and create the scripts
 	mkdir -p "$dir"
-	cp "$srcdir"/build-$_flavor/.config "$dir"/.config
+	cp "$_builddir"/.config "$dir"/.config
 	echo "-$pkgrel-$_flavor" > "$dir"/localversion-alpine
 
-	make -j1 -C "$srcdir"/linux-$_kernver O="$dir" \
+	make -j1 -C "$srcdir"/linux-$_kernver ARCH="$_carch" O="$dir" \
 		syncconfig prepare modules_prepare scripts
 
 	# remove the stuff that points to real sources. we want 3rd party
@@ -295,7 +289,7 @@ _dev() {
 	find $(find arch -name include -type d -print) -type f \
 		| cpio -pdm "$dir"
 
-	install -Dm644 "$srcdir"/build-$_flavor/Module.symvers \
+	install -Dm644 "$_builddir"/Module.symvers \
 		"$dir"/Module.symvers
 
 	mkdir -p "$subpkgdir"/lib/modules/$_abi_release
@@ -304,14 +298,8 @@ _dev() {
 }
 
 sha512sums="
-6ed2a73c2699d0810e54753715635736fc370288ad5ce95c594f2379959b0e418665cd71bc512a0273fe226fe90074d8b10d14c209080a6466498417a4fdda68  linux-6.1.tar.xz
-6d5b98b1a03cafd712e18e277c2755cfd93c699c7ee34c3ce222a949da15774cb9d5d2cee47189a4bbf34067baa6c098752abb8e4b7a150f8c89d2658bb5dae8  patch-6.1.60.xz
-88f96919f5232a5ea07ba316375c7b70ee5b0a532cffaa2e470ad3bbdd801d1c2bbd2055f2cff45ce833337881bd2518f2c9d81196f3f5d201e4d0b60bf80776  rpi-6.1.60-alpine.patch
-5cda18df4efa013bdd72fd03132c8d42076f151ddb5ec09d2602691d0d0a57615f657a2ce9752b79d696bcda65419d05470584a6ab35cf770087fe0b7ddf9523  config-changes-rpi.armhf
-5cda18df4efa013bdd72fd03132c8d42076f151ddb5ec09d2602691d0d0a57615f657a2ce9752b79d696bcda65419d05470584a6ab35cf770087fe0b7ddf9523  config-changes-rpi.armv7
-5cda18df4efa013bdd72fd03132c8d42076f151ddb5ec09d2602691d0d0a57615f657a2ce9752b79d696bcda65419d05470584a6ab35cf770087fe0b7ddf9523  config-changes-rpi.aarch64
-5cda18df4efa013bdd72fd03132c8d42076f151ddb5ec09d2602691d0d0a57615f657a2ce9752b79d696bcda65419d05470584a6ab35cf770087fe0b7ddf9523  config-changes-rpi2.armhf
-5cda18df4efa013bdd72fd03132c8d42076f151ddb5ec09d2602691d0d0a57615f657a2ce9752b79d696bcda65419d05470584a6ab35cf770087fe0b7ddf9523  config-changes-rpi2.armv7
-5cda18df4efa013bdd72fd03132c8d42076f151ddb5ec09d2602691d0d0a57615f657a2ce9752b79d696bcda65419d05470584a6ab35cf770087fe0b7ddf9523  config-changes-rpi4.armv7
-5cda18df4efa013bdd72fd03132c8d42076f151ddb5ec09d2602691d0d0a57615f657a2ce9752b79d696bcda65419d05470584a6ab35cf770087fe0b7ddf9523  config-changes-rpi4.aarch64
+458b2c34d46206f9b4ccbac54cc57aeca1eaecaf831bc441e59701bac6eadffc17f6ce24af6eadd0454964e843186539ac0d63295ad2cc32d112b60360c39a35  linux-6.6.tar.xz
+a69cd5f980d1c102833d6ddf64e24f7ee898d03c9168f8c123a9f37c3a697cdd485ec40db8037f536a0f7d238bb077e8590ea95fd314e544127b6dab8f2b6d08  patch-6.6.3.xz
+7ba5b2e726f747c8f825a7dddc8f325bacd57e923e8135f0ecfd0d72550309c0cfc707d310abd4701815b8b64e131097058ec8a8fbb94bacdecb84251cd72dab  rpi-6.6.3-alpine.patch
+f014a9b3574df17a3f6e0d8a2c48aef4239f33a062d64704fd56ecd596d090bb0413c8cb2abd6ec3ceeee09fa66243b6a3f7b405657edbd9c7a6407d6ec79fef  common-changes.config
 "

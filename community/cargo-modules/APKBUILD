@@ -1,7 +1,7 @@
 # Contributor: Orhun Parmaksız <orhunparmaksiz@gmail.com>
 # Maintainer: Orhun Parmaksız <orhunparmaksiz@gmail.com>
 pkgname=cargo-modules
-pkgver=0.11.0
+pkgver=0.11.2
 pkgrel=0
 pkgdesc="A cargo plugin for showing an overview of a crate's modules"
 url="https://github.com/regexident/cargo-modules"
@@ -36,5 +36,5 @@ package() {
 }
 
 sha512sums="
-7a4d5c7837af8564bf7047f53548686a698efe326e062d2095c1664994b4fea3a62322f1c570b92d14d32551f9e714a1c26864f26b26c67b0315be2e46768888  cargo-modules-0.11.0.tar.gz
+5739266057e28327913ac33f6187aec4a9e533b6ee765145e2588d59d34301bf9102e5b099a7ed17a151c7a3c0e58af82ca71c9caefcd43bb4eebf71d7ef982c  cargo-modules-0.11.2.tar.gz
 "

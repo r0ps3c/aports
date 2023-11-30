@@ -3,12 +3,12 @@
 
 # when changing _ver we *must* bump _rel
 _name=zfs
-_ver=2.1.13
-_rel=1
+_ver=2.2.1
+_rel=0
 # when changing _kver/_krel make sure _rel=0
 _flavor=${FLAVOR:-lts}
 _kpkg=linux-$_flavor
-_kver=6.1.63
+_kver=6.6.3
 _krel=0
 
 _kpkgver="$_kver-r$_krel"
@@ -37,7 +37,8 @@ depends_dev="glib-dev e2fsprogs-dev util-linux-dev libtirpc-dev
 makedepends="$depends_dev linux-headers"
 install_if="zfs $_kpkg=$_kpkgver"
 subpackages="$pkgname-dev"
-source="https://github.com/openzfs/zfs/releases/download/zfs-$_ver/zfs-$_ver.tar.gz"
+source="https://github.com/openzfs/zfs/releases/download/zfs-$_ver/zfs-$_ver.tar.gz
+	aarch64-disable-neon.patch"
 builddir="$srcdir/$_name-$_ver"
 
 for f in $_extra_flavors; do
@@ -105,5 +106,6 @@ dev() {
 }
 
 sha512sums="
-d06fce8faa22b0cab2c69befa3842476703433fa90530d1fdf168716afd2039e97b124aa8ef581bed3bc19604fa2faa0bc1e29f6d028e3ef0085f0e34e05230a  zfs-2.1.13.tar.gz
+05e17046ac4f0ba923151be3e554e075db4783c8936c5dcee2d3b6d459fb386ba33f9eb38d15c185db58a1d26926147a66c3b3fe14e9de40987f0e95efa2bb31  zfs-2.2.1.tar.gz
+50499c40a670e8b447279912953732c015dfb3559372d5e203be30e1e22663920747c3a65f995e94b70bed0d5fdf82f72e260422792097578a50b49001df7aee  aarch64-disable-neon.patch
 "
