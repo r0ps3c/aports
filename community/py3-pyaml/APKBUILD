@@ -1,0 +1,46 @@
+# Maintainer: Antoine Martin (ayakael) <dev@ayakael.net>
+# Contributor: Antoine Martin (ayakael) <dev@ayakael.net>
+
+pkgname=py3-pyaml
+_pkgname="pyaml"
+pkgver=23.9.7
+pkgrel=0
+arch='noarch'
+pkgdesc="PyYAML-based module to produce pretty and readable YAML-serialized data"
+url="https://pypi.python.org/pypi/pyaml"
+license="WTFPL"
+depends="
+	py3-yaml
+	"
+makedepends="
+	py3-setuptools
+	py3-gpep517
+	py3-wheel
+	py3-installer
+	"
+checkdepends="
+	py3-unidecode
+	py3-pytest
+	"
+source="$pkgname-$pkgver.tar.gz::https://pypi.io/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+subpackages="$pkgname-pyc"
+
+build() {
+	gpep517 build-wheel \
+		--wheel-dir dist \
+		--output-fd 3 3>&1 >&2
+}
+
+check() {
+	pytest -v
+}
+
+package() {
+	python3 -m installer -d "$pkgdir" \
+		dist/*.whl
+}
+
+sha512sums="
+f21f8c329e5233f6774701fc1e5673e62ab162fb5f8efba25120d4e157940709f47a2c90838b3af42e71b7dcfc69852393b204d0d85b6d5fba28a23f8a118be0  py3-pyaml-23.9.7.tar.gz
+"
