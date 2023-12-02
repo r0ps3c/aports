@@ -11,7 +11,6 @@
 set -e
 
 # get abuild configurables
-[ -e /usr/share/abuild/functions.sh ] || (echo "abuild not found" ; exit 1)
 . /usr/share/abuild/functions.sh
 
 scriptdir="$(dirname "$0")"
@@ -60,7 +59,6 @@ set_source_date
 all_sections=""
 all_profiles=""
 all_checksums="sha256 sha512"
-all_arches="aarch64 armhf armv7 riscv64 x86 x86_64"
 all_dirs=""
 build_date="$(date -u +%y%m%d -d "@$SOURCE_DATE_EPOCH")"
 default_arch="$(apk --print-arch)"
@@ -94,7 +92,8 @@ usage() {
 
 $0	[--tag RELEASE] [--outdir OUTDIR] [--workdir WORKDIR]
 		[--arch ARCH] [--profile PROFILE] [--hostkeys] [--simulate]
-		[--repository REPO] [--extra-repository REPO] [--yaml FILE]
+		[--repository REPO [--repository REPO]]
+		[--repositories-file REPO_FILE] [--yaml FILE]
 $0	--help
 
 options:
@@ -103,8 +102,8 @@ options:
 --hostkeys		Copy system apk signing keys to created images
 --outdir		Specify directory for the created images
 --profile		Specify which profiles to build
+--repositories-file	List of repositories to use for the image create
 --repository		Package repository to use for the image create
---extra-repository	Add repository to search packages from
 --simulate		Don't execute commands
 --tag			Build images for tag RELEASE
 --workdir		Specify temporary working directory (cache)
@@ -237,6 +236,7 @@ while [ $# -gt 0 ]; do
 	opt="$1"
 	shift
 	case "$opt" in
+	--repositories-file) REPOS_FILE="$1"; shift ;;
 	--repository)
 		if [ -z "$REPOS" ]; then
 			REPOS="$1"
@@ -244,7 +244,10 @@ while [ $# -gt 0 ]; do
 			REPOS=$(printf '%s\n%s' "$REPOS" "$1");
 		fi
 		shift ;;
-	--extra-repository) EXTRAREPOS="$EXTRAREPOS $1"; shift ;;
+	--extra-repository)
+		warning "--extra-repository is deprecated. Use multiple --repository"
+		EXTRAREPOS="$EXTRAREPOS $1"
+		shift ;;
 	--workdir) WORKDIR="$1"; shift ;;
 	--outdir) OUTDIR="$1"; shift ;;
 	--tag) RELEASE="$1"; shift ;;
@@ -303,9 +306,13 @@ for ARCH in $req_arch; do
 		cp -Pr /etc/apk/keys "$APKROOT/etc/apk/"
 		apk --arch "$ARCH" --root "$APKROOT" add --initdb
 
-		echo "$REPOS" > "$APKROOT/etc/apk/repositories"
+		_repositories="$APKROOT/etc/apk/repositories"
+		if [ -n "$REPOS_FILE" ]; then
+			cat "$REPOS_FILE" > "$_repositories"
+		fi
+		echo "$REPOS" >> "$_repositories"
 		for repo in $EXTRAREPOS; do
-			echo "$repo" >> "$APKROOT/etc/apk/repositories"
+			echo "$repo" >> "$_repositories"
 		done
 	fi
 	apk update --root "$APKROOT"
