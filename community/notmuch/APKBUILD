@@ -1,9 +1,9 @@
 # Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
 # Contributor: Stefan Wagner <stw@bit-strickerei.de>
-# Maintainer: Stefan Wagner <stw@bit-strickerei.de>
+# Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=notmuch
-pkgver=0.38.1
-pkgrel=0
+pkgver=0.38.2
+pkgrel=1
 pkgdesc="E-Mail index, search and tagging"
 url="https://notmuchmail.org/"
 arch="all"
@@ -15,8 +15,11 @@ makedepends="
 	gmime-dev
 	gzip
 	perl
+	py3-gpep517
 	py3-requests
+	py3-setuptools
 	py3-sphinx
+	py3-wheel
 	python3-dev
 	talloc-dev
 	xapian-core-dev
@@ -62,7 +65,9 @@ build() {
 	make
 
 	cd bindings/python
-	python3 setup.py build
+	gpep517 build-wheel \
+		--wheel-dir .dist \
+		--output-fd 3 3>&1 >&2
 }
 
 check() {
@@ -99,7 +104,7 @@ package() {
 	make DESTDIR="$pkgdir" install
 
 	cd bindings/python
-	python3 setup.py install --skip-build --root="$pkgdir"
+	python3 -m installer -d "$pkgdir" .dist/*.whl
 
 	make -C "$builddir"/vim DESTDIR="$pkgdir" \
 		prefix="/usr/share/vim/vimfiles" install
@@ -129,6 +134,6 @@ py3() {
 }
 
 sha512sums="
-5bb910fe4e02f9b8212d50fc7d3258a1fc98dbb1ce08a4f25dce2e314ffab9287a56962f62a8e5c594f735fe847a8cdebf0b6ccb8ff46676cd70a78f25a6675d  notmuch-0.38.1.tar.xz
+fcf5cd927d2acff1a3632c8a4790d4115320cd3ca0d7f61955789a060e363d196c6be64e0e98c883e9918f6b5032a72150977d5f80f9c890f9bd3ab8ed5d8154  notmuch-0.38.2.tar.xz
 0defaeb6781694d55f2e11a5ede37214d261bab4eed328d523cfda80deb11085a1486aa13e180cebc3b24dddfa073d17f7b9e2891c176d60aafa62509a28d55c  test-musl-invalid-regexp.patch
 "

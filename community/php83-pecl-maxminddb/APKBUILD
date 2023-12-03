@@ -1,14 +1,14 @@
 # Contributor: TBK <alpine@jjtc.eu>
 # Maintainer: Andy Postnikov <apostnikov@gmail.com>
-pkgname=php81-pecl-maxminddb
+pkgname=php83-pecl-maxminddb
 _extname=maxminddb
 pkgver=1.11.1
 pkgrel=0
-pkgdesc="PHP 8.1 MaxMind DB Reader extension - PECL"
+pkgdesc="PHP 8.3 MaxMind DB Reader extension - PECL"
 url="https://pecl.php.net/package/maxminddb"
 arch="all"
 license="Apache-2.0"
-_phpv=81
+_phpv=83
 _php=php$_phpv
 depends="$_php-bcmath"
 makedepends="$_php-dev libmaxminddb-dev"
