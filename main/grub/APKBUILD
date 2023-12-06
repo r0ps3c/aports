@@ -2,7 +2,7 @@
 # Maintainer: Timo Teräs <timo.teras@iki.fi>
 pkgname=grub
 pkgver=2.06
-pkgrel=14
+pkgrel=17
 pkgdesc="Bootloader with support for Linux, Multiboot and more"
 url="https://www.gnu.org/software/grub/"
 arch="all !s390x"
@@ -38,6 +38,7 @@ for f in $flavors; do
 done
 
 source="https://ftp.gnu.org/gnu/grub/grub-$pkgver.tar.xz
+	update-grub
 	grub-xen-host_grub.cfg
 
 	0001-osdep-Introduce-include-grub-osdep-major.h-and-use-i.patch
@@ -68,6 +69,9 @@ source="https://ftp.gnu.org/gnu/grub/grub-$pkgver.tar.xz
 	0022-templates-fix-lang-locale-detection.patch
 	0023-build-force-no-pie.patch
 	fix-riscv64.patch
+	fix-xfs-1.patch
+	fix-xfs-2.patch
+	grep-F.patch
 	CVE-2021-3697-1.patch
 	CVE-2021-3697-2.patch
 	CVE-2021-3697-3.patch
@@ -216,6 +220,8 @@ package() {
 
 	mkdir -p "$pkgdir"/usr/share/bash-completion
 	mv "$pkgdir"/etc/bash_completion.d "$pkgdir"/usr/share/bash-completion/completions
+
+	install -D -m755 "$srcdir"/update-grub "$pkgdir"/usr/sbin/update-grub
 }
 
 bios() {
@@ -286,6 +292,7 @@ bashcomp() {
 
 sha512sums="
 4f11c648f3078567e53fc0c74d5026fdc6da4be27d188975e79d9a4df817ade0fe5ad2ddd694238a07edc45adfa02943d83c57767dd51548102b375e529e8efe  grub-2.06.tar.xz
+85b3c56670fb0aaaf831cc6d7ca45faeb68b844cb17cfd6f9b51c2473f0b153cfa7b26ff8bf00a88b2ed3e0ae69a1e8f735256e6cecc91e959169606e2abf887  update-grub
 4e7394e0fff6772c89683039ccf81099ebbfe4f498e6df408977a1488fd59389b6e19afdbf0860ec271e2b2aea0df7216243dcc8235d1ca3af0e7f4d0a9d60a4  grub-xen-host_grub.cfg
 377ecb3203bc19c792c3299cec5e678a8765b552a020e0f8cf29f881a9ed936fd00fb1eddde835daf98d9450078f5ab3a0236b6a6a8cd1ffc204e80739c7dc27  0001-osdep-Introduce-include-grub-osdep-major.h-and-use-i.patch
 73dfe930925554cd750b37cb386e98f9b9ae0ccfde7d6edfda201e7a723173314523123fbd1aedaa83cf3649fc28550649a21709705b3a62b5d90914f58587c6  0002-osdep-linux-hostdisk-Use-stat-instead-of-udevadm-for.patch
@@ -314,6 +321,9 @@ b69a24bf6d19fc262108d6064555754c8662ba1b8e4f68717419acafc18c5e04117c01bd40da3a72
 d4e311ed2a849d9424eb215b55e217e7c0db80b54c7dc67679eb1ec81892e4dff77d4e837abbd17117c2ae6378a6bd06b0d57d2b4856d4045feafe1be43c2067  0022-templates-fix-lang-locale-detection.patch
 552a0034b4f721d56b3ad7eb23b47b278690c219ba1a12fbf1f82eb88b03132c0b73fe11934f7ab26e7e2c819f1c20f06422ae2df26dbeaec8f0eaa3dfd4f03d  0023-build-force-no-pie.patch
 e2a968890fb54f5a070e1de0a30ae6f0a71952ce5f607bfc43798852398142e342e1477b2b51d74f06ad83f49c35f3c81f6c8c9f9d012bc4a327c266a520124f  fix-riscv64.patch
+ab487cb3f074e04d7bfcbb3bbd76109b3180ba1906baf6d25339496d1e9376673c924b9d11c60f0f8084bf85d5a766f5a5454ae736b75d433731a6100cfd5716  fix-xfs-1.patch
+cfe20d2153375138ca4af2de2e2d076c410d3ecb0d5d8532e9a67a6387705e37013a56ea217df4d4756fff7120467d0f8b5ce60e72a367b4115b8285fb8e07f6  fix-xfs-2.patch
+92aef47138e0ac344eb6e853cff45e811598000f04edf3eb06d1b904c8b73f7c63de4de9044a780e8d047cfbe05c1a508626e6dfc870448f5ec36ca8fbf68666  grep-F.patch
 1ef0c87ab121a71453f9f34725ee33d21dfcc0918662a7483afc8213d773c7b663c6950c2120d54184ac833e8cb51312b1edc42d7649ec37529069d31c692a72  CVE-2021-3697-1.patch
 0fd9e41fabd96ef119b9c24d7f380ad62060d7e3ebb58b832341adb4c682d2b10b2b5e36edc670460fe61e9355460b3af5a32a6c9d91f7fc9c9a2d53f52a15da  CVE-2021-3697-2.patch
 bf9a07f739d2fabd133cdfd360d96f7960b940421130597dadf596bacf0489c64d229b5079ef7bc930e9d6a5c4ad823906340a1d608c4b37571235b976485829  CVE-2021-3697-3.patch
