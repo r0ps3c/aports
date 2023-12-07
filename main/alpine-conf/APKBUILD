@@ -1,6 +1,6 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=alpine-conf
-pkgver=3.17.0_rc2
+pkgver=3.17.0
 pkgrel=0
 pkgdesc="Alpine configuration management scripts"
 url="https://git.alpinelinux.org/alpine-conf/about"
@@ -27,5 +27,5 @@ check() {
 }
 
 sha512sums="
-1aed8a7e95f1797c963cd286c868ceb0e3543c41b31b8f60c6d6e512490b4d64ad16799901394c8c88e8df6d77910860c0fd863048410cbf98cfed338da48709  alpine-conf-3.17.0_rc2.tar.gz
+22e67984e21606c3ba8eb67cb8b0aad4d09f9996d5e8504e2d69fdac66fe5e348b2bacce3290378f588cc3d835cb2d22b55cef40f3552cc1735c1e242b88f8e1  alpine-conf-3.17.0.tar.gz
 "
