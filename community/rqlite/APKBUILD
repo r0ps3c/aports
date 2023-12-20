@@ -1,6 +1,6 @@
 # Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=rqlite
-pkgver=8.12.0
+pkgver=8.12.3
 pkgrel=0
 pkgdesc="Lightweight, distributed relational database built on SQLite"
 url="https://github.com/rqlite/rqlite"
@@ -56,5 +56,5 @@ client() {
 }
 
 sha512sums="
-6633f292d68a13d6602fab1b5359cebf369ce2af75daeff479102a173d91a4edd6ab164bb2294fe041d93c7ff305ee7568245e4f19273a52c6705e24510e9fe8  rqlite-8.12.0.tar.gz
+4a3abe78103190ca1584baad9d2ccd11db082b1030407bb17b8e9cb9d32d77a004fa978a779d9a25b7fcab6da2b98b3fe5b5f9bd24805e02824a8e1f968ddfce  rqlite-8.12.3.tar.gz
 "

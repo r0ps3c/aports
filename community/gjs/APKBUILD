@@ -1,8 +1,8 @@
 # Contributor: Rasmus Thomsen <oss@cogitri.dev>
-# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=gjs
 # even number after first dot are the stable releases
-pkgver=1.78.0
+pkgver=1.78.1
 pkgrel=0
 pkgdesc="GNOME javascript library"
 url="https://wiki.gnome.org/Projects/Gjs"
@@ -16,7 +16,6 @@ makedepends="
 	gobject-introspection-dev
 	gtk+3.0-dev
 	libffi>=3.3
-	lld
 	meson
 	mozjs115-dev
 	"
@@ -25,6 +24,15 @@ subpackages="$pkgname-dev"
 source="https://download.gnome.org/sources/gjs/${pkgver%.*}/gjs-$pkgver.tar.xz
 	encoding.patch
 	"
+
+case "$CARCH" in
+riscv64)
+	# lld broken on riscv64
+	;;
+*)
+	makedepends="$makedepends lld"
+	;;
+esac
 
 build() {
 	case "$CARCH" in
@@ -41,6 +49,7 @@ build() {
 		;;
 	*)
 		local lto=true
+		export LDFLAGS="$LDFLAGS -fuse-ld=lld"
 		;;
 	esac
 
@@ -48,7 +57,6 @@ build() {
 	CXX=clang++ \
 	CFLAGS="$CFLAGS -O2" \
 	CXXFLAGS="$CXXFLAGS -O2" \
-	LDFLAGS="$LDFLAGS -fuse-ld=lld" \
 	abuild-meson \
 		--buildtype=release \
 		-Db_lto=$lto \
@@ -69,6 +77,6 @@ package() {
 }
 
 sha512sums="
-28ad3ff5c031b8e78622244918994ca5f510e4b403a382e7d0b0bcb9a0611be61e103398773328be4c405b49d7984c089180a5fb603518b412d01a935fb3ceb3  gjs-1.78.0.tar.xz
+9a5d02bacbf82364cf5daa69d6613eb38ef34121eb350b2773b87cf1027ccc1b9905b651275fd71036817e710d834d356ee1cecac2f7c83ff571c39e98360286  gjs-1.78.1.tar.xz
 3524a4c6772f1be1d6e2320650d7fb9f81cc2ceb7c79c2521c0ee7a4202d5681a88586ab9439050611ee1719f9a977bb65d0eaaa536148e7e4590baf1f50eae8  encoding.patch
 "
