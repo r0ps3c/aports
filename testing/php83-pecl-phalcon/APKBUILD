@@ -1,14 +1,14 @@
 # Contributor: Valery Kartel <valery.kartel@gmail.com>
 # Maintainer: Andy Postnikov <apostnikov@gmail.com>
-pkgname=php81-pecl-phalcon
+pkgname=php83-pecl-phalcon
 _extname=phalcon
 pkgver=5.5.0
 pkgrel=0
-pkgdesc="High performance, full-stack PHP 8.1 framework delivered as a C extension"
+pkgdesc="High performance, full-stack PHP 8.3 framework delivered as a C extension"
 url="https://phalcon.io/"
 arch="all"
 license="BSD-3-Clause"
-_phpv=81
+_phpv=83
 _php=php$_phpv
 depends="
 	$_php-curl
