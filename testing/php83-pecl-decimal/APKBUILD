@@ -1,13 +1,13 @@
 # Maintainer: Andy Postnikov <apostnikov@gmail.com>
-pkgname=php81-pecl-decimal
+pkgname=php83-pecl-decimal
 _extname=decimal
 pkgver=1.5.0
 pkgrel=1
-pkgdesc="Correctly-rounded arbitrary precision decimal floating-point arithmetic in PHP 8.1 - PECL"
+pkgdesc="Correctly-rounded arbitrary precision decimal floating-point arithmetic in PHP 8.3 - PECL"
 url="https://pecl.php.net/package/decimal"
 arch="all"
 license="MIT"
-_phpv=81
+_phpv=83
 _php=php$_phpv
 depends="$_php-common"
 makedepends="$_php-dev mpdecimal-dev"
@@ -18,7 +18,9 @@ install_if="php-$_extname php$_phpv"
 
 build() {
 	phpize$_phpv
-	./configure --prefix=/usr --with-php-config=php-config$_phpv
+	./configure \
+		--prefix=/usr \
+		--with-php-config=/usr/bin/php-config$_phpv
 	make
 }
 
