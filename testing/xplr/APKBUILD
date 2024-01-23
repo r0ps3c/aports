@@ -1,21 +1,20 @@
-# Contributor: Jakub Panek <me@panekj.dev>
-# Maintainer: Jakub Panek <me@panekj.dev>
+# Maintainer: omni <omni+alpine@hack.org>
 pkgname=xplr
 pkgver=0.21.5
-pkgrel=0
+pkgrel=2
 pkgdesc="Hackable, minimal, fast TUI file explorer"
 url="https://xplr.dev"
-# s390x, riscv64: rust
-# ppc64le: luajit
-arch="all !ppc64le !s390x !riscv64"
+# s390x: nix crate
+arch="all !s390x"
 license="MIT"
-makedepends="cargo luajit-dev cargo-auditable"
+makedepends="cargo lua5.4-dev cargo-auditable"
 options="net"
+subpackages="$pkgname-doc"
 source="
 	https://github.com/sayanarijit/xplr/archive/refs/tags/v$pkgver/xplr-$pkgver.tar.gz
 	remove-vendored-lua.patch
+	modified-field-lua54.patch
 	"
-
 
 prepare() {
 	default_prepare
@@ -24,28 +23,38 @@ prepare() {
 }
 
 build() {
-	cargo auditable build --frozen --offline --release
+	cargo auditable build --release --frozen
 }
 
 check() {
 	# cargo test doesn't build target/debug/xplr binary
-	cargo auditable build --frozen --offline
+	cargo auditable build --frozen
 	cargo test --frozen
 }
 
 package() {
 	install -Dm755 target/release/xplr -t "$pkgdir"/usr/bin/
 
-	install -Dm644 -t "$pkgdir"/usr/share/applications "$builddir"/assets/desktop/xplr.desktop
-	install -Dm644 "$builddir"/assets/icon/xplr.svg "$pkgdir"/usr/share/pixmaps/xplr.svg
-	install -Dm644 "$builddir"/assets/icon/xplr.svg "$pkgdir"/usr/share/icons/hicolor/scalable/apps/xplr.svg
-	install -Dm644 "$builddir"/assets/icon/xplr16.png "$pkgdir"/usr/share/icons/hicolor/16x16/apps/xplr.png
-	install -Dm644 "$builddir"/assets/icon/xplr32.png "$pkgdir"/usr/share/icons/hicolor/32x32/apps/xplr.png
-	install -Dm644 "$builddir"/assets/icon/xplr64.png "$pkgdir"/usr/share/icons/hicolor/64x64/apps/xplr.png
-	install -Dm644 "$builddir"/assets/icon/xplr128.png "$pkgdir"/usr/share/icons/hicolor/128x128/apps/xplr.png
+	install -Dm644 "$builddir"/assets/desktop/xplr.desktop \
+		-t "$pkgdir"/usr/share/applications
+	install -Dm644 "$builddir"/assets/icon/xplr.svg \
+		"$pkgdir"/usr/share/pixmaps/xplr.svg
+	install -Dm644 "$builddir"/assets/icon/xplr.svg \
+		"$pkgdir"/usr/share/icons/hicolor/scalable/apps/xplr.svg
+	for res in 16 32 64 128; do
+		install -Dm 644 assets/icon/"$pkgname""$res".png \
+			"$pkgdir"/usr/share/icons/hicolor/"$res"x"$res"/apps/"$pkgname".png
+	done
+
+	install -Dm644 src/init.lua \
+		-t "$pkgdir"/usr/share/doc/"$pkgname"/examples/
+	install -Dm644 docs/en/src/* \
+		-t "$pkgdir"/usr/share/doc/"$pkgname"/
+	install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
 }
 
 sha512sums="
 4f6323d123e3963c1b427df55200771f2d3cf2d8cfc07dac488d513215030bf98c96bdcbdf5b801f319afd3fd780c82abfbc6b212a6178bdfae86f798dd0f0df  xplr-0.21.5.tar.gz
-25abb57271187e82bdd07013358a1279a470f97a31fa8db94c8cd015432fab2ef8fcbffcd204d68738aefd1a20c4402b87b17b9b73e2bd6bcf2635e9b982ccdc  remove-vendored-lua.patch
+65886618305c63119e3be0e08f4fae7f9b63ad479767f1abe40c6de56356619caddc5b360f05018e64c758f59780bd265e51796d2fd29d95e41bffebe16abc6e  remove-vendored-lua.patch
+9a4109b0988065ce4ae79535238c447e281f6e730957faab2c48b6a0c861eac2a6263c5cac24bc8dbdaa37e442e4c52ea4279b52d4e75df9a5ea1f0e3321728e  modified-field-lua54.patch
 "
