@@ -4,7 +4,7 @@
 pkgname=perl-libwww
 #_pkgreal is used by apkbuild-cpan to find modules at MetaCpan
 _pkgreal=libwww-perl
-pkgver=6.74
+pkgver=6.76
 pkgrel=0
 pkgdesc="The World-Wide Web library for Perl"
 url="https://metacpan.org/release/libwww-perl/"
@@ -37,5 +37,5 @@ package() {
 }
 
 sha512sums="
-cf050742e6c81253c8bae441875400402ae8fdf74e455263f9c2a0648d44b51d6cc1ef6d679e428dbe52aac8c28e82d004ed7409f950e4ba737ea3ceff704249  libwww-perl-6.74.tar.gz
+8a055c3324007eb1badc3d8b8d368a46b7c1c5e5dd837ddbb862924e8c7fc13c413f50dae4ff8d32bf53774f1a95016098e56c181547f60b42dbbedf3813b897  libwww-perl-6.76.tar.gz
 "
