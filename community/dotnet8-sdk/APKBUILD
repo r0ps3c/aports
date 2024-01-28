@@ -1,6 +1,5 @@
-# Maintainer: Antoine Martin (ayakael) <dev@ayakael.net>
 # Contributor: Antoine Martin (ayakael) <dev@ayakael.net>
-
+# Maintainer: Antoine Martin (ayakael) <dev@ayakael.net>
 pkgname=dotnet8-sdk
 pkgver=8.0.101
 _bldver=8.0.1-r0
@@ -57,10 +56,12 @@ package() {
 		dotnet$_pkgver_name-dev=$pkgver-r$pkgrel
 		"
 
-	install -dm 755 "$pkgdir"/$_libdir/dotnet
+	install -dm 755 "$pkgdir"/$_libdir/dotnet/packs
 
 	cp -r $_libdir/dotnet/bootstrap/$_bldver_ver/sdk "$pkgdir"/$_libdir/dotnet/.
 	cp -r $_libdir/dotnet/bootstrap/$_bldver_ver/sdk-manifests "$pkgdir"/$_libdir/dotnet/.
+	cp -r $_libdir/dotnet/bootstrap/$_bldver_ver/packs/Microsoft.NETCore.App.Runtime.* "$pkgdir"/$_libdir/dotnet/packs/.
+	cp -r $_libdir/dotnet/bootstrap/$_bldver_ver/packs/Microsoft.AspNetCore.App.Runtime.* "$pkgdir"/$_libdir/dotnet/packs/.
 
 	# See https://github.com/dotnet/source-build/issues/2579
 	find "$pkgdir" -type f -name 'vstest.console' -delete
@@ -74,7 +75,7 @@ package() {
 dbg() {
 	pkgdesc="The .NET $_pkgver_macro SDK - debug pdb files"
 	depends="dotnet$_pkgver_name-sdk"
-	provides="dotnet-sdk-pdb-$_pkgver_macro=$pkgver-r$pkgrel"
+	provides="dotnet-sdk-dbg-$_pkgver_macro=$pkgver-r$pkgrel"
 
 	install -dm 755	"$subpkgdir"/$_libdir/dotnet
 
