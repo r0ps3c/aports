@@ -1,6 +1,6 @@
 # Maintainer: Jeff Dickey <alpine@mise.jdx.dev>
 pkgname=mise
-pkgver=2024.2.1
+pkgver=2024.2.3
 pkgrel=0
 pkgdesc="Polyglot runtime and dev tool version manager"
 url="https://mise.jdx.dev"
@@ -33,5 +33,5 @@ package() {
 }
 
 sha512sums="
-2f985da8e52959dd433f418cf7cf3d91dcbed88f7e4752b0a116477bf2209f7c0e89c9b4b5d205f0b3b05c73a249fdb422b68be60d8a38f27f243948a0ecd103  mise-2024.2.1.tar.gz
+60aec52adf66ff49b490c41b55b6c5c118ea46c512599be906e7351071f416d635fc3d48a635a33db3c4bbd76e81bcdb66f55ecfa70806fa68dcb4553141a6c2  mise-2024.2.3.tar.gz
 "
