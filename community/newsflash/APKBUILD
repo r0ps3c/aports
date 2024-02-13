@@ -1,11 +1,12 @@
 # Contributor: Alex McGrath <amk@amk.ie>
 # Maintainer: Alex McGrath <amk@amk.ie>
 pkgname=newsflash
-pkgver=3.0.2
+pkgver=3.1.1
 pkgrel=0
 pkgdesc="An rss feed reader that supports various web based services"
 url="https://gitlab.com/news-flash/news_flash_gtk/"
-arch="all !s390x !riscv64 !ppc64le" # ring crate fails to build
+# s390x: blueprint-compiler errors out in _resolve_dir_entry
+arch="all !s390x"
 license="GPL-3.0-only"
 depends="desktop-file-utils"
 makedepends="
@@ -35,5 +36,5 @@ package() {
 }
 
 sha512sums="
-4654557549d0ca37e04ae1061a96e26b2b145ae8d472cdaaa827ba32e7f9f82bcb66337f55dd446aac8dd31b38cacb4d54a6494cec23849eb75c11f943b15507  news_flash_gtk-v.3.0.2.tar.gz
+5c1f3d7a6272a01597abc0d79c917b8fff27428f075930cf035fbc6714fcc1f52a5eb7a62d05f6d1547f34fc21cc0b73152ae1502154dae69833026465105bb1  news_flash_gtk-v.3.1.1.tar.gz
 "
