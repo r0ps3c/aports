@@ -1,7 +1,7 @@
 # Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
 # Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
 pkgname=perl-file-rsync
-_realname=File-RsyncP
+_pkgreal=File-RsyncP
 pkgver=0.76
 pkgrel=5
 pkgdesc="Perl rsync client"
@@ -11,14 +11,14 @@ license="GPL-1.0-or-later OR Artistic-1.0-Perl"
 depends="perl"
 makedepends="perl-dev"
 subpackages="$pkgname-doc"
-source="https://cpan.metacpan.org/authors/id/C/CB/CBARRATT/$_realname-$pkgver.tar.gz
+source="https://cpan.metacpan.org/authors/id/C/CB/CBARRATT/File-RsyncP-$pkgver.tar.gz
 	perl-file-rsync-parallell-build-fix.patch
 	"
 
-builddir="$srcdir/$_realname-$pkgver"
+builddir="$srcdir/$_pkgreal-$pkgver"
 
 build() {
-	chmod +w */config.guess
+	chmod +w ./*/config.guess
 	update_config_guess
 	update_config_sub
 	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor

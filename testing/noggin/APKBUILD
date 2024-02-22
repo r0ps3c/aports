@@ -2,11 +2,11 @@
 # Maintainer: John Gebbie <me@johngebbie.com>
 pkgname=noggin
 pkgver=0.1
-pkgrel=4
+pkgrel=5
 pkgdesc="Face tracking utility, often for playing games"
 url="https://sr.ht/~geb/noggin"
 # limited by onnxruntime and opencv
-arch="all !x86 !s390x !riscv64"
+arch="all !x86 !s390x !riscv64 !ppc64le"
 license="GPL-3.0-only"
 depends="onnxruntime"
 makedepends="go scdoc opencv-dev"
