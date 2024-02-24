@@ -1,6 +1,6 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=poppler
-pkgver=23.12.0
+pkgver=24.02.0
 pkgrel=0
 pkgdesc="PDF rendering library based on xpdf 3.0"
 url="https://poppler.freedesktop.org/"
@@ -102,5 +102,5 @@ _cpp() {
 }
 
 sha512sums="
-f28962f6842091a68edfb18e5f76e29fdf65d2a7cca6cb4be4202a35bab3e80a2dbe10b86ab8bc4fff7e555a077a41314b9892e19d0d7d89724b9ebb3db93852  poppler-23.12.0.tar.xz
+95a208d21ac4d2d308a7ab3da43b95092ef78cd55ebe873c97e0d6c12d8b9d5c4614f83087616c35e1ed9d67ca606a5e008a98698bd12a332a8206ed4cf55500  poppler-24.02.0.tar.xz
 "
