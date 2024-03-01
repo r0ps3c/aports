@@ -1,17 +1,24 @@
 # Contributor: Orhun Parmaksız <orhunparmaksiz@gmail.com>
 # Maintainer: Orhun Parmaksız <orhunparmaksiz@gmail.com>
-pkgname=pixi
-pkgver=0.15.2
+pkgname=rattler-build
+pkgver=0.12.1
 pkgrel=0
-pkgdesc="A package management and workflow tool"
-url="https://github.com/prefix-dev/pixi"
-# !s390x: nix crate fails to build
-arch="all !s390x"
+pkgdesc="A fast conda-package builder"
+url="https://github.com/prefix-dev/rattler-build"
+arch="all"
 license="BSD-3-Clause"
+depends="
+	bzip2
+	xz
+	"
 makedepends="
 	cargo
 	cargo-auditable
 	openssl-dev
+	"
+checkdepends="
+	patchelf
+	git
 	"
 subpackages="
 	$pkgname-doc
@@ -19,9 +26,8 @@ subpackages="
 	$pkgname-zsh-completion
 	$pkgname-fish-completion
 	"
-# https://github.com/prefix-dev/pixi/issues/821
-options="net !check"
-source="$pkgname-$pkgver.tar.gz::https://github.com/prefix-dev/pixi/archive/v$pkgver.tar.gz"
+options="net"
+source="$pkgname-$pkgver.tar.gz::https://github.com/prefix-dev/rattler-build/archive/v$pkgver.tar.gz"
 
 prepare() {
 	default_prepare
@@ -37,6 +43,10 @@ build() {
 	$_completion --shell zsh  > "completions/_$pkgname"
 }
 
+check() {
+	cargo test --frozen -- --skip "test_host_git_source"
+}
+
 package() {
 	install -Dm 755 "target/release/$pkgname" -t "$pkgdir/usr/bin"
 	install -Dm 644 README.md -t "$pkgdir/usr/share/doc/$pkgname"
@@ -47,5 +57,5 @@ package() {
 }
 
 sha512sums="
-e7643f61087409739fbf551a551789f97ae7294fb08b4d97e256ab924f400b51955862146b76b395a89bcba69d941ef1958f6a370b541fbc8e259350ba8ea52b  pixi-0.15.2.tar.gz
+a8672e6e32616f5380bdcb61d16f2d83d4b661d28453def99f01c47dd001258e2ead3124d421cdbe47c27dd1f3b7843aa21a41759ad8192d7adca57fc763d6fa  rattler-build-0.12.1.tar.gz
 "
