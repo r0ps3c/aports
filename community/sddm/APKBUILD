@@ -2,10 +2,10 @@
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
 pkgname=sddm
 pkgver=0.21.0
-pkgrel=0
+pkgrel=1
 pkgdesc="Simple Desktop Display Manager"
 url="https://github.com/sddm/sddm/"
-# armhf blocked by qt5-qtdeclarative
+# armhf blocked by qt6-qtdeclarative
 arch="all !armhf"
 license="GPL-2.0-only"
 depends="
@@ -21,9 +21,9 @@ makedepends="
 	libxcb-dev
 	linux-pam-dev
 	py3-docutils
-	qt5-qtbase-dev
-	qt5-qtdeclarative-dev
-	qt5-qttools-dev
+	qt6-qtbase-dev
+	qt6-qtdeclarative-dev
+	qt6-qttools-dev
 	samurai
 	upower-dev
 	utmps-dev
@@ -45,13 +45,13 @@ source="https://github.com/sddm/sddm/archive/v$pkgver/sddm-v$pkgver.tar.gz
 #     - CVE-2020-28049
 
 build() {
-	export CXXFLAGS="$CXXFLAGS -flto=auto"
+	CXXFLAGS="$CXXFLAGS -flto=auto" \
 	cmake -B build -G Ninja \
 		-DCMAKE_BUILD_TYPE=None \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_INSTALL_LIBDIR=lib \
 		-DBUILD_MAN_PAGES=ON \
-		-DBUILD_WITH_QT6=OFF \
+		-DBUILD_WITH_QT6=ON \
 		-DENABLE_JOURNALD=OFF \
 		-DNO_SYSTEMD=ON \
 		-DUSE_ELOGIND=ON \
@@ -77,7 +77,7 @@ lang() {
 	install_if="$pkgname=$pkgver-r$pkgrel lang"
 	depends="$depends_lang"
 
-	amove usr/share/sddm/translations-qt5
+	amove usr/share/sddm/translations-qt6
 }
 
 sha512sums="

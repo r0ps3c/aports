@@ -6,6 +6,7 @@ pkgrel=0
 pkgdesc="Basic desktop integration functions"
 url="https://www.freedesktop.org/wiki/Software/xdg-utils/"
 arch="noarch"
+options="!check"  # No test suite.
 license="MIT"
 depends="
 	file
@@ -19,9 +20,8 @@ makedepends="
 	xmlto
 	"
 subpackages="$pkgname-doc"
-source="https://gitlab.freedesktop.org/xdg/xdg-utils/-/archive/v$pkgver/xdg-utils-v$pkgver.tar.gz"
-options="!check"  # No test suite.
-builddir="$srcdir/$pkgname-v$pkgver"
+source="https://gitlab.freedesktop.org/xdg/xdg-utils/-/archive/v${pkgver/_/-}/xdg-utils-v${pkgver/_/-}.tar.gz"
+builddir="$srcdir/$pkgname-v${pkgver/_/-}"
 
 build() {
 	./configure \

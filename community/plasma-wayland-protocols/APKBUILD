@@ -13,6 +13,7 @@ url="https://www.kde.org/plasma-desktop/"
 license="GPL-2.0-or-later AND (GPL-2.0-only OR GPL-3.0-only) AND LGPL-2.1-only"
 makedepends="
 	extra-cmake-modules
+	qt6-qttools-dev
 	samurai
 	"
 _repo_url="https://invent.kde.org/libraries/plasma-wayland-protocols.git"
