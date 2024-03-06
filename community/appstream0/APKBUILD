@@ -1,14 +1,15 @@
 # Contributor: Leo <thinkabit.ukim@gmail.com>
 # Contributor: Rasmus Thomsen <oss@cogitri.dev>
 # Maintainer: Pablo Correa Gomez <ablocorrea@hotmail.com>
-pkgname=appstream
-pkgver=1.0.2
+pkgname=appstream0
+pkgver=0.16.3
 pkgrel=1
 pkgdesc="Provides a standard for creating app stores across distributions"
 url="https://distributions.freedesktop.org/wiki/AppStream"
 arch="all"
 license="LGPL-2.1-or-later"
 makedepends="
+	appstream-cli
 	cairo-dev
 	curl-dev
 	fontconfig-dev
@@ -22,7 +23,7 @@ makedepends="
 	libxmlb-dev
 	meson
 	pango-dev
-	qt6-qtbase-dev
+	qt5-qtbase-dev
 	yaml-dev
 	"
 triggers="$pkgname.trigger=/usr/share/app-info/*:/var/cache/swcatalog/xml"
@@ -31,12 +32,13 @@ subpackages="
 	$pkgname-dbg
 	$pkgname-dev
 	$pkgname-doc
-	$pkgname-cli
 	$pkgname-qt
 	$pkgname-compose
 	$pkgname-lang
 	"
-source="https://www.freedesktop.org/software/appstream/releases/AppStream-$pkgver.tar.xz
+source="
+	https://www.freedesktop.org/software/appstream/releases/AppStream-$pkgver.tar.xz
+	disable_test_read_fontinfo.patch
 	"
 builddir="$srcdir/AppStream-$pkgver"
 
@@ -67,6 +69,9 @@ package() {
 
 	# Remove installed-tests, there is no switch to disable installing them
 	rm -rf "$pkgdir"/usr/share/installed-tests
+
+	# Remove cli application, so this doesn't conflict with appstream-cli
+	rm -rf "$pkgdir"/usr/bin/appstreamcli
 }
 
 compose() {
@@ -86,11 +91,7 @@ qt() {
 	amove usr/lib/libAppStreamQt.so.*
 }
 
-cli() {
-	pkgdesc="cli application for AppStream"
-	amove usr/bin/appstreamcli
-}
-
 sha512sums="
-e5c109c383e3bf3af3693bfb3146663767c2c61fac0bd421f2ce52242fe7b869effeacc4d207987321dfeb4ab0ba77ece6c1c6eea054a7365204cd955426517a  AppStream-1.0.2.tar.xz
+bb356d69438674a65ffb2ece4692383066703a9f3b1206d2408155cc15f0b6002e312071fef0669516ea9642752567ceb3fc7030ce8c9a3d888f8df0ad7116ef  AppStream-0.16.3.tar.xz
+1caa6ed836316767a69db5c0465681ded1cac261ef51ab195c8ed1f1648fc4f5bce29e158fecd10294eb81b04fef29c7ddf86cd7c6372d94b08c7bf8da682bcf  disable_test_read_fontinfo.patch
 "
