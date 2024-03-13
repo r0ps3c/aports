@@ -1,7 +1,7 @@
 # Maintainer: Sergio Talens-Oliag <sto@mixinet.net>
 pkgname=tmpl
 pkgver=0.4.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Tool to process templates using Golang text/template and Sprig functions"
 url="https://github.com/krakozaure/tmpl"
 arch="all"
@@ -12,7 +12,6 @@ options="!check"  # no tests provided
 
 source="$pkgname-$pkgver.tar.gz::https://github.com/krakozaure/tmpl/archive/refs/tags/v$pkgver.tar.gz"
 
-export CGO_ENABLED=0
 export GOCACHE="${GOCACHE:-"$srcdir/go-cache"}"
 export GOTMPDIR="${GOTMPDIR:-"$srcdir"}"
 export GOMODCACHE="${GOMODCACHE:-"$srcdir/go"}"

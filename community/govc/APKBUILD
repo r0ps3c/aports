@@ -1,8 +1,8 @@
 # Contributor: Patrycja Rosa <alpine@ptrcnull.me>
 # Maintainer: Patrycja Rosa <alpine@ptrcnull.me>
 pkgname=govc
-pkgver=0.35.0
-pkgrel=1
+pkgver=0.36.1
+pkgrel=0
 pkgdesc="vSphere CLI built on top of govmomi"
 url="https://github.com/vmware/govmomi/blob/main/govc/README.md"
 arch="all"
@@ -27,5 +27,5 @@ package() {
 }
 
 sha512sums="
-061b3263cf611ce514c8e22110d1c80a0d6130e2dc30c52749a78057f36efb108c02854c9974266bd0f78c8cf6cdf9a1d982c5a152732d0c7c8c4f811d4c31fd  govc-0.35.0.tar.gz
+f627bc20f5633aa7b21fd71a0fd2690a590dd43b631b61976b050bc9422ba8bbe8b772105f394907e77c1f8ea21df8fb1849035b564fc170648efe996cd9d620  govc-0.36.1.tar.gz
 "

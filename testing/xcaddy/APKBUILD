@@ -2,7 +2,7 @@
 # Maintainer: Fabricio Silva <hi@fabricio.dev>
 pkgname=xcaddy
 pkgver=0.3.5
-pkgrel=2
+pkgrel=3
 pkgdesc="Build Caddy with plugins"
 url="https://github.com/caddyserver/xcaddy"
 license="Apache-2.0"
@@ -11,7 +11,6 @@ depends="go"
 source="https://github.com/caddyserver/xcaddy/archive/v$pkgver/caddy-$pkgver.tar.gz"
 options="net" # for downloading Go modules
 
-export CGO_ENABLED=0
 export GOFLAGS="$GOFLAGS -modcacherw"
 export GOCACHE="${GOCACHE:-"$srcdir/go-cache"}"
 export GOTMPDIR="${GOTMPDIR:-"$srcdir"}"

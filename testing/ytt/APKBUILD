@@ -2,7 +2,7 @@
 # Maintainer: techknowlogick <techknowlogick@gitea.com>
 pkgname=ytt
 pkgver=0.47.0
-pkgrel=0
+pkgrel=1
 pkgdesc="YAML templating tool that works on YAML structure instead of text"
 url="https://carvel.dev/ytt/"
 arch="all !armhf !armv7 !x86"
@@ -19,7 +19,6 @@ export GOMODCACHE="${GOMODCACHE:-"$srcdir/go"}"
 build() {
 	local ldflags="-X github.com/vmware-tanzu/carvel-ytt/pkg/version.Version=$pkgver"
 	export GOPATH="$srcdir"
-	export CGO_ENABLED=0
 	rm -f website/generated.go
 
 	go fmt ./cmd/... ./pkg/...
