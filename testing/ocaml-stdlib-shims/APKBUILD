@@ -1,14 +1,13 @@
 # Contributor: rubicon <rubicon@mailo.com>
-# Maintainer:
+# Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=ocaml-stdlib-shims
 _pkgname=stdlib-shims
 pkgver=0.3.0
-pkgrel=1
+pkgrel=2
 pkgdesc="OCaml Shims to substitute Pervasives with Stdlib"
 url="https://github.com/ocaml/stdlib-shims"
 arch="all !riscv64"  # limited by ocaml aport
-license="LGPL-2.1-only-WITH-linking-exception"
-depends="ocaml-runtime"
+license="LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
 makedepends="dune ocaml ocaml-findlib ocaml-compiler-libs"
 source="$pkgname-$pkgver.tar.gz::https://github.com/ocaml/stdlib-shims/archive/$pkgver.tar.gz"
 builddir="$srcdir/$_pkgname-$pkgver"
@@ -29,6 +28,27 @@ package() {
 
 	# There's just a readme and changelog.
 	rm -Rf "$pkgdir"/usr/doc
+}
+
+prepare_py_provides() {
+	local datadir="${subpkgdir:-$pkgdir}"
+	local pkgbasedir=${pkgbasedir:-"$startdir/pkg"}
+	local controldir="$pkgbasedir"/.control.${subpkgname:-$pkgname}
+
+	options_has "!tracedeps" && return 0
+
+	ocaml4-abuild-find provides \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir" \
+		"$pkgver-r$pkgrel"
+}
+
+scan_python3_dependency() {
+	local controldir="$2" datadir="$3"
+
+	ocaml4-abuild-find requires \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir"
 }
 
 sha512sums="

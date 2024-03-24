@@ -1,18 +1,17 @@
 # Contributor: rubicon <rubicon@mailo.com>
-# Maintainer:
+# Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=ocaml-parsexp
 _pkgname=parsexp
-pkgver=0.15.0
-pkgrel=1
+pkgver=0.16.0
+pkgrel=0
 pkgdesc="S-expression parsing library"
 url="https://github.com/janestreet/parsexp"
 arch="all !riscv64" # restricted by ocaml
 license="MIT"
-depends="ocaml-runtime"
 depends_dev="$pkgname=$pkgver-r$pkgrel"
-makedepends="dune ocaml ocaml-base-dev ocaml-sexplib0-dev"
+makedepends="dune ocaml ocaml-sexplib0-dev"
 subpackages="$pkgname-dev"
-source="$pkgname-$pkgver.tar.gz::https://ocaml.janestreet.com/ocaml-core/v${pkgver%.*}/files/parsexp-v$pkgver.tar.gz"
+source="https://ocaml.janestreet.com/ocaml-core/v${pkgver%.*}/files/parsexp-v$pkgver.tar.gz"
 builddir="$srcdir/$_pkgname-v$pkgver"
 
 # 32-bit archs
@@ -26,7 +25,7 @@ build() {
 }
 
 check() {
-	dune runtest --no-buffer --verbose
+	dune runtest --build-dir=.testenv --no-buffer --verbose
 }
 
 package() {
@@ -43,19 +42,38 @@ dev() {
 
 	cd "$pkgdir"
 
-	local path; for path in $(find usr/lib/ocaml \( \
+	local path; find usr/lib/ocaml \( \
 			-name '*.cmt' -o \
 			-name '*.cmti' -o \
-			-name '*.cmx' -o \
-			-name '*.cmxa' -o \
 			-name '*.ml' -o \
 			-name '*.mli' \
-		\))
+		\) | while read -r path
 	do
 		amove "$path"
 	done
 }
 
+prepare_py_provides() {
+	local datadir="${subpkgdir:-$pkgdir}"
+	local pkgbasedir=${pkgbasedir:-"$startdir/pkg"}
+	local controldir="$pkgbasedir"/.control.${subpkgname:-$pkgname}
+
+	options_has "!tracedeps" && return 0
+
+	ocaml4-abuild-find provides \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir" \
+		"$pkgver-r$pkgrel"
+}
+
+scan_python3_dependency() {
+	local controldir="$2" datadir="$3"
+
+	ocaml4-abuild-find requires \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir"
+}
+
 sha512sums="
-da638df515ae1641cef8d2a425424e37047579a7b502afaa9d565975c6ccfa64580b8d7430a4822c176a638957a49e7342373135386959afee854d216a133d0b  ocaml-parsexp-0.15.0.tar.gz
+3308c7cda8a410d1d31b0abbebb549317fd4749fa6da65742576ac5563a8a92a4f2a3c97379546eaf1a1d0e5c71493d5a98a6b033431c48fccd09375d4d939fb  parsexp-v0.16.0.tar.gz
 "

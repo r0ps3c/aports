@@ -1,14 +1,14 @@
 # Contributor: Jakub Jirutka <jakub@jirutka.cz>
-# Maintainer:
+# Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=ocaml-camomile
 _pkgname=camomile
 pkgver=1.0.2
-pkgrel=2
+pkgrel=3
 pkgdesc="A Unicode library for OCaml"
 url="https://github.com/yoriyuki/Camomile"
 arch="all !riscv64" # restricted by ocaml aport
 license="LGPL-2.0-or-later"
-depends="$pkgname-data=$pkgver-r$pkgrel ocaml-runtime"
+depends="$pkgname-data=$pkgver-r$pkgrel"
 depends_dev="$pkgname=$pkgver-r$pkgrel"
 makedepends="dune ocaml ocaml-compiler-libs ocaml-cppo ocaml-findlib"
 subpackages="$pkgname-dev $pkgname-data::noarch"
@@ -52,14 +52,12 @@ dev() {
 
 	cd "$pkgdir"
 
-	local path; for path in $(find usr/lib/ocaml \( \
+	local path; find usr/lib/ocaml \( \
 			-name '*.cmt' -o \
 			-name '*.cmti' -o \
-			-name '*.cmx' -o \
-			-name '*.cmxa' -o \
 			-name '*.ml' -o \
 			-name '*.mli' \
-		\))
+		\) | while read -r path
 	do
 		amove "$path"
 	done
@@ -70,6 +68,27 @@ data() {
 	depends=""
 
 	amove usr/share/"$_pkgname"
+}
+
+prepare_py_provides() {
+	local datadir="${subpkgdir:-$pkgdir}"
+	local pkgbasedir=${pkgbasedir:-"$startdir/pkg"}
+	local controldir="$pkgbasedir"/.control.${subpkgname:-$pkgname}
+
+	options_has "!tracedeps" && return 0
+
+	ocaml4-abuild-find provides \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir" \
+		"$pkgver-r$pkgrel"
+}
+
+scan_python3_dependency() {
+	local controldir="$2" datadir="$3"
+
+	ocaml4-abuild-find requires \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir"
 }
 
 sha512sums="

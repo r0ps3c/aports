@@ -1,19 +1,13 @@
 # Contributor: Jakub Jirutka <jakub@jirutka.cz>
-# Maintainer:
+# Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=ocaml-lwt
 _pkgname=lwt
-pkgver=5.6.1
+pkgver=5.7.0
 pkgrel=0
 pkgdesc="OCaml promises and concurrent I/O"
 url="https://github.com/ocsigen/lwt"
 arch="all !riscv64"  # limited by ocaml aport
 license="MIT"
-depends="
-	ocaml-runtime
-	ocaml-mmap
-	ocaml-ocplib-endian
-	ocaml-result
-	"
 depends_dev="
 	libev-dev
 	ocaml-mmap-dev
@@ -25,7 +19,7 @@ depends_dev="
 makedepends="$depends_dev dune dune-configurator ocaml ocaml-cppo"
 options="!check"  # FIXME: tests hang
 subpackages="$pkgname-dev ${pkgname}_react:_react ${pkgname}_ppx:_ppx"
-source="$pkgname-$pkgver.tar.gz::https://github.com/ocsigen/$_pkgname/archive/$pkgver.tar.gz"
+source="$_pkgname-$pkgver.tar.gz::https://github.com/ocsigen/lwt/archive/$pkgver.tar.gz"
 builddir="$srcdir/$_pkgname-$pkgver"
 _ocamldir=usr/lib/ocaml
 
@@ -67,14 +61,12 @@ dev() {
 
 	cd "$pkgdir"
 
-	local path; for path in $(find usr/lib/ocaml \( \
+	local path; find usr/lib/ocaml \( \
 			-name '*.cmt' -o \
 			-name '*.cmti' -o \
-			-name '*.cmx' -o \
-			-name '*.cmxa' -o \
 			-name '*.ml' -o \
 			-name '*.mli' \
-		\))
+		\) | while read -r path
 	do
 		amove "$path"
 	done
@@ -82,18 +74,37 @@ dev() {
 
 _ppx() {
 	pkgdesc="$pkgdesc (PPX syntax)"
-	depends="$pkgname=$pkgver-r$pkgrel ocaml-runtime ocaml-ppxlib"
 
 	amove usr/lib/ocaml/lwt_ppx
 }
 
 _react() {
 	pkgdesc="$pkgdesc (for FRP)"
-	depends="$pkgname=$pkgver-r$pkgrel ocaml-runtime ocaml-react"
 
 	amove usr/lib/ocaml/lwt_react
 }
 
+prepare_py_provides() {
+	local datadir="${subpkgdir:-$pkgdir}"
+	local pkgbasedir=${pkgbasedir:-"$startdir/pkg"}
+	local controldir="$pkgbasedir"/.control.${subpkgname:-$pkgname}
+
+	options_has "!tracedeps" && return 0
+
+	ocaml4-abuild-find provides \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir" \
+		"$pkgver-r$pkgrel"
+}
+
+scan_python3_dependency() {
+	local controldir="$2" datadir="$3"
+
+	ocaml4-abuild-find requires \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir"
+}
+
 sha512sums="
-698875bd3bfcd5baa47eb48e412f442d289f9972421321541860ebe110b9af1949c3fbc253768495726ec547fe4ba25483cd97ff39bc668496fba95b2ed9edd8  ocaml-lwt-5.6.1.tar.gz
+42e629920783428673b99c9d7a639237c9e6b35079b5d907bc67e7ea506acf9edadc48cec580bdcfd2410ed9412bf5e6bcc8b09de2fa7d35ce1490973d05ddd1  lwt-5.7.0.tar.gz
 "

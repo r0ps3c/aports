@@ -1,19 +1,13 @@
 # Contributor: rubicon <rubicon@mailo.com>
-# Maintainer:
+# Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=ocaml-ca-certs-nss
 _pkgname=ca-certs-nss
 pkgver=3.89.1
-pkgrel=0
+pkgrel=1
 pkgdesc="X.509 trust anchors extracted from Mozilla's NSS"
 url="https://github.com/mirage/ca-certs-nss"
 arch="all !riscv64"  # limited by ocaml aport
 license="ISC"
-depends="
-	ocaml-runtime
-	ocaml-mirage-clock
-	ocaml-mirage-crypto
-	ocaml-x509
-	"
 depends_dev="
 	$pkgname=$pkgver-r$pkgrel
 	ocaml-mirage-clock-dev
@@ -63,14 +57,12 @@ dev() {
 
 	cd "$pkgdir"
 
-	local path; for path in $(find $_ocamldir \( \
+	local path; find $_ocamldir \( \
 			-name '*.cmt' -o \
 			-name '*.cmti' -o \
-			-name '*.cmx' -o \
-			-name '*.cmxa' -o \
 			-name '*.ml' -o \
 			-name '*.mli' \
-		\))
+		\) | while read -r path
 	do
 		amove "$path"
 	done
@@ -81,6 +73,27 @@ tools() {
 	depends=""
 
 	amove usr/bin
+}
+
+prepare_py_provides() {
+	local datadir="${subpkgdir:-$pkgdir}"
+	local pkgbasedir=${pkgbasedir:-"$startdir/pkg"}
+	local controldir="$pkgbasedir"/.control.${subpkgname:-$pkgname}
+
+	options_has "!tracedeps" && return 0
+
+	ocaml4-abuild-find provides \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir" \
+		"$pkgver-r$pkgrel"
+}
+
+scan_python3_dependency() {
+	local controldir="$2" datadir="$3"
+
+	ocaml4-abuild-find requires \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir"
 }
 
 sha512sums="

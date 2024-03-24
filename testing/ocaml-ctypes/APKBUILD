@@ -1,13 +1,12 @@
 # Contributor: rubicon <rubicon@mailo.com>
-# Maintainer:
+# Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=ocaml-ctypes
 pkgver=0.20.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Combinators for binding to C libraries without writing any C"
 url="https://github.com/ocamllabs/ocaml-ctypes"
 arch="all !riscv64" # restricted by ocaml
 license="MIT"
-depends="ocaml-runtime"
 depends_dev="$pkgname=$pkgver-r$pkgrel"
 makedepends="
 	libffi-dev
@@ -21,7 +20,6 @@ makedepends="
 options="!check"  # requires lwt and ounit
 subpackages="$pkgname-dev"
 source="$pkgname-$pkgver.tar.gz::https://github.com/ocamllabs/ocaml-ctypes/archive/$pkgver.tar.gz"
-builddir="$srcdir/$pkgname-$pkgver"
 
 # 32-bit archs
 case "$CARCH" in
@@ -44,17 +42,36 @@ dev() {
 
 	cd "$pkgdir"
 
-	local path; for path in $(find usr/lib/ocaml \( \
+	local path; find usr/lib/ocaml \( \
 			-name '*.cmt' -o \
 			-name '*.cmti' -o \
-			-name '*.cmx' -o \
-			-name '*.cmxa' -o \
 			-name '*.ml' -o \
 			-name '*.mli' \
-		\))
+		\) | while read -r path
 	do
 		amove "$path"
 	done
+}
+
+prepare_py_provides() {
+	local datadir="${subpkgdir:-$pkgdir}"
+	local pkgbasedir=${pkgbasedir:-"$startdir/pkg"}
+	local controldir="$pkgbasedir"/.control.${subpkgname:-$pkgname}
+
+	options_has "!tracedeps" && return 0
+
+	ocaml4-abuild-find provides \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir" \
+		"$pkgver-r$pkgrel"
+}
+
+scan_python3_dependency() {
+	local controldir="$2" datadir="$3"
+
+	ocaml4-abuild-find requires \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir"
 }
 
 sha512sums="

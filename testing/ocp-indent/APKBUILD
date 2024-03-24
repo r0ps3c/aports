@@ -1,13 +1,12 @@
 # Contributor: rubicon <rubicon@mailo.com>
-# Maintainer:
+# Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=ocp-indent
 pkgver=1.8.2
-pkgrel=1
+pkgrel=2
 pkgdesc="OCaml source code indenter"
 url="http://www.typerex.org/ocp-indent.html"
 arch="all !riscv64"  # limited by ocaml aport
-license="LGPL-2.1-only-WITH-linking-exception"
-_depends_ocaml="ocaml-runtime ocaml-findlib"
+license="LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
 depends_dev="ocaml-cmdliner-dev ocaml-findlib-dev"
 makedepends="$depends_dev dune ocaml"
 subpackages="
@@ -59,14 +58,12 @@ _libdev() {
 
 	cd "$pkgdir"
 
-	local path; for path in $(find $_ocamldir \( \
+	local path; find $_ocamldir \( \
 			-name '*.cmt' -o \
 			-name '*.cmti' -o \
-			-name '*.cmx' -o \
-			-name '*.cmxa' -o \
 			-name '*.ml' -o \
 			-name '*.mli' \
-		\))
+		\) | while read -r path
 	do
 		amove "$path"
 	done
@@ -75,9 +72,29 @@ _libdev() {
 
 _lib() {
 	pkgdesc="$pkgdesc (library)"
-	depends="$_depends_ocaml"
 
 	amove usr/lib/ocaml
+}
+
+prepare_py_provides() {
+	local datadir="${subpkgdir:-$pkgdir}"
+	local pkgbasedir=${pkgbasedir:-"$startdir/pkg"}
+	local controldir="$pkgbasedir"/.control.${subpkgname:-$pkgname}
+
+	options_has "!tracedeps" && return 0
+
+	ocaml4-abuild-find provides \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir" \
+		"$pkgver-r$pkgrel"
+}
+
+scan_python3_dependency() {
+	local controldir="$2" datadir="$3"
+
+	ocaml4-abuild-find requires \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir"
 }
 
 sha512sums="

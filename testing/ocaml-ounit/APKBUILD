@@ -3,13 +3,17 @@
 pkgname=ocaml-ounit
 _pkgname=ounit
 pkgver=2.2.7
-pkgrel=2
+pkgrel=3
 pkgdesc="A unit test framework for OCaml"
 url="https://github.com/gildor478/ounit"
 arch="all !riscv64"  # limited by ocaml aport
 license="MIT"
-depends="ocaml-runtime ocaml-stdlib-shims"	# ocaml-lwt
-depends_dev="$pkgname=$pkgver-r$pkgrel ocaml-lwt-dev ocaml-seq-dev"
+depends_dev="
+	$pkgname=$pkgver-r$pkgrel
+	ocaml-lwt-dev
+	ocaml-seq-dev
+	ocaml-stdlib-shims
+	"
 makedepends="$depends_dev dune ocaml ocaml-findlib"
 subpackages="$pkgname-dev"
 source="$pkgname-$pkgver.tar.gz::https://github.com/gildor478/ounit/archive/refs/tags/v$pkgver.tar.gz"
@@ -48,17 +52,36 @@ dev() {
 
 	cd "$pkgdir"
 
-	local path; for path in $(find $_ocamldir \( \
+	local path; find $_ocamldir \( \
 			-name '*.cmt' -o \
 			-name '*.cmti' -o \
-			-name '*.cmx' -o \
-			-name '*.cmxa' -o \
 			-name '*.ml' -o \
 			-name '*.mli' \
-		\))
+		\) | while read -r path
 	do
 		amove "$path"
 	done
+}
+
+prepare_py_provides() {
+	local datadir="${subpkgdir:-$pkgdir}"
+	local pkgbasedir=${pkgbasedir:-"$startdir/pkg"}
+	local controldir="$pkgbasedir"/.control.${subpkgname:-$pkgname}
+
+	options_has "!tracedeps" && return 0
+
+	ocaml4-abuild-find provides \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir" \
+		"$pkgver-r$pkgrel"
+}
+
+scan_python3_dependency() {
+	local controldir="$2" datadir="$3"
+
+	ocaml4-abuild-find requires \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir"
 }
 
 sha512sums="

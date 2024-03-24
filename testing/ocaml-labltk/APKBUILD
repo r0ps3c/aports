@@ -1,25 +1,26 @@
 # Contributor: Jakub Jirutka <jakub@jirutka.cz>
-# Maintainer:
+# Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=ocaml-labltk
 _pkgname=labltk
 pkgver=8.06.12
-pkgrel=1
-_ocamlver=4.14.1
+pkgrel=2
+_ocamlver=4.14
 pkgdesc="Tcl/Tk interface for OCaml"
 url="https://garrigue.github.io/labltk/"
 arch="all !riscv64"  # limited by ocaml aport
-license="LGPL-2.0-or-later-WITH-linking-exception"
-depends="ocaml-runtime"
+license="LGPL-2.0-or-later WITH OCaml-LGPL-linking-exception"
 depends_dev="$pkgname=$pkgver-r$pkgrel"
-makedepends="ocaml=~$_ocamlver ocaml-compiler-libs=~$_ocamlver tcl-dev tk tk-dev"
+makedepends="
+	ocaml=~$_ocamlver
+	ocaml-compiler-libs=~$_ocamlver
+	tk-dev
+	"
 options="!check"  # no tests provided
 subpackages="$pkgname-dev"
 source="$pkgname-$pkgver.tar.gz::https://github.com/garrigue/labltk/archive/refs/tags/$pkgver.tar.gz"
 builddir="$srcdir/$_pkgname-$pkgver"
 
 build() {
-	cd "$builddir"
-
 	./configure --tk-no-x11
 	make -j1 all
 	make -j1 opt
@@ -27,7 +28,6 @@ build() {
 
 package() {
 	local libdir="$pkgdir/usr/lib/ocaml"
-	cd "$builddir"
 
 	mkdir -p "$libdir"/$_pkgname \
 		"$libdir"/stublibs \
@@ -53,7 +53,28 @@ dev() {
 
 	cd "$pkgdir"/$sitelib
 	mkdir -p "$subpkgdir"/$sitelib
-	mv *.cmx *.cmxa *.mli "$subpkgdir"/$sitelib/
+	mv ./*.mli "$subpkgdir"/$sitelib/
+}
+
+prepare_py_provides() {
+	local datadir="${subpkgdir:-$pkgdir}"
+	local pkgbasedir=${pkgbasedir:-"$startdir/pkg"}
+	local controldir="$pkgbasedir"/.control.${subpkgname:-$pkgname}
+
+	options_has "!tracedeps" && return 0
+
+	ocaml4-abuild-find provides \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir" \
+		"$pkgver-r$pkgrel"
+}
+
+scan_python3_dependency() {
+	local controldir="$2" datadir="$3"
+
+	ocaml4-abuild-find requires \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir"
 }
 
 sha512sums="

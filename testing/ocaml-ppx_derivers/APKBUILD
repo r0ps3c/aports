@@ -1,14 +1,13 @@
 # Contributor: Jakub Jirutka <jakub@jirutka.cz>
-# Maintainer:
+# Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=ocaml-ppx_derivers
 _pkgname=ppx_derivers
 pkgver=1.2.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Shared [@@deriving] plugins registry"
 url="https://github.com/ocaml-ppx/ppx_derivers"
 arch="all !riscv64" # restricted by ocaml
 license="BSD-3-Clause"
-depends="ocaml-runtime"
 depends_dev="$pkgname=$pkgver-r$pkgrel"
 makedepends="dune ocaml ocaml-findlib"
 options="!check"  # no tests provided
@@ -45,17 +44,36 @@ dev() {
 
 	cd "$pkgdir"
 
-	local path; for path in $(find usr/lib/ocaml \( \
+	local path; find usr/lib/ocaml \( \
 			-name '*.cmt' -o \
 			-name '*.cmti' -o \
-			-name '*.cmx' -o \
-			-name '*.cmxa' -o \
 			-name '*.ml' -o \
 			-name '*.mli' \
-		\))
+		\) | while read -r path
 	do
 		amove "$path"
 	done
+}
+
+prepare_py_provides() {
+	local datadir="${subpkgdir:-$pkgdir}"
+	local pkgbasedir=${pkgbasedir:-"$startdir/pkg"}
+	local controldir="$pkgbasedir"/.control.${subpkgname:-$pkgname}
+
+	options_has "!tracedeps" && return 0
+
+	ocaml4-abuild-find provides \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir" \
+		"$pkgver-r$pkgrel"
+}
+
+scan_python3_dependency() {
+	local controldir="$2" datadir="$3"
+
+	ocaml4-abuild-find requires \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir"
 }
 
 sha512sums="

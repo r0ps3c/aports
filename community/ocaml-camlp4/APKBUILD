@@ -8,11 +8,11 @@ _pkgname=camlp4
 pkgver=4.14.0
 _pkgver="${pkgver%.*}+1"
 _ocamlver=${pkgver%.*}
-pkgrel=2
+pkgrel=3
 pkgdesc="Caml preprocessor and pretty-printer"
 url="https://github.com/camlp4/camlp4"
 arch="all !riscv64" # ocaml
-license="LGPL-2.0-or-later-WITH-linking-exception"
+license="LGPL-2.0-or-later WITH OCaml-LGPL-linking-exception"
 depends="ocaml-runtime~$_ocamlver ocaml-ocamlbuild"
 depends_dev="$pkgname=$pkgver-r$pkgrel"
 makedepends="ocaml~$_ocamlver ocaml-compiler-libs~$_ocamlver
@@ -39,21 +39,32 @@ package() {
 dev() {
 	default_dev
 	replaces="camlp4"  # for backward compatibility
-	local sitelib="usr/lib/ocaml/$_pkgname"
 
 	cd "$pkgdir"
 
 	mkdir -p "$subpkgdir"/usr
 	mv usr/bin "$subpkgdir"/usr/
+}
 
-	local path
-	find $sitelib/ -name '*.cmx' -o -name '*.cmxa' > find.tmp
-	while IFS= read -r -d '' path; do
-		mkdir -p "$subpkgdir"/${path%/*}
-		mv "$path" "$subpkgdir"/${path%/*}/
-	done < find.tmp
-	rm find.tmp
-	rmdir "$subpkgdir"/$sitelib 2>/dev/null || true
+prepare_py_provides() {
+	local datadir="${subpkgdir:-$pkgdir}"
+	local pkgbasedir=${pkgbasedir:-"$startdir/pkg"}
+	local controldir="$pkgbasedir"/.control.${subpkgname:-$pkgname}
+
+	options_has "!tracedeps" && return 0
+
+	ocaml4-abuild-find provides \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir" \
+		"$pkgver-r$pkgrel"
+}
+
+scan_python3_dependency() {
+	local controldir="$2" datadir="$3"
+
+	ocaml4-abuild-find requires \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir"
 }
 
 sha512sums="

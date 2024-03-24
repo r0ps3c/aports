@@ -1,14 +1,13 @@
 # Contributor: Jakub Jirutka <jakub@jirutka.cz>
-# Maintainer:
+# Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=ocaml-cmdliner
 _pkgname=cmdliner
 pkgver=1.1.1
-pkgrel=2
+pkgrel=3
 pkgdesc="Declarative definition of command line interfaces for OCaml"
 url="https://erratique.ch/software/cmdliner"
 arch="all !riscv64"  # limited by ocaml aport
 license="ISC"
-depends="ocaml-runtime"
 depends_dev="$pkgname=$pkgver-r$pkgrel"
 makedepends="ocaml"
 options="!check"  # no tests provided
@@ -36,17 +35,36 @@ dev() {
 
 	cd "$pkgdir"
 
-	local path; for path in $(find $_ocamldir \( \
+	local path; find $_ocamldir \( \
 			-name '*.cmt' -o \
 			-name '*.cmti' -o \
-			-name '*.cmx' -o \
-			-name '*.cmxa' -o \
 			-name '*.ml' -o \
 			-name '*.mli' \
-		\))
+		\) | while read -r path
 	do
 		amove "$path"
 	done
+}
+
+prepare_py_provides() {
+	local datadir="${subpkgdir:-$pkgdir}"
+	local pkgbasedir=${pkgbasedir:-"$startdir/pkg"}
+	local controldir="$pkgbasedir"/.control.${subpkgname:-$pkgname}
+
+	options_has "!tracedeps" && return 0
+
+	ocaml4-abuild-find provides \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir" \
+		"$pkgver-r$pkgrel"
+}
+
+scan_python3_dependency() {
+	local controldir="$2" datadir="$3"
+
+	ocaml4-abuild-find requires \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir"
 }
 
 sha512sums="

@@ -1,15 +1,18 @@
 # Contributor: rubicon <rubicon@mailo.com>
-# Maintainer:
+# Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=ocaml-bitstring
 _pkgname=bitstring
 pkgver=4.1.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Erlang-style bitstrings for OCaml"
 url="https://github.com/xguerin/bitstring"
 arch="all !riscv64"  # limited by ocaml aport
 license="LGPL-2.0-or-later"
-depends="ocaml-runtime ocaml-ppxlib ocaml-stdlib-shims"
-depends_dev="$pkgname=$pkgver-r$pkgrel ocaml-ppxlib-dev"
+depends_dev="
+	$pkgname=$pkgver-r$pkgrel
+	ocaml-ppxlib-dev
+	ocaml-stdlib-shims
+	"
 makedepends="$depends_dev dune ocaml"
 options="!check"    # needs oUnit
 subpackages="$pkgname-dev"
@@ -42,17 +45,36 @@ dev() {
 
 	cd "$pkgdir"
 
-	local path; for path in $(find $_ocamldir \( \
+	local path; find $_ocamldir \( \
 			-name '*.cmt' -o \
 			-name '*.cmti' -o \
-			-name '*.cmx' -o \
-			-name '*.cmxa' -o \
 			-name '*.ml' -o \
 			-name '*.mli' \
-		\))
+		\) | while read -r path
 	do
 		amove "$path"
 	done
+}
+
+prepare_py_provides() {
+	local datadir="${subpkgdir:-$pkgdir}"
+	local pkgbasedir=${pkgbasedir:-"$startdir/pkg"}
+	local controldir="$pkgbasedir"/.control.${subpkgname:-$pkgname}
+
+	options_has "!tracedeps" && return 0
+
+	ocaml4-abuild-find provides \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir" \
+		"$pkgver-r$pkgrel"
+}
+
+scan_python3_dependency() {
+	local controldir="$2" datadir="$3"
+
+	ocaml4-abuild-find requires \
+		"$datadir"/usr/lib/ocaml \
+		"$controldir"
 }
 
 sha512sums="
