@@ -2,7 +2,7 @@
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
 pkgname=twine
 pkgver=4.0.2
-pkgrel=3
+pkgrel=4
 pkgdesc="Collection of utilities for publishing packages on PyPI"
 url="https://twine.readthedocs.io/en/latest/"
 arch="noarch"
@@ -25,6 +25,7 @@ makedepends="
 	"
 checkdepends="
 	py3-build
+	py3-flaky
 	py3-jaraco.envs
 	py3-munch
 	py3-portend
@@ -35,8 +36,8 @@ checkdepends="
 	"
 subpackages="$pkgname-pyc"
 source="https://files.pythonhosted.org/packages/source/t/twine/twine-$pkgver.tar.gz
-	0001-remove-setuptools-scm.patch
 	importlib-metadata.patch
+	test-setup.patch
 	"
 
 # Backwards compatibility
@@ -44,6 +45,7 @@ provides="py3-$pkgname=$pkgver-r$pkgrel"
 replaces="py3-$pkgname"
 
 build() {
+	export SETUPTOOLS_SCM_PRETEND_VERSION="$pkgver"
 	gpep517 build-wheel \
 		--wheel-dir .dist \
 		--output-fd 3 3>&1 >&2
@@ -51,7 +53,9 @@ build() {
 
 check() {
 	# deselect'ed tests require a network connection
-	PYTHONPATH="$PWD/build/lib" pytest \
+	python3 -m venv --clear --without-pip --system-site-packages .testenv
+	gpep517 install-wheel --destdir .testenv --prefix '' .dist/*.whl
+	.testenv/bin/python3 -m pytest \
 		--deselect tests/test_integration.py \
 		--deselect tests/test_upload.py::test_check_status_code_for_wrong_repo_url \
 		-k "not test_metadata_dictionary_keys and not test_fips_metadata_excludes_md5_and_blake2 and not test_pkginfo_returns_no_metadata and not test_pkginfo_returns_no_metadata and not test_fails_rst_no_content"
@@ -63,6 +67,6 @@ package() {
 
 sha512sums="
 9c197bf09db4ffd9342eb6a23e90a44e37123e285bdfc02c47087fce3cb468f1b12f4e3c890e434a80ec3d5155c8e42e53f61459c2f0a580b252d0dc18d1acb7  twine-4.0.2.tar.gz
-1db21fed53409a2c3421b76708b4df6a0eeb2f9068bc3c83d03eca491bc2475a3db14251596df7a5adfe111032cbef27340d71eb34b38e374e9fa085e4f6285b  0001-remove-setuptools-scm.patch
 6c6680d30867523bbe13995966b1313039ada9d09c4f78b43a043fc18a7d76648570013e43339273deb1475bfa9f323947c82ba4dc4d54465d54699a973c98b6  importlib-metadata.patch
+5ecb151a715f51e31039ca24c5a3c22fbd6868b1545b4c608b6d3183c7d17efc51b87485d3f69cd56d40e9bd4fafef722408455a21ce7a743dae4e76297a7180  test-setup.patch
 "
