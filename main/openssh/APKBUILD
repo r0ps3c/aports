@@ -5,7 +5,7 @@
 pkgname=openssh
 pkgver=9.7_p1
 _myver=${pkgver%_*}${pkgver#*_}
-pkgrel=0
+pkgrel=2
 pkgdesc="Port of OpenBSD's free SSH release"
 url="https://www.openssh.com/portable.html"
 arch="all"
@@ -48,14 +48,10 @@ subpackages="$pkgname-dbg
 
 source="https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-$_myver.tar.gz
 	fix-utmp.patch
-	sftp-interactive.patch
 	disable-forwarding-by-default.patch
-	fix-verify-dns-segfault.patch
 	avoid-redefined-warnings-when-building-with-utmps.patch
-	gss-serv.c.patch
 	default-internal-sftp.patch
 	include-config-dir.patch
-	zero-call-used-regs_all.patch
 
 	sshd.initd
 	sshd.confd
@@ -292,14 +288,10 @@ _server_with_flavor() {
 sha512sums="
 0cafc17d22851605a4a5495a1d82c2b3fbbe6643760aad226dbf2a25b5f49d4375c3172833706ea3cb6c05d5d02a40feb9a7e790eae5c4570dd344a43e94ca55  openssh-9.7p1.tar.gz
 b10a9eb167cfbb23b144fdb03f30a0363be9a715ceb3c202c971ec4f36160e434cc6bbad91d0e49106189e07152067f7e227df28b5a1b82f3901cb36cba321b5  fix-utmp.patch
-c1d09c65dbc347f0904edc30f91aa9a24b0baee50309536182455b544f1e3f85a8cecfa959e32be8b101d8282ef06dde3febbbc3f315489339dcf04155c859a9  sftp-interactive.patch
 8df35d72224cd255eb0685d2c707b24e5eb24f0fdd67ca6cc0f615bdbd3eeeea2d18674a6af0c6dab74c2d8247e2370d0b755a84c99f766a431bc50c40b557de  disable-forwarding-by-default.patch
-b0d1fc89bd46ebfc8c7c00fd897732e67a6cda996811c14d99392685bb0b508b52c9dc3188b1a84c0ffa3f72f57189cc615a76b81796dd1b5f552542bd53f84d  fix-verify-dns-segfault.patch
 e85754b2b6c4c37b432d166e63d6293e58c9c8bb6ebd8d3527c83afa2337f14c06d6a4e008ffcc0afd7dc3409e960b89c1dde41d2543c4be7d4813d477ff3a5e  avoid-redefined-warnings-when-building-with-utmps.patch
-f659641b841981f78b03281b7a01add9fbf35b91c0f21c11335a56d7e389ddf965d83d18d73b724385311cdb597b6d6c46446cbc702cdd4d15e8f43591306cb3  gss-serv.c.patch
 1fb55aae445dfd9ededeba1f204a0c3e4a752128ad0a388f473ace074e68b040112f309192243621fd4f16b0d1cce4f083612b1639c3e18166abf92babe52c93  default-internal-sftp.patch
 ff73563e6018e94a1b2dd320cf32426f3945c0f4aa509eeb95783c34dd5c5c8dec91f6d71e4d538c4735539a4d8c724cf61d71513887d8a96b84109ae3a5562e  include-config-dir.patch
-6ad86c821e13f6058434eb7f685dfb9073441fc29e29ba080c67a1f3859d0dd1bac0bbaacc3a2245f8e1cc039f0a578ed48450ea6f80046054897496cbcaf7eb  zero-call-used-regs_all.patch
 2cab1b844d4efb53f848308b4aaedbe74888d2e85bcb2e4dfdae7c18ac3ecea707829072a4276fbe90dfe2f537bbf48127d96f29ec5154e96c0bfb7437910d53  sshd.initd
 be7dd5f6d319b2e03528525a66a58310d43444606713786b913a17a0fd9311869181d0fb7927a185d71d392674857dea3c97b6b8284886227d47b36193471a09  sshd.confd
 5d3b62d724d930bafb6263d0600828771e667751cb5ba5070414dce7c3d0559bebdfb05960b721cfd20c81d3ad824291ffb10498798171c8bbbcbf389b706265  sshd.pam
