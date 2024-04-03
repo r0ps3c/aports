@@ -5,7 +5,7 @@
 # Maintainer: Jakub Jirutka <jakub@jirutka.cz>
 pkgname=keepassxc
 pkgver=2.7.7
-pkgrel=0
+pkgrel=1
 pkgdesc="Community-driven port of the Windows application Keepass Password Safe"
 url="https://keepassxc.org/"
 arch="all"
@@ -56,6 +56,7 @@ build() {
 		-DWITH_XC_AUTOTYPE=ON \
 		-DWITH_XC_NETWORKING=ON \
 		-DWITH_XC_BROWSER=ON \
+		-DWITH_XC_BROWSER_PASSKEYS=ON \
 		-DWITH_XC_YUBIKEY=ON \
 		-DWITH_XC_SSHAGENT=ON \
 		-DWITH_XC_KEESHARE=ON \
@@ -79,9 +80,7 @@ package() {
 	install -D -m 0644 -t "$pkgdir"/usr/share/doc/$pkgname/ \
 		CHANGELOG.md README.md
 
-	cd "$pkgdir"
-	mv usr/share/keepassxc/docs/* usr/share/doc/$pkgname/
-	rmdir usr/share/keepassxc/docs
+	rm -rf "$pkgdir"/usr/share/keepassxc/docs
 }
 
 lang() {
