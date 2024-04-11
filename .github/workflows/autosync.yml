@@ -1,0 +1,25 @@
+name: Sync from upstream
+
+on:
+  workflow_dispatch: # on button click
+  workflow_call:
+    secrets:
+      CALL_REPO_DISPATCH:
+        required: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - id: sync
+        uses: r0ps3c/fork-sync@v4
+        with:
+          base: 3.19-stable
+          head: 3.19-stable
+      - name: Repository Dispatch
+        if: steps.sync.outputs.merged_pr_id != ''
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.CALL_REPO_DISPATCH }}
+          repository: r0ps3c/docker-s3ql
+          event-type: parent-updated
