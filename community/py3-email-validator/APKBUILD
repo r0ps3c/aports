@@ -2,7 +2,7 @@
 pkgname=py3-email-validator
 _pkgname=python-email-validator
 pkgver=2.1.1
-pkgrel=1
+pkgrel=2
 pkgdesc="A robust email syntax and deliverability validation library"
 url="https://github.com/JoshData/python-email-validator"
 arch="noarch"
@@ -34,7 +34,11 @@ build() {
 check() {
 	python3 -m venv --clear --without-pip --system-site-packages .testenv
 	.testenv/bin/python3 -m installer .dist/*.whl
-	.testenv/bin/python3 -m pytest
+
+	# https://github.com/JoshData/python-email-validator/issues/132
+	local ignore="--ignore=tests/test_deliverability.py --ignore=tests/test_main.py"
+
+	.testenv/bin/python3 -m pytest $ignore
 }
 
 package() {

@@ -2,7 +2,7 @@
 # Maintainer: Aiden Grossman <agrossman154@yahoo.com>
 pkgname=py3-setuptools-rust
 pkgver=1.9.0
-pkgrel=0
+pkgrel=1
 pkgdesc="Setuptools plugin for rust support"
 url="https://github.com/PyO3/setuptools-rust"
 arch="noarch"
@@ -19,7 +19,6 @@ makedepends="
 	"
 checkdepends="
 	libffi-dev
-	py3-nox
 	py3-pytest
 	python3-dev
 	"
@@ -45,7 +44,9 @@ build() {
 }
 
 check() {
-	nox -s test-examples
+	python3 -m venv --clear --without-pip --system-site-packages .testenv
+	.testenv/bin/python3 -m installer .dist/*.whl
+	.testenv/bin/python3 -m pytest tests/ setuptools_rust/
 }
 
 package() {

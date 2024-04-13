@@ -2,7 +2,7 @@
 # Contributor: Sheila Aman <sheila@vulpine.house>
 pkgname=python3
 # the python3-tkinter's pkgver needs to be synchronized with this.
-pkgver=3.11.8
+pkgver=3.12.3
 _basever="${pkgver%.*}"
 pkgrel=0
 pkgdesc="High-level scripting language"
@@ -43,7 +43,6 @@ makedepends="
 source="https://www.python.org/ftp/python/$pkgver/Python-$pkgver.tar.xz
 	externally-managed
 	musl-find_library.patch
-	fix-test_xml_etree-expat-2.6.0.patch
 	"
 options="net" # Required for tests
 builddir="$srcdir/Python-$pkgver"
@@ -83,9 +82,7 @@ prepare() {
 	default_prepare
 
 	# force system libs
-	rm -r Modules/expat \
-		Modules/_ctypes/darwin* \
-		Modules/_ctypes/libffi*
+	rm -r Modules/expat
 }
 
 build() {
@@ -125,7 +122,6 @@ build() {
 		--with-computed-gotos \
 		--with-dbmliborder=gdbm:ndbm \
 		--with-system-expat \
-		--with-system-ffi \
 		--with-system-libmpdec \
 		--without-ensurepip
 
@@ -152,38 +148,23 @@ EOF
 	local fail
 
 	# musl related
-	fail="test__locale test_locale test_strptime test_re"	# various musl locale deficiencies
+	fail="test__locale"					# various musl locale deficiencies
+	fail="$fail test_locale"
+	fail="$fail test_re"
 	fail="$fail test_c_locale_coercion"
 	fail="$fail test_datetime"				# hangs if 'tzdata' installed
 	fail="$fail test_os"					# fpathconf, ttyname errno values
-	fail="$fail test_posix"					# sched_[gs]etscheduler not impl
-	fail="$fail test_shutil"				# lchmod, requires real unzip
 
 	# FIXME: failures needing investigation
-	fail="$fail test_faulthandler test_gdb"			# hangs(?)
-	fail="$fail test_tokenize test_tools"			# SLOW (~60s)
-	fail="$fail test_capi"					# test.test_capi.EmbeddingTests
-	fail="$fail test_threadsignals"				# test_{,r}lock_acquire_interruption
-	fail="$fail test_time"					# strftime/strptime %Z related
-	fail="$fail test_cmath test_math"			# hang(?) on x86
-	fail="$fail test_hash test_plistlib"			# fail on armhf
 	fail="$fail test_ctypes"				# fail on aarch64 (ctypes.test.test_win32.Structures)
-	fail="$fail test_cmd_line_script"			# fails on x86_64
-	fail="$fail test_multiprocessing_main_handling"		# fails on x86_64
-	fail="$fail test_runpy"					# fails on x86_64
-	fail="$fail test_threading"				# hangs on all arches (except x86_64?)
-	fail="$fail test_selectors"				# AssertionError: 'Python' not found in '' (python3.9)
-	fail="$fail test_nntplib"
-	fail="$fail test_asyncio"				# hangs; routinely problematic (e.g. bpo-39101, bpo-41891, bpo-42183)
-	fail="$fail test_distutils"				# tests a deprecated module, fails with py3-docutils installed
 
 	# kernel related
 	fail="$fail test_fcntl"					# wants DNOTIFY, we don't have it
 
+	# test_clock_settime returns Function not implemented instead of the
+	# expected permission error in docker (CI). Disable for now.
 	case "$CARCH" in
-	ppc64le)
-		fail="$fail test_buffer"
-		;;
+		ppc64le) fail="$fail test_time";;
 	esac
 
 	make quicktest TESTOPTS="-j${JOBS:-$(nproc)} --exclude $fail"
@@ -215,13 +196,6 @@ dev() {
 
 tests() {
 	pkgdesc="The test modules from the main python package"
-
-	cd "$pkgdir"/usr/lib/python$_basever
-	local i; for i in */test */tests; do
-		mkdir -p "$subpkgdir"/usr/lib/python$_basever/"$i"
-		mv "$i"/* "$subpkgdir"/usr/lib/python$_basever/"$i"
-		rm -rf "$i"
-	done
 
 	amove usr/lib/python$_basever/test
 }
@@ -272,8 +246,7 @@ pyc2() {
 }
 
 sha512sums="
-434e727fa370def348838fd84acb69b4d309cfb03f61bf5069150164e9ca005637ac01dfbf997f445607d4e28d02c8bed0858b36589240ccadaa4c14c19f2320  Python-3.11.8.tar.xz
+4a2213b108e7f1f1525baa8348e68b2a2336d925e60d0a59f0225fc470768a2c8031edafc0b8243f94dbae18afda335ee5adf2785328c2218fd64cbb439f13a4  Python-3.12.3.tar.xz
 46dd8230ee2ab66e9c4157c10b2bd9c414fd7f30be0bee73e21a9eea88f63fff362d47828e0fc77ddc59df097b414b21505f8b5f98bc866381115c58ae3f4862  externally-managed
 ab8eaa2858d5109049b1f9f553198d40e0ef8d78211ad6455f7b491af525bffb16738fed60fc84e960c4889568d25753b9e4a1494834fea48291b33f07000ec2  musl-find_library.patch
-4a7f835feae30dfee6b524d2acceb3f8acd5448303ec312abb3e8de936fa665a1a2fba04410dc108f12a661d21f7920026668f8ff35f265d92c8a88b6f3311d2  fix-test_xml_etree-expat-2.6.0.patch
 "

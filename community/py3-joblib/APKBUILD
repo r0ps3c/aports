@@ -1,8 +1,8 @@
 # Contributor: Bart Ribbers <bribbers@disroot.org>
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
 pkgname=py3-joblib
-pkgver=1.3.2
-pkgrel=0
+pkgver=1.4.0
+pkgrel=2
 pkgdesc="Computing with Python functions"
 url="https://joblib.readthedocs.org/en/latest/"
 arch="noarch"
@@ -68,6 +68,6 @@ package() {
 }
 
 sha512sums="
-9b5acba1321351cf2ae548161ced18774b8b316aaf883cc8e77bf58898d1913361a3845d64f1f1f87e4e2394eafd92e0a6a8d67947db0c9a95a40e5f579baae6  joblib-1.3.2.tar.gz
-6f9dcd808c553eac296c9a9bf563add28752e6ae54648e0c20117712846007b662fea4bc4e9435f11f4d69f00f75186301757034dd9b61e21d3c32217138254f  de-vendor.patch
+5c7e5475347906cdc8575eac8d2052470408c4ed5267d59a88a9d3126fb72b977d20b24fb0983b070e2f3c101e7da000fc03231733fef62531f9aeffacc47baf  joblib-1.4.0.tar.gz
+b75f438c04e30f7d2cd34cac80f02f84d29f174b8dd2b1a1a546bbdd81f2b94d21e04a456bcb9f0435b4f0d081a876119693ea047615569ee6fd2cf17efa9d05  de-vendor.patch
 "
