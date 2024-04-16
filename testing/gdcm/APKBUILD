@@ -2,12 +2,12 @@
 # Maintainer: Holger Jaekel <holger.jaekel@gmx.de>
 pkgname=gdcm
 pkgver=3.0.23
-pkgrel=1
+pkgrel=2
 pkgdesc="Grassroots DiCoM is a C++ library for DICOM medical files"
 url="https://gdcm.sourceforge.net/"
 # armhf, aarch64: dcmtk missing
 # s390x: vtk missing
-arch="all !armhf !aarch64 !s390x"
+arch="all !aarch64 !armhf !s390x"
 license="BSD-3-Clause"
 makedepends="
 	charls-dev
@@ -48,16 +48,16 @@ source="gdcm-$pkgver.tar.bz2::https://sourceforge.net/projects/gdcm/files/gdcm%2
 	"
 
 # Optional dependency texlive is not available on ppc64le
-case "$CARCH" in
-	ppc64le|riscv64)
+#case "$CARCH" in
+#	ppc64le|riscv64)
 		_with_doc="OFF"
-		;;
-	*)
-		makedepends="$makedepends texlive texmf-dist-latexextra texlive-dvi"
-		subpackages="$subpackages $pkgname-doc-html $pkgname-doc-pdf"
-		_with_doc="ON"
-		;;
-esac
+#		;;
+#	*)
+#		makedepends="$makedepends texlive texmf-dist-latexextra texlive-dvi"
+#		subpackages="$subpackages $pkgname-doc-html $pkgname-doc-pdf"
+#		_with_doc="ON"
+#		;;
+#esac
 subpackages="$subpackages $pkgname-doc py3-$pkgname:py3"
 
 # Optional dependency openjdk8-jdk is not available on riscv64

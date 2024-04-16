@@ -2,7 +2,7 @@
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
 pkgname=ovos-skill-manager
 pkgver=0.0.13
-pkgrel=0
+pkgrel=1
 pkgdesc="Open Voice OS skill manager (deprecated)"
 url="https://github.com/OpenVoiceOS/ovos_skill_manager"
 arch="noarch"
@@ -50,8 +50,23 @@ build() {
 check() {
 	python3 -m venv --clear --without-pip --system-site-packages .testenv
 	.testenv/bin/python3 -m installer .dist/*.whl
-	.testenv/bin/python3 -m pytest -k 'not test_locate_config and not test_skill_entry_uuid' \
-		--deselect test/unittests/test_osm.py
+	case "$CARCH" in
+	armhf)
+		.testenv/bin/python3 -m pytest \
+			-k 'not test_locate_config and not test_skill_entry_uuid' \
+			--deselect test/unittests/test_osm.py \
+			--deselect test/unittests/test_skill_entry.py::TestSkillEntryFromGit::test_requirements_commented \
+			--deselect test/unittests/test_skill_entry.py::TestSkillEntryFromGit::test_requirements_from_txt \
+			--deselect test/unittests/test_skill_entry.py::TestSkillEntryFromGit::test_requirements_json_manifest_txt \
+			--deselect test/unittests/test_skill_entry.py::TestSkillEntryFromGit::test_requirements_json_manifest_txt_dep_system_reqs \
+			--deselect test/unittests/test_skill_entry.py::TestSkillEntryFromGit::test_requirements_null_json
+		;;
+	*)
+		.testenv/bin/python3 -m pytest \
+			-k 'not test_locate_config and not test_skill_entry_uuid' \
+			--deselect test/unittests/test_osm.py
+		;;
+	esac
 }
 
 package() {

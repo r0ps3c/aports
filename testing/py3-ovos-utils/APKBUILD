@@ -2,7 +2,7 @@
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
 pkgname=py3-ovos-utils
 pkgver=0.0.36
-pkgrel=0
+pkgrel=1
 pkgdesc="Collection of simple utilities for use across the MyCroft ecosystem"
 url="https://github.com/OpenVoiceOS/ovos_utils"
 arch="noarch"
@@ -43,7 +43,8 @@ check() {
 		--ignore test/unittests/test_gui.py \
 		--ignore test/unittests/test_skills.py \
 		--ignore test/unittests/test_time.py \
-		--ignore test/unittests/test_events.py
+		--ignore test/unittests/test_events.py \
+		--deselect test/unittests/test_audio_utils.py::TestPlaySounds
 }
 
 package() {

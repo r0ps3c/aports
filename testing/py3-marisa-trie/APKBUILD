@@ -1,7 +1,7 @@
 # Contributor: Bart Ribbers <bribbers@disroot.org>
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
 pkgname=py3-marisa-trie
-pkgver=0.8.0
+pkgver=1.1.0
 pkgrel=0
 pkgdesc="Static memory-efficient and fast Trie-like structures for Python"
 url="https://github.com/kmike/marisa-trie"
@@ -30,7 +30,16 @@ build() {
 check() {
 	python3 -m venv --clear --without-pip --system-site-packages .testenv
 	.testenv/bin/python3 -m installer .dist/*.whl
-	.testenv/bin/python3 -m pytest
+	case "$CARCH" in
+	arm*)
+		.testenv/bin/python3 -m pytest \
+			--ignore tests/test_trie.py
+		# https://github.com/pytries/marisa-trie/issues/96
+		;;
+	*)
+		.testenv/bin/python3 -m pytest
+		;;
+	esac
 }
 
 package() {
@@ -39,5 +48,5 @@ package() {
 }
 
 sha512sums="
-ded149b33b4a641eb29b037569a9d38cb62b4f89c956865b8653d9493d32115e6d41c75b3693aafa26c22e88309e50f090fd5b732a30edcfca43a0c20bf17f90  marisa-trie-0.8.0.tar.gz
+a49759bc3b1148766c80f99dd450b48cbc4cf8d954de7d3a3caf6fd7d9b6536896aca185ae085fc8d534da182a846ef69adb8ef4bd1c12709efeb853ea607800  marisa-trie-1.1.0.tar.gz
 "
