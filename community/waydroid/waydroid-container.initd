@@ -11,8 +11,9 @@ command_args_background="-p $pidfile"
 
 # Do not generate __pycache__ even when -pyc subpackages aren't installed
 export PYTHONDONTWRITEBYTECODE=1
+start_stop_daemon_args='--env PYTHONDONTWRITEBYTECODE="$PYTHONDONTWRITEBYTECODE"'
 
-depends() {
+depend() {
 	need cgroups
 	uses net
 }
