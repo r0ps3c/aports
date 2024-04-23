@@ -1,7 +1,7 @@
 # Contributor: John Regan <john@jrjrtech.com>
 # Maintainer: Laurent Bercot <ska-devel@skarnet.org>
 pkgname=execline
-pkgver=2.9.4.0
+pkgver=2.9.5.1
 pkgrel=0
 pkgdesc="A small scripting language, to be used in place of a shell in non-interactive scripts."
 url=https://skarnet.org/software/execline/
@@ -42,5 +42,5 @@ static() {
 }
 
 sha512sums="
-11d96863d2f90abc371656e17bac9fd83f1303337444db5a1f24e8a02cab654a3b5e9081af130d5cbca5a4f6ea5cf5f6c2affa66e2b4a9eb39c20410efeb8795  execline-2.9.4.0.tar.gz
+11bfd825b0b72cba118eff9ecb97672d0c015e0bd50c7c8f83e101ee41c323b3a3c82e42fed75b6bc65ab6edb85a8bbeef8900b594cf651825b6313a5123c88f  execline-2.9.5.1.tar.gz
 "
