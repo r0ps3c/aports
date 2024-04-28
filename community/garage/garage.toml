@@ -21,40 +21,58 @@ data_dir = "/var/lib/garage/data"
 # saved to disk.
 #data_fsync = false
 
+# Whether to automatically run a scrub of the data directory approximately once
+# per month. If you are already scrubbing at the filesystem level, you can set
+# this option to true to disable automatic scrub.
+#disable_scrub = false
+
 # Garage is only built with "lmdb" on Alpine Linux since v3.19! If you're still
 # using "sled", migrate it using 'garage-convert-db' package from Alpine v3.18.
 #db_engine = "lmdb"
 
 # The block size for stored objects.
-#block_size = 1048576
+#block_size = "1M"
+
+# A limit on the total size of data blocks kept in RAM by S3 API nodes awaiting
+# to be sent to storage nodes asynchronously.
+#block_ram_buffer_max = "256MiB"
 
 # The map size used by LMDB, which is the size of the virtual memory region
 # used for mapping the database file. It's not bound by the physical RAM size
 # of the machine running Garage.
 #lmdb_map_size = "1T"
 
-# Refer to the reference manual.
-replication_mode = "none"
+# This can be any positive integer smaller or equal the node count in your
+# cluster. It must be the same in the configuration files of all nodes!
+# If you're running a cluster of Garage nodes, change this to at least 2!
+replication_factor = 1
+
+# This determines the read and write behaviour of your cluster. Read the
+# reference manual before changing!
+#consistency_mode = "consistent"
 
 # Zstd compression level to use for storing blocks. Defaults to 1.
-compression_level = 1
+#compression_level = 1
 
 # The address and port on which to bind for inter-cluster communications.
 # Hint: Change to 127.0.0.1:3901 if running a single node cluster.
 rpc_bind_addr = "[::]:3901"
 
+# If enabled, pre-bind all sockets for outgoing connections to the same IP
+# address used for listening (rpc_bind_addr) before trying to connect to remote
+# nodes.
+#rpc_bind_outgoing = false
+
 # The address and port that other nodes need to use to contact this node for
 # RPC calls.
 # rpc_public_addr = "127.0.0.1:3901"
 
-# The secret key that is shared between all nodes of the cluster in order to
-# identify these nodes and allow them to communicate together. This key should
-# be specified here in the form of a 32-byte hex-encoded random string.
-# NOTE: The init script will automatically replace "change-me" value with
-# a random string on the service start.
-rpc_secret = "change-me"
-# or read it from the file.
-#rpc_secret_file = ""
+# The secret key file that is shared between all nodes of the cluster in order
+# to identify these nodes and allow them to communicate together. The key is a
+# 32-byte hex-encoded random string.
+# If this file doesn't exist, it will be automatically created with a random
+# string on the service start.
+rpc_secret_file = "/etc/garage/rpc_secret"
 
 # A list of peer identifiers on which to contact other Garage peers of this
 # cluster. Format: <node public key>@<node public IP or hostname>:<port>.
@@ -90,10 +108,10 @@ root_domain = ""
 # If not set, access to these endpoints is disabled entirely.
 #admin_token = ""
 # or read it from the file.
-#admin_token_file = ""
+# admin_token_file = "/etc/garage/admin_token"
 
 # The token for accessing the Metrics endpoint. If not set, the Metrics
 # endpoint can be accessed without access control!
 #metrics_token = ""
 # or read it from the file.
-#metrics_token_file = ""
+# metrics_token_file = "/etc/garage/metrics_token"
