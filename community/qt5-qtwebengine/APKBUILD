@@ -3,9 +3,9 @@
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
 pkgname=qt5-qtwebengine
 pkgver=5.15.16
-pkgrel=7
+pkgrel=8
 # latest commit of 87-based branch of qtwebengine-chromium
-_chromium_commit="fdfef5b37af3bed8402d7c7e20a5487f2602b0a6"
+_chromium_commit="060d3aa868d6f4403a9416fe34b48ffbfcfe19cb"
 pkgdesc="Qt5 - QtWebEngine components"
 url="https://doc.qt.io/QT-5/qtwebengine-index.html"
 # ppc64le, riscv64 and s390x are not supported
@@ -103,10 +103,15 @@ source="$pkgname-$pkgver-lts.tar.gz::https://github.com/qt/qtwebengine/archive/r
 	silent-ninja.patch
 	ffmpeg5.patch
 	pipewire-0.3.patch
+	python3.12-imp.patch
+	python3.12-six.patch
 	"
 builddir="$srcdir/qtwebengine-$pkgver-lts"
 
 # secfixes:
+#   5.15.16-r8:
+#     - CVE-2024-3157
+#     - CVE-2024-3516
 #   5.15.16-r7:
 #     - CVE-2023-7104
 #   5.15.16-r6:
@@ -487,7 +492,7 @@ package() {
 
 sha512sums="
 c021166a5bf8072269e674eb19d38ae8dc5633305163e7f1a85f6a27d7c7b13a532807ce6290fb498f12a0ed2ce9648dbd958426956198b50e358ffcfb64e5d1  qt5-qtwebengine-5.15.16-lts.tar.gz
-406beed77bec0950dc9a76638f127f3c7d65e49d08686efc605f4fcb69ddf3a5a67ced75123e70a81b39d3e94f6d71cd96fe0b77eada5cbc5abae422c73ee73f  qtwebengine-chromium-fdfef5b37af3bed8402d7c7e20a5487f2602b0a6.tar.gz
+7cec6f19d66e66486b904cfc5fcf70e1c71181c398b2b75633129a2bce5b7157fe22ce86f4af3948140960a7f7b7213ce6264cf0f1938a4cba5b588314017688  qtwebengine-chromium-060d3aa868d6f4403a9416fe34b48ffbfcfe19cb.tar.gz
 2eee4a43bb7855b5316ac750858272cbe258428ab8aac3c46f5eceeb6fdf085042b36a5fa27440a2270df7a826b8a32115319279b8d3bb6b23844b68cd5bb9dd  0001-pretend-to-stay-at-lower.patch
 2438ac56b1c819d1f6634814b148919e15d7d4e41a64fedab38358d794e8286a1eebaaa8579661e8e75fbc321f4d16c47b1838219cb0aadc307c4c8dd97e91b1  0010-chromium-musl-Match-syscalls-to-match-musl.patch
 08b88858e5fb38bd53ead81f3abbc24dcb26c504798adeb3f7c6ca3b63532279a7a40aa75f601d2e2ac02058e86589a155d3ef97b51375f560adc268dbf1f805  lfs64.patch
@@ -517,4 +522,6 @@ f4cb20796922b6e26433a18ab2ba5dd8750e8bbfb479e9416a362073c9e6a3ac12ee9e9868f6c933
 75e3d333f0af28a6a0d846ca380036181c4c0bfb083a4b94449b63572bd8da0fdb99a0ad0550801fc5b5bd115278cf894a0883fac1147c7a6826f1e6a09475b3  silent-ninja.patch
 01d31c13f15af6b40e0595c7ebe6c13905dd7ae3fd3b564a2e13b538451f14d44081332c9279ece7c9b01a40802e1381e197442f94946cf713ea8cb3326e502f  ffmpeg5.patch
 1fbe738bfa09831df540cff355193d096232eefcf51ddd3be7509e1c63e5107bd8087179140ce84bc67a901795cd804a8e538a32fadc776608b9914dab617c3f  pipewire-0.3.patch
+10015b012d025ff9424fedcc257568c9682b4a669af901acb3e672997ee75e28d8431d8d6115405dd86a37c1ae9565c235711569942635b6e140189235dc231e  python3.12-imp.patch
+4d6b5eda2ce9be44cc9c7bfdb3fd41ffa87ac260d37d30e7af6f4ff7d5ebbf10b17b6119729bbf51f6405494189f82602c657daa139338526b49db89fb8ec682  python3.12-six.patch
 "
