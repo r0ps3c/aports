@@ -2,7 +2,7 @@
 # Contributor: Natanael Copa <ncopa@alpinelinux.org>
 # Maintainer: David Demelier <markand@malikania.fr>
 pkgname=fossil
-pkgver=2.23
+pkgver=2.24
 pkgrel=0
 pkgdesc="Simple, high-reliability, distributed software configuration management"
 url="https://www.fossil-scm.org"
@@ -11,7 +11,10 @@ license="BSD-2-Clause"
 makedepends="openssl-dev>3 tcl-dev zlib-dev"
 checkdepends="coreutils ed tcl-lib"
 subpackages="$pkgname-bash-completion $pkgname-zsh-completion"
-source="https://www.fossil-scm.org/home/tarball/version-$pkgver/fossil-src-$pkgver.tar.gz"
+source="https://www.fossil-scm.org/home/tarball/version-$pkgver/fossil-src-$pkgver.tar.gz
+	fix-tests.patch
+	"
+patch_args="-p0"
 builddir="$srcdir/$pkgname-src-$pkgver"
 
 build() {
@@ -43,5 +46,6 @@ package() {
 }
 
 sha512sums="
-bba67e16b26b97aa40023a4a2aa3b2abfc9393ec8d3244ec88dab5b7d2c4d46e7d6ee89b008a6bce1f18c96c351c8d41d64f02ba28c0eb3eb04d01e308f3335b  fossil-src-2.23.tar.gz
+7fc7de7d947b0946866df38c6cb2215f6452d31903cae6470bb4a692816b2803eb66ea372280256e5cd00759e4d02a0ae459de2f56f39af10e873579d53d33ee  fossil-src-2.24.tar.gz
+2ce139acca006a754616409e2b713e814d7daf3633c3171e5ac2f98778fcb990638a4bb2037e2c02e7e3e9227fd1f7e0fad33e7ed8f98cc9a0fdc2f698629ccf  fix-tests.patch
 "
