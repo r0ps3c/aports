@@ -2,7 +2,7 @@
 # Maintainer: Kevin Daudt <kdaudt@alpinelinux.org>
 pkgname=darktable
 pkgver=4.6.1
-pkgrel=0
+pkgrel=1
 pkgdesc="Open source photography workflow application and raw developer"
 url="https://www.darktable.org/"
 # aarch64: not supported with gcc
@@ -48,8 +48,9 @@ source="https://github.com/darktable-org/darktable/releases/download/release-$pk
 	"
 
 build() {
+	local cmake_crossopts
 	if [ "$CBUILD" != "$CHOST" ]; then
-		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+		cmake_crossopts="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
 	fi
 	cmake -B build \
 		-DCMAKE_INSTALL_PREFIX=/usr \
@@ -58,7 +59,7 @@ build() {
 		-DCMAKE_BUILD_TYPE=Release \
 		-DBINARY_PACKAGE_BUILD=ON \
 		-DRAWSPEED_ENABLE_LTO=ON \
-		$CMAKE_CROSSOPTS
+		$cmake_crossopts
 	cmake --build build
 }
 
