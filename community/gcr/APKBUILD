@@ -2,7 +2,7 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=gcr
 pkgver=3.41.2
-pkgrel=0
+pkgrel=1
 pkgdesc="library for bits of crypto UI and parsing"
 url="https://wiki.gnome.org/Projects/CryptoGlue"
 arch="all"
@@ -10,26 +10,34 @@ license="LGPL-2.0-or-later"
 makedepends="
 	glib-dev
 	gobject-introspection-dev
+	gtk-doc
 	gtk+3.0-dev
 	libgcrypt-dev
 	libsecret-dev
 	libxslt
-	meson gtk-doc
+	meson
 	openssh-client
 	p11-kit-dev
 	vala
 	"
-checkdepends="xvfb-run dbus-x11"
+checkdepends="
+	bash
+	gpg
+	gpg-agent
+	dbus-x11
+	xvfb-run
+	"
 subpackages="
 	$pkgname-dev
 	$pkgname-lang
 	$pkgname-base
-	$pkgname-ssh-agent:ssh
 	"
 source="https://download.gnome.org/sources/gcr/${pkgver%.*}/gcr-$pkgver.tar.xz
 	fix-64-bit-time_t-32-bit.patch
 	"
-options="!check"  # testsuite requires community/xvfb-run
+# test failure in gcr:gcr-base / gnupg-collection
+# https://gitlab.gnome.org/GNOME/gcr/-/issues/114
+options="!check"
 
 build() {
 	# getpass
@@ -39,6 +47,7 @@ build() {
 		-Dgtk_doc=false \
 		-Dgpg_path=/usr/bin/gpg2 \
 		-Dsystemd=disabled \
+		-Dssh_agent=false \
 		output
 	meson compile -C output
 }
@@ -48,7 +57,6 @@ check() {
 }
 
 package() {
-	depends="$pkgname-ssh-agent=$pkgver-r$pkgrel"
 	DESTDIR="$pkgdir" meson install --no-rebuild -C output
 }
 
@@ -56,14 +64,7 @@ base() {
 	pkgdesc="$pkgdesc (base libraries)"
 	depends=""
 
-	amove usr/lib/libgck-1.so.*
-	amove usr/lib/libgcr-base-3.so.*
-}
-
-ssh() {
-	pkgdesc="$pkgdesc (ssh agent daemon)"
-
-	amove usr/libexec/gcr-ssh-agent
+	amove usr/lib
 }
 
 sha512sums="
