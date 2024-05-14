@@ -4,7 +4,7 @@
 # The group tag is just to easily find this APKBUILD by some scripts for automation
 # group=kde-frameworks
 pkgname=kirigami
-pkgver=6.1.0
+pkgver=6.2.1
 pkgrel=0
 pkgdesc="A QtQuick based components set"
 arch="all !armhf" # armhf blocked by qt6-qtdeclarative
@@ -45,5 +45,5 @@ package() {
 }
 
 sha512sums="
-2a75af0bc010120913f092f14760817c197298da4f6fc4780f5ab222de8e385864f4c88b9907acf4b03fea53759f1e2a39a2b62bcd78b8c2c1bc52129c04d207  kirigami-6.1.0.tar.xz
+57e7f6facede8764ee792ebd41f24bf2b53651cc2bfae7c2c58e3e821a27c2021c8f2161ddc76b2b20a26d310a48045335405a753487f98c46c050df8dc0f9e0  kirigami-6.2.1.tar.xz
 "
