@@ -1,9 +1,9 @@
 # Contributor: Chris Kruger <alpine@krugerheavyindustries.com>
 # Contributor: Fabricio Silva <hi@fabricio.dev>
-# Maintainer: Chris Kruger <alpine@krugerheavyindustries.com>
+# Maintainer: Fabricio Silva <hi@fabricio.dev>
 pkgname=vaultwarden
 pkgver=1.30.5
-pkgrel=0
+pkgrel=2
 pkgdesc="bitwarden alternative backend"
 _bw_web_ver=2024.1.2b
 provides="bitwarden_rs=$pkgver-r$pkgrel"
