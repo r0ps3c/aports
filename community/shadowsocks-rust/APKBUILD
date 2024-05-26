@@ -1,6 +1,6 @@
 # Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=shadowsocks-rust
-pkgver=1.18.4
+pkgver=1.19.0
 pkgrel=0
 pkgdesc="Rust port of shadowsocks"
 url="https://github.com/shadowsocks/shadowsocks-rust"
@@ -119,5 +119,5 @@ ssurl() {
 }
 
 sha512sums="
-82e0a08d7bdcd863bbe98d3ea4369cae5540c2ce2c80d7829897862886f3b12b839b4986373ff208b8d98e01bfa1d4b07f39ab9e5400389fb362953d00224d9c  shadowsocks-rust-1.18.4.tar.gz
+99b0fd4346d1a8ec0c7b75b950404340986c383daefa9dec3ebdff5cbadb3512023ce42ec861e933ab0bc97b36be494d2fba96fcba6e6cd038cd8f2950d2fe45  shadowsocks-rust-1.19.0.tar.gz
 "
