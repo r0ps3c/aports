@@ -4,7 +4,7 @@
 pkgname=php83-pecl-xdebug
 _extname=xdebug
 pkgver=3.3.2
-pkgrel=0
+pkgrel=2
 pkgdesc="PHP 8.3 extension that provides functions for function traces and profiling - PECL"
 url="https://pecl.php.net/package/xdebug"
 arch="all"

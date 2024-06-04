@@ -4,7 +4,7 @@
 pkgname=php81-pecl-xhprof
 _extname=xhprof
 pkgver=2.3.9
-pkgrel=1
+pkgrel=3
 pkgdesc="A Hierarchical Profiler for PHP 8.1 - PECL"
 url="https://pecl.php.net/package/xhprof"
 arch="all"
