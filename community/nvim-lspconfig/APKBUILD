@@ -1,28 +1,34 @@
 # Contributor: Maxim Karasev <begs@disroot.org>
 # Maintainer: Dhruvin Gandhi <contact@dhruvin.dev>
 pkgname=nvim-lspconfig
-pkgver=0.1.7
+pkgver=0.1.8
 pkgrel=0
 pkgdesc="quickstart configurations for the neovim LSP client"
 url="https://github.com/neovim/nvim-lspconfig"
 arch="noarch"
 license="Apache-2.0"
 subpackages="$pkgname-doc"
-source="https://github.com/neovim/nvim-lspconfig/archive/v$pkgver/nvim-lspconfig-$pkgver.tar.gz"
-options="!check" # requires entire neovim tree
+source="https://github.com/neovim/nvim-lspconfig/archive/refs/tags/v$pkgver/nvim-lspconfig-$pkgver.tar.gz"
+depends="neovim"
+options="!check" # requires vusted
+
+build() {
+	nvim -u NONE -i NONE -e --headless -c "helptags doc" -c quit
+}
 
 package() {
-	install -d "$pkgdir"/usr/share/nvim/site
-	cp -ra lua plugin "$pkgdir"/usr/share/nvim/site
-	install -Dm644 doc/*.txt -t "$pkgdir"/usr/share/nvim/site/doc
-	install -Dm644 README.md doc/*.md -t "$pkgdir"/usr/share/doc/$pkgname
+	local plgdir="$pkgdir"/usr/share/nvim/site/pack/dist/opt/$pkgname
+	install -d "$plgdir"
+	cp -a lua plugin "$plgdir"
+	install -Dm644 doc/*.txt doc/tags -t "$plgdir"/doc
+	install -Dm644 doc/*.md README.md -t "$pkgdir"/usr/share/doc/$pkgname
 }
 
 doc() {
 	default_doc
-	amove usr/share/nvim/site/doc
+	amove usr/share/nvim/site/pack/dist/opt/$pkgname/doc
 }
 
 sha512sums="
-62bbfa55f418da4819e3d4f69b967515687d0294768381ecb8e07af7e7a1b84cd4695563c373e89929e60ceaa0d44400e5b706d6909858e6786e1c467f837e23  nvim-lspconfig-0.1.7.tar.gz
+e22139359f63d68659ac6c93891bd24612ad759f99ad95482c0f12d8cef5f2062bb26a76f8515c02f1f3ea94b421cadd25dd7ce802a2fe7bbc6642aee60174a7  nvim-lspconfig-0.1.8.tar.gz
 "
