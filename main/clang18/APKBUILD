@@ -1,11 +1,12 @@
-# Contributor Eric Molitor <eric@molitor.org>
-# Contributor Patrick Gansterer <paroga@paroga.com>
-# Contributor Travis Tilley <ttilley@gmail.com>
-# Contributor omni <omni+alpine@hack.org>
+# Contributor: Eric Molitor <eric@molitor.org>
+# Contributor: Patrick Gansterer <paroga@paroga.com>
+# Contributor: Travis Tilley <ttilley@gmail.com>
+# Contributor: omni <omni+alpine@hack.org>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=clang18
 pkgver=18.1.6
-pkgrel=0
+pkgrel=2
+_sover=18.1
 _llvmver=${pkgver%%.*}
 pkgdesc="C language family front-end for LLVM"
 arch="all"
@@ -52,11 +53,11 @@ prepare() {
 	mv "$srcdir/clang-tools-extra-$pkgver.src" "$builddir/tools/extra"
 	default_prepare
 	mv "$srcdir"/cmake-${pkgver//_/}.src "$srcdir"/cmake
-	mv "$srcdir"/third-party-${pkgver//_/}.src "$srcdir"/thirtd-party
+	mv "$srcdir"/third-party-${pkgver//_/}.src "$srcdir"/third-party
 }
 
 # Whether is this package the default (latest) clang version.
-_default_clang="no"
+_default_clang="yes"
 
 if [ "$_default_clang" = yes ]; then
 	subpackages="
@@ -294,9 +295,9 @@ package() {
 
 	local libs="
 		libclang-cpp.so
-		libclang-cpp.so.$_llvmver
+		libclang-cpp.so.$_sover
 		libclang.so
-		libclang.so.$_llvmver
+		libclang.so.$_sover
 		libclang.so.$pkgver
 		"
 	for lib in $libs; do
@@ -412,11 +413,13 @@ extra() {
 			usr/bin/modularize* \
 			usr/bin/nvptx-arch \
 			usr/bin/pp-trace* \
-			usr/bin/run-clang-tidy*
+			usr/bin/run-clang-tidy* \
+			usr/lib/llvm$_llvmver/bin/clang-check* \
+			usr/lib/llvm$_llvmver/bin/clang-extdef-mapping* \
+			usr/lib/llvm$_llvmver/share/clang/clang* \
+			usr/lib/llvm$_llvmver/share/clang/run-find-all-symbols.py
 	fi
 
-#		usr/lib/llvm$_llvmver/bin/clang-check* \
-#		usr/lib/llvm$_llvmver/bin/clang-extdef-mapping* \
 	amove \
 		usr/lib/llvm$_llvmver/bin/clang-apply-replacements* \
 		usr/lib/llvm$_llvmver/bin/clang-change-namespace* \
@@ -442,9 +445,7 @@ extra() {
 		usr/lib/llvm$_llvmver/bin/hmaptool* \
 		usr/lib/llvm$_llvmver/bin/modularize* \
 		usr/lib/llvm$_llvmver/bin/pp-trace* \
-		usr/lib/llvm$_llvmver/bin/run-clang-tidy* \
-#		usr/lib/llvm$_llvmver/share/clang/clang* \
-#		usr/lib/llvm$_llvmver/share/clang/run-find-all-symbols.py
+		usr/lib/llvm$_llvmver/bin/run-clang-tidy*
 }
 
 emacs() {
