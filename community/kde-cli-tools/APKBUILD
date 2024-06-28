@@ -4,7 +4,7 @@
 # The group tag is just to easily find this APKBUILD by some scripts for automation
 # group=kde-plasma
 pkgname=kde-cli-tools
-pkgver=6.0.5
+pkgver=6.1.1
 pkgrel=0
 pkgdesc="Tools based on KDE Frameworks 5 to better interact with the system"
 # armhf blocked by extra-cmake-modules
@@ -57,5 +57,5 @@ package() {
 	DESTDIR="$pkgdir" cmake --install build
 }
 sha512sums="
-506c87d13d8793eab08f499178eb45a08d34d5b4506c5e816a0f42a72b1fd3bbf6c7558fde75e4aea98a40aa5d2fcc656fa8e025b0b3083901dad5f414b6e8ca  kde-cli-tools-6.0.5.tar.xz
+d89be083dcb12f03c6de527c51f62cf949bc425a92662b1add922bc40e001b208701f3411990972926414cddb82468f7e4fbba5b21ee9e8d6cd705b91c5a103d  kde-cli-tools-6.1.1.tar.xz
 "

@@ -4,7 +4,7 @@
 # The group tag is just to easily find this APKBUILD by some scripts for automation
 # group=kde-plasma
 pkgname=milou
-pkgver=6.0.5
+pkgver=6.1.1
 pkgrel=0
 pkgdesc="A dedicated search application built on top of Baloo"
 # armhf blocked by qt6-qtdeclarative
@@ -50,5 +50,5 @@ package() {
 }
 
 sha512sums="
-c310c0bbfd50df8a6723a42bb3e25b40a616f81e8cffc7e69316f7d8a9ed1370a37bc4b119ab55aa6e33ba1bb67c74fb04360cf497fae4ff9481709cfd12075e  milou-6.0.5.tar.xz
+32144b925e74ef857fd7b4d69281f41bfa58854a43ed59dedbd46c7b58b18a2c0e0b4b88fe26d18a3f1407d3a1b041156b77b759dbfa50f4c52de8dc0ec1eb0f  milou-6.1.1.tar.xz
 "

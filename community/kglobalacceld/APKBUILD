@@ -4,7 +4,7 @@
 # The group tag is just to easily find this APKBUILD by some scripts for automation
 # group=kde-plasma
 pkgname=kglobalacceld
-pkgver=6.0.5
+pkgver=6.1.1
 pkgrel=0
 pkgdesc="Daemon providing Global Keyboard Shortcut (Accelerator) functionality"
 arch="all !armhf" # armhf blocked by extra-cmake-modules
@@ -30,7 +30,10 @@ makedepends="$depends_dev
 	qt6-qttools-dev
 	samurai
 	"
-checkdepends="xvfb-run"
+checkdepends="
+	dbus
+	xvfb-run
+	"
 subpackages="$pkgname-dev"
 _repo_url="https://invent.kde.org/plasma/kglobalacceld.git"
 source="https://download.kde.org/stable/plasma/$pkgver/kglobalacceld-$pkgver.tar.xz"
@@ -44,12 +47,12 @@ build() {
 }
 
 check() {
-	xvfb-run -a ctest --test-dir build --output-on-failure
+	dbus-run-session -- xvfb-run -a ctest --test-dir build --output-on-failure
 }
 
 package() {
 	DESTDIR="$pkgdir" cmake --install build
 }
 sha512sums="
-5b073828d453bdeac7ff7e30133dd1d245934438435886a591e8a36a200b207aaf99abc565e589041d39c1ffb31d51638d7212a38cf4cacadc7c8e93b6c92a1d  kglobalacceld-6.0.5.tar.xz
+29022b7c0cbc4f6ded26135ce5c6f5487044b6130f8d62a6ba344789bc970e95a40e4ed076c7fb1a272f12978fc641bd90817e31fcd956174f5259c3fc3d87c4  kglobalacceld-6.1.1.tar.xz
 "

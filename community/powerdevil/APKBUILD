@@ -4,11 +4,12 @@
 # The group tag is just to easily find this APKBUILD by some scripts for automation
 # group=kde-plasma
 pkgname=powerdevil
-pkgver=6.0.5
+pkgver=6.1.1
 pkgrel=0
 pkgdesc="Manages the power consumption settings of a Plasma Shell"
 # armhf blocked by extra-cmake-modules
-arch="all !armhf"
+# s390x blocked by plasma-workspace
+arch="all !armhf !s390x"
 url="https://kde.org/plasma-desktop/"
 license="GPL-2.0-or-later AND LGPL-2.0-or-later AND (LGPL-2.1-only OR LGPL-3.0-only)"
 depends="upower"
@@ -81,5 +82,5 @@ package() {
 }
 
 sha512sums="
-36be20bfc0c074b451e0f9eca6317f2894dc71a943353e8ce52c3f68e0181e054e4a035a85888b9281aa684b50912e87ec3db8d6260fdd371dd6d4c7e86e3709  powerdevil-6.0.5.tar.xz
+6baf1f04be016eff35760704ec9a34a397aba1af3663c883097c4e130e845c980f5c9e8712c9999f1e6a33da6531cc53dc3190e14c80f2eb66e1e9ab6adfea1a  powerdevil-6.1.1.tar.xz
 "

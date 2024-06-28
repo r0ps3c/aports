@@ -4,11 +4,12 @@
 # The group tag is just to easily find this APKBUILD by some scripts for automation
 # group=kde-plasma
 pkgname=systemsettings
-pkgver=6.0.5
+pkgver=6.1.1
 pkgrel=0
 pkgdesc="Plasma system manager for hardware, software, and workspaces"
 # armhf blocked by qt6-qtdeclarative
-arch="all !armhf"
+# s390x blocked by plasma-workspace
+arch="all !armhf !s390x"
 url="https://kde.org/plasma-desktop/"
 license="GPL-2.0-or-later"
 depends="kirigami"
@@ -64,5 +65,5 @@ package() {
 }
 
 sha512sums="
-3912fc9f00c67c163bd71639dd8186df5eae83f5d560adddcb4bd95532d078a3b18488c66378c0686f0d4be2c01acdc70c3b6726030ef3dbf113262561897204  systemsettings-6.0.5.tar.xz
+fb953b31bbe7f83e0d1110f43ce6df799c8dbe025cfabc28e8f7c31ee848f465eca0c13917143e41b4bf2ab9be7382bcd4869964dd9013a2a93c1a3df0af8b0a  systemsettings-6.1.1.tar.xz
 "

@@ -4,7 +4,7 @@
 # The group tag is just to easily find this APKBUILD by some scripts for automation
 # group=kde-plasma
 pkgname=plasma-nm
-pkgver=6.0.5
+pkgver=6.1.1
 pkgrel=0
 pkgdesc="Plasma applet written in QML for managing network connections"
 # armhf blocked by qt6-qtdeclarative
@@ -78,5 +78,5 @@ mobile() {
 }
 
 sha512sums="
-ea5f96d1d12aa66b082fd78ec0c6896b5e345ecd39328ece917ca732c9eaa1944dc4fbc22cb4ab9a1fd2d50559ad3d113dd0f5ece6bfa20f66d97905f2108c1d  plasma-nm-6.0.5.tar.xz
+a10ba2e4cc08fe686e86c0f46c020242a64a9cee15a9b4bc3382dcdff8bfebe59306752be5e4e3411eb13b50522a7e4634e939970c7ac07589c1fe86d54c79c1  plasma-nm-6.1.1.tar.xz
 "

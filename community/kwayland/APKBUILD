@@ -4,7 +4,7 @@
 # The group tag is just to easily find this APKBUILD by some scripts for automation
 # group=kde-plasma
 pkgname=kwayland
-pkgver=6.0.5
+pkgver=6.1.1
 pkgrel=0
 pkgdesc="Qt-style Client and Server library wrapper for the Wayland libraries"
 arch="all !armhf" # armhf blocked by extra-cmake-modules
@@ -50,5 +50,5 @@ package() {
 }
 
 sha512sums="
-85007a154b223bf87d5b66f00671d8a011125145797e19d60631e0f3d7c95d301bd0004180b9cfaa2fa6790c4057f68b614462870703076e1dcccc09bbc3a84b  kwayland-6.0.5.tar.xz
+106ac60644ac0bdb2fc1c6b2e4d5866cd0f55506fc9b98116beeb340c437ac6e19fa668ce0f49e204ffbd15a44287c290ef2638f8a6da6e3f1d1530f3ff1f7a4  kwayland-6.1.1.tar.xz
 "

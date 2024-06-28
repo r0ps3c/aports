@@ -4,11 +4,12 @@
 # The group tag is just to easily find this APKBUILD by some scripts for automation
 # group=kde-plasma
 pkgname=plasma-workspace
-pkgver=6.0.5.1
-pkgrel=0
+pkgver=6.1.1
+pkgrel=1
 pkgdesc="KDE Plasma Workspace"
 # armhf blocked by extra-cmake-modules
-arch="all !armhf"
+# s390x build failure and unsupported upstream
+arch="all !armhf !s390x"
 url="https://kde.org/plasma-desktop/"
 license="(GPL-2.0-only OR GPL-3.0-only) AND LGPL-2.1-or-later AND GPL-2.0-or-later AND MIT AND LGPL-2.1-only AND LGPL-2.0-or-later AND (LGPL-2.1-only OR LGPL-3.0-only) AND LGPL-2.0-only"
 depends="
@@ -81,6 +82,7 @@ depends_dev="
 	plasma-wayland-protocols
 	plasma5support-dev
 	prison-dev
+	qcoro-dev
 	qt6-qtwayland-dev
 	wayland-dev
 	wayland-protocols
@@ -108,12 +110,9 @@ subpackages="
 	$pkgname-doc
 	$pkgname-lang
 	$pkgname-zsh-completion
-	sddm-breeze:sddm_breeze
 	"
 _repo_url="https://invent.kde.org/plasma/plasma-workspace.git"
-source="https://download.kde.org/stable/plasma/${pkgver%.*}/plasma-workspace-$pkgver.tar.xz
-	sddm.conf
-	"
+source="https://download.kde.org/stable/plasma/$pkgver/plasma-workspace-$pkgver.tar.xz"
 
 # secfixes:
 #   6.0.5.1:
@@ -168,21 +167,6 @@ package() {
 	fi
 }
 
-sddm_breeze() {
-	pkgdesc="Breeze theme for SDDM"
-	depends="
-		breeze
-		qt6-qtvirtualkeyboard
-		"
-	install_if="breeze sddm"
-
-	amove usr/share/sddm
-
-	install -Dm644 "$srcdir"/sddm.conf "$subpkgdir"/etc/sddm.conf
-
-}
-
 sha512sums="
-aa0bb7d52e95b0cfec18f68a22becaeafc1e7da0bf8540328b841cb5deb1296a875f41816adf130f0b1c02bfa19abece58516aa95b17a1f621cfb0cc081772bf  plasma-workspace-6.0.5.1.tar.xz
-affbeec6d236bf09ae95b7bf478015ead9b5eabcffa8291107e34463bc3f7563c01d4e444e035b7eb575700e64c4da9f5079950b254b8c24b305845f031eb17f  sddm.conf
+41b07a182effd4c74e88890fbc48fa149149ecb8e8f84f5e636003ed40dd9f163b321d874c006ab0daca5d97351761e77d641c64a005d0fdecc6a3a21c21f89a  plasma-workspace-6.1.1.tar.xz
 "

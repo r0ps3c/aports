@@ -4,7 +4,7 @@
 # The group tag is just to easily find this APKBUILD by some scripts for automation
 # group=kde-plasma
 pkgname=ksystemstats
-pkgver=6.0.5
+pkgver=6.1.1
 pkgrel=0
 pkgdesc="A plugin based system monitoring daemon"
 # armhf blocked by extra-cmake-modules
@@ -54,5 +54,5 @@ package() {
 }
 
 sha512sums="
-764a0700cae0061a96f6a35915c2cda2f044aa54d41088d17a51d256f601c1aa7abce721bd1828f0a9e9aa99f2313e7e534cc6b4dfc5e2607fae4956b2b0d3c8  ksystemstats-6.0.5.tar.xz
+550ff05840566f394c8bb13d3ef079768da9fa748cc1720d712284ed6c886b6810a04606eb12139071a705a3daca13c4e0573b79d92dde6100f3de5ada6da8a9  ksystemstats-6.1.1.tar.xz
 "

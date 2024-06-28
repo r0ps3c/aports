@@ -4,7 +4,7 @@
 # The group tag is just to easily find this APKBUILD by some scripts for automation
 # group=kde-plasma
 pkgname=kwrited
-pkgver=6.0.5
+pkgver=6.1.1
 pkgrel=0
 pkgdesc="KDE daemon listening for wall and write messages"
 arch="all !armhf" # qt6-qtdeclarative-dev  unavilable on armhf
@@ -43,5 +43,5 @@ package() {
 }
 
 sha512sums="
-06410c11e7ba0d0490febeb0e1281becd124ed40b93895f147f8500be6764d0a79fced020ae99c0af71a53ba56c97e97719fdc99ce51da9c3c5a82d6a92369ce  kwrited-6.0.5.tar.xz
+697d18bb9b5f4de6b7d65bb86dd7f3ea654c020d04fb69ba257ce48973649c6cea893904be489923a64b55b0906404e7ae53e877c4c525cd54184fdf04ec70ab  kwrited-6.1.1.tar.xz
 "
