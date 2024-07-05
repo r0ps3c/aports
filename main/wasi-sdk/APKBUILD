@@ -1,9 +1,9 @@
 # Contributor: Alex Yam <alex@alexyam.com>
 # Maintainer: Patrycja Rosa <alpine@ptrcnull.me>
 pkgname=wasi-sdk
-pkgver=21
-pkgrel=0
-_llvmver=17
+pkgver=22
+pkgrel=1
+_llvmver=18
 pkgdesc="WASI-enabled WebAssembly C/C++ toolchain"
 url="https://github.com/WebAssembly/wasi-sdk"
 arch="noarch"
