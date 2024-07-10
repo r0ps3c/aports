@@ -55,12 +55,12 @@ stop_winbindd() {
 
 
 start_bgqd() {
-        start-stop-daemon --start --quiet --exec /usr/lib/samba/samba-bgqd -- \
-                ${bgqd_options:-"-D"}
+	start-stop-daemon --start --quiet --exec /usr/lib/samba/samba-bgqd -- \
+		${bgqd_options:-"-D"}
 }
 
 stop_bgqd() {
-        start-stop-daemon --stop --quiet --pidfile "$piddir"/samba-bgqd.pid
+	start-stop-daemon --stop --quiet --pidfile "$piddir"/samba-bgqd.pid
 }
 
 start() {
@@ -82,7 +82,8 @@ stop() {
 reload() {
 	for i in $daemon_list; do
 		ebegin "Reloading $i"
-		busybox killall -HUP $i
+		# bgqd binary is called samba-bgqd
+		busybox killall -HUP ${i/bgqd/samba-bgqd}
 		eend $?
 	done
 }
