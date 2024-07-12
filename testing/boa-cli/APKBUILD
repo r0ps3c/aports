@@ -1,7 +1,7 @@
 # Contributor: lauren n. liberda <lauren@selfisekai.rocks>
 # Maintainer: lauren n. liberda <lauren@selfisekai.rocks>
 pkgname=boa-cli
-pkgver=0.18
+pkgver=0.19
 pkgrel=0
 pkgdesc="Embeddable and experimental Javascript engine written in Rust"
 url="https://github.com/boa-dev/boa/"
@@ -35,5 +35,5 @@ package() {
 }
 
 sha512sums="
-a7b61f22b7081d55316a9260da7adc740033de2258c441ce599ba082ae07d1712e51de8f575bd997b6b367bc7d0655839cfc16b0014a56283ff9de3a40c0fb12  boa-0.18.tar.gz
+27e40e72c15beee9a0bda8ebe076804d628a3a2a9552530fe8279a72ef361ad45f28eeef06eabfb9a124d997c006e2c30e3c9dcaa460d8da9c04a9fa444034f7  boa-0.19.tar.gz
 "
