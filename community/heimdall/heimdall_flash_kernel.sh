@@ -23,6 +23,9 @@ for file in "$INITFS" "$KERNEL"; do
 	exit 1
 done
 
+echo "DEPRECATION WARNING: heimdall_flash_kernel.sh is deprecated and will be"
+echo "removed in a future version. Please use heimdall_flash_isorec_kernel.sh"
+echo "instead."
 echo "Flash initramfs to the '$INITFS_PARTITION' partition (isorec-style) and"
 echo "kernel to the '$KERNEL_PARTITION' partition"
 heimdall_wait_for_device.sh
