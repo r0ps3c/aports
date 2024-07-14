@@ -4,8 +4,7 @@ pkgver=2023.0.1
 pkgrel=1
 pkgdesc="Python implementation of the Language Server Protocol"
 url="https://github.com/microsoft/lsprotocol"
-# loongarch64: blocked by py3-jsonschema
-arch="noarch !loongarch64"
+arch="noarch"
 license="MIT"
 depends="
 	py3-attrs

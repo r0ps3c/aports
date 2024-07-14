@@ -5,7 +5,7 @@ pkgver=1.0.1
 pkgrel=1
 pkgdesc="Persistent cache for requests library"
 url="https://github.com/requests-cache/requests-cache"
-# loongarch64: blocked by py3-orjson
+# loongarch64: test fails
 arch="noarch !loongarch64"
 license="BSD-3-Clause"
 depends="
