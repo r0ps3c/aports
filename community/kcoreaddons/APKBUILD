@@ -5,7 +5,7 @@
 # group=kde-frameworks
 pkgname=kcoreaddons
 pkgver=6.4.0
-pkgrel=0
+pkgrel=1
 pkgdesc="Addons to QtCore"
 arch="all !armhf" # armhf blocked by extra-cmake-modules
 url="https://community.kde.org/Frameworks"
@@ -42,7 +42,7 @@ check() {
 		x86_64) disabled_tests="$disabled_tests|kfileutilstest" ;; # Only fails on builders
 	esac
 
-	xvfb-run ctest --test-dir build --output-on-failure -E "($disabled_tests)"
+	xvfb-run -a ctest --test-dir build --output-on-failure -E "($disabled_tests)"
 }
 
 package() {
