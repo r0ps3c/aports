@@ -1,7 +1,7 @@
 # Contributor: Milan P. Stanić <mps@arvanta.net>
 # Maintainer: Milan P. Stanić <mps@arvanta.net>
 pkgname=tiny-dfr
-pkgver=0.2.0
+pkgver=0.3.1
 pkgrel=0
 pkgdesc="Apple silicon touch bar input / display daemon"
 url="https://github.com/WhatAmISupposedToPutHere/tiny-dfr"
@@ -27,6 +27,6 @@ package() {
 }
 
 sha512sums="
-0821eb0f2fd43f9335ef5853c1f6ff387e911395d6cf07a4eecc15ad4d86324a00b5688c780b60d60a19f45d220021770da44a343c638247ad62a19883826ad2  tiny-dfr-0.2.0.tar.gz
+2455aab3a708e208ce44a4d013a2d91614c8e9bf4a9d2a7461f1d9c709d3c529f33b2921c4a30e8777c71e567c8b6151a96ae954692368d89eedaa450fca7488  tiny-dfr-0.3.1.tar.gz
 02f8ad47061de4048306c3ac49873f36c6768ba6812d244524e366909baf3e96ddc38c0177a9eb03a30132bfa025e007c8a93ee22157bfcea52bded8cffeda3f  tiny-dfr.initd
 "
