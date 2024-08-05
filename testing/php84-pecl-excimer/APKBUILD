@@ -1,13 +1,13 @@
 # Maintainer: Andy Postnikov <apostnikov@gmail.com>
-pkgname=php83-pecl-excimer
+pkgname=php84-pecl-excimer
 _extname=excimer
 pkgver=1.2.2
 pkgrel=0
-pkgdesc="Interrupting timer and low-overhead sampling profiler PHP 8.3 - PECL"
+pkgdesc="Interrupting timer and low-overhead sampling profiler PHP 8.4 - PECL"
 url="https://pecl.php.net/package/excimer"
 arch="all"
 license="Apache-2.0"
-_phpv=83
+_phpv=84
 _php=php$_phpv
 depends="$_php-common"
 makedepends="$_php-dev"
