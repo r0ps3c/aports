@@ -2,7 +2,7 @@
 # Contributor: Celeste <cielesti@protonmail.com>
 # Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=perl-extutils-builder-compiler
-pkgver=0.017
+pkgver=0.019
 pkgrel=0
 #_pkgreal is used by apkbuild-cpan to find modules at MetaCpan
 _pkgreal=ExtUtils-Builder-Compiler
@@ -40,5 +40,5 @@ package() {
 }
 
 sha512sums="
-bc144d308b0b6c97ccce4069a658ad7bbdd9f75f1e120a9b19d21eafdb3eee0094d607e8df2d654c1c579969099519227f3886079e352684c967b1a07eb31ae0  ExtUtils-Builder-Compiler-0.017.tar.gz
+68c68a2e1ab970203533c563d0ff6655bcf7b89ba6da249e6ecb33df91b78a471691851ed2253316f0f0ea48bd9c8699db1f36b6767b6434c18377884a91b65d  ExtUtils-Builder-Compiler-0.019.tar.gz
 "
