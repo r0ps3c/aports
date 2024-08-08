@@ -1,5 +1,5 @@
 # Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
-# Maintainer:
+# Maintainer: Sören Tempel <soeren+alpine@soeren-tempel.net>
 pkgname=zk
 pkgver=0.14.1
 pkgrel=2
@@ -12,7 +12,6 @@ subpackages="$pkgname-doc"
 options="chmod-clean net"
 source="https://github.com/zk-org/zk/archive/v$pkgver/zk-$pkgver.tar.gz
 	0001-Determine-fixture-path-using-the-current-working-dir.patch"
-builddir="$srcdir/zk-$pkgver"
 
 export GOCACHE="${GOCACHE:-"$srcdir/go-cache"}"
 export GOTMPDIR="${GOTMPDIR:-"$srcdir"}"

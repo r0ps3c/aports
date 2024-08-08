@@ -2,7 +2,7 @@
 pkgname=libclc
 # follow llvm versioning
 pkgver=18.1.8
-pkgrel=0
+pkgrel=1
 _llvmver=${pkgver%%.*}
 pkgdesc="Open source implementation of the library requirements of the OpenCL C programming language"
 url="https://libclc.llvm.org/"
@@ -24,7 +24,6 @@ source="https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/l
 	https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/cmake-$pkgver.src.tar.xz
 	"
 builddir="$srcdir/libclc-$pkgver.src"
-options="!check" # todo: they fail for some reason
 
 build() {
 	CC=clang-$_llvmver \
@@ -32,6 +31,7 @@ build() {
 	cmake -B build -G Ninja \
 		-DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DLIBCLC_TARGETS_TO_BUILD="amdgcn--;amdgcn--amdhsa;amdgcn-mesa-mesa3d;r600--;nvptx--;nvptx64--;nvptx--nvidiacl;nvptx64--nvidiacl;spirv-mesa3d-;spirv64-mesa3d-" \
 		-DLLVM_CONFIG="llvm-config-$_llvmver" \
 		-DLLVM_SPIRV=/usr/bin/llvm-spirv \
 		-DCMAKE_MODULE_PATH="$srcdir/cmake-$pkgver.src/Modules"
