@@ -1,15 +1,15 @@
 # Contributor: Andy Blyler <andy@blyler.cc>
 # Contributor: Fabio Ribeiro <fabiorphp@gmail.com>
 # Maintainer: Andy Postnikov <apostnikov@gmail.com>
-pkgname=php81-pecl-ast
+pkgname=php84-pecl-ast
 _extname=ast
 pkgver=1.1.2
 pkgrel=0
-pkgdesc="PHP extension exposing PHP 8.1 abstract syntax tree - PECL"
+pkgdesc="PHP extension exposing PHP 8.4 abstract syntax tree - PECL"
 url="https://pecl.php.net/package/ast"
 arch="all"
 license="BSD-3-Clause"
-_phpv=81
+_phpv=84
 _php=php$_phpv
 depends="$_php-common"
 makedepends="$_php-dev"
