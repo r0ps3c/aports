@@ -1,7 +1,7 @@
 # Contributor: Henrik Riomar <henrik.riomar@gmail.com>
 # Maintainer: Henrik Riomar <henrik.riomar@gmail.com>
 pkgname=nats-server
-pkgver=2.10.18
+pkgver=2.10.20
 pkgrel=0
 pkgdesc="High-Performance server for NATS.io"
 url="https://github.com/nats-io/nats-server"
@@ -42,5 +42,5 @@ package() {
 }
 
 sha512sums="
-5798c63cd706d64906efe2908fc0d8c0157354f1b5ac134a0af50c7b31263b7518af8e4382a86afb17f272f22c7c8c9b73cd87c7b141e57b62759612ff00325f  nats-server-2.10.18.tar.gz
+d729523561a6162f3045053219c7d99b94387996294a23b350ae33451fb0c2efefbd51051d50c2d5338ed9636c122c3abcd34b22c6b34e20b1ef062e9ddf5c8d  nats-server-2.10.20.tar.gz
 "
