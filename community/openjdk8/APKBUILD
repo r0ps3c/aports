@@ -10,7 +10,7 @@ pkgrel=0
 pkgdesc="OpenJDK 8 provided by IcedTea"
 url="https://icedtea.classpath.org/"
 # riscv64 blocked by openjdk7
-arch="all !riscv64"
+arch="all !riscv64 !loongarch64"
 license="custom"
 options="sover-namecheck"
 makedepends="
@@ -310,7 +310,7 @@ build() {
 
 	# we want to build hotspot with better optimisations; it's set to this
 	# (prepended) anyway, and it's huge
-	export CFLAGS="$CFLAGS -O3"
+	export CFLAGS="$CFLAGS -O3 -std=gnu89"
 	export CXXFLAGS="$CXXFLAGS -O3"
 
 	case "$CARCH" in
@@ -376,9 +376,9 @@ jrelib() {
 
 	amove \
 		$_java_home/jre/lib/images \
-		$_java_home/jre/lib/*.jar \
+		$_java_home/jre/lib/\*.jar \
 		$_java_home/jre/lib/security \
-		$_java_home/jre/lib/ext/*.jar \
+		$_java_home/jre/lib/ext/\*.jar \
 		$_java_home/jre/lib/cmm \
 		$_java_home/jre/ASSEMBLY_EXCEPTION \
 		$_java_home/jre/THIRD_PARTY_README \
