@@ -1,12 +1,13 @@
 # Maintainer: Celeste <cielesti@protonmail.com>
-_majorver=23
-_buildver=25
+_majorver=22
+_buildver=27
 _loongver=0
 pkgname=openjdk$_majorver-loongarch
 pkgver=0.0.$_buildver.$_loongver
 pkgrel=0
 _gittag="jdk-$_majorver+$_buildver-ls-$_loongver"
 _prevmajorver=$((_majorver - 1))
+_provide_java=false
 pkgdesc="Loongarch port of OpenJDK $_majorver"
 url="https://github.com/loongson/jdk"
 arch="loongarch64"
@@ -41,21 +42,31 @@ makedepends_host="
 	linux-headers
 	zlib-dev
 	"
+makedepends="
+	$makedepends_build
+	$makedepends_host
+	java-cacerts
+	java-common
+	"
 subpackages="
 	$pkgname-demos::noarch
 	$pkgname-doc
 	$pkgname-jmods::noarch
 	$pkgname-jre
-	$pkgname-static-libs:static_libs
 	$pkgname-jre-headless:jre_headless
 	$pkgname-jdk
 	"
-_gtest=1.15.2
+$_provide_java && subpackages="$subpackages
+	$pkgname-static-libs:static_libs
+	"
+_gtest=1.14.0
 source="$pkgname-$_gittag.tar.gz::https://github.com/loongson/jdk/archive/refs/tags/$_gittag.tar.gz
 	gtest-$_gtest.tar.gz::https://github.com/google/googletest/archive/v$_gtest.tar.gz
 	JDK-8218814_Wformat-security.patch
 	JDK-8299245_disable-tests.patch
-	basename.patch
+	JDK-8324243_calloc-args.patch
+	JDK-8328997_template-id.patch
+	JDK-8331352_template-id.patch
 	fpu_control.patch
 	lfs64.patch
 	"
@@ -145,7 +156,9 @@ build() {
 		--with-vendor-vm-bug-url="https://gitlab.alpinelinux.org/alpine/aports/issues"
 
 	MAKEFLAGS='' make jdk-image
-	MAKEFLAGS='' make static-libs-image
+	if $_provide_java; then
+		MAKEFLAGS='' make static-libs-image
+	fi
 }
 
 check() {
@@ -176,16 +189,18 @@ check() {
 package() {
 	depends="$pkgname-jdk=$pkgver-r$pkgrel"
 
-	local libstaticdir="lib/static/linux-${CARCH/x86_64/amd64}/musl"
-	mkdir -p "$pkgdir"/$_java_home/$libstaticdir
-
 	install -Dvm644 ASSEMBLY_EXCEPTION LICENSE README.md \
 		-t "$pkgdir"/$_java_home/
 
 	cd build/linux-*-$_jvm_variants-release/images/
 	cp -a jdk/* "$pkgdir"/$_java_home/
-	cp -a static-libs/lib/* "$pkgdir"/$_java_home/$libstaticdir/
 	rm -v "$pkgdir"/$_java_home/lib/src.zip
+
+	if $_provide_java; then
+		local libstaticdir="lib/static/linux-loongarch64/musl"
+		mkdir -p "$pkgdir"/$_java_home/$libstaticdir
+		cp -a static-libs/lib/* "$pkgdir"/$_java_home/$libstaticdir/
+	fi
 
 	# symlink to shared java cacerts store
 	rm -v "$pkgdir"/$_java_home/lib/security/cacerts
@@ -199,6 +214,7 @@ package() {
 jmods() {
 	pkgdesc="$pkgdesc (jmods)"
 	depends=
+
 	provides="openjdk$_majorver-jmods"
 	replaces="openjdk$_majorver-jmods"
 
@@ -208,7 +224,9 @@ jmods() {
 static_libs() {
 	pkgdesc="$pkgdesc (libraries for static linking)"
 	depends="$pkgname-jdk=$pkgver-r$pkgrel"
-	provides="java-jdk-static-libs openjdk$_majorver-static-libs"
+
+	$_provide_java && provides="java-jdk-static-libs"
+	provides="$provides openjdk$_majorver-static-libs"
 	replaces="openjdk$_majorver-static-libs"
 
 	amove $_java_home/lib/static
@@ -217,7 +235,9 @@ static_libs() {
 jre() {
 	pkgdesc="$pkgdesc (JRE)"
 	depends="$pkgname-jre-headless=$pkgver-r$pkgrel"
-	provides="java-jre openjdk$_majorver-jre"
+
+	$_provide_java && provides="java-jre"
+	provides="$provides openjdk$_majorver-jre"
 	replaces="openjdk$_majorver-jre"
 
 	amove \
@@ -233,7 +253,9 @@ jre() {
 jre_headless() {
 	pkgdesc="$pkgdesc (JRE headless)"
 	depends="java-common java-cacerts"
-	provides="java-jre-headless openjdk$_majorver-jre-headless"
+
+	$_provide_java && provides="java-jre-headless"
+	provides="$provides openjdk$_majorver-jre-headless"
 	replaces="openjdk$_majorver-jre-headless"
 
 	amove \
@@ -264,6 +286,7 @@ doc() {
 demos() {
 	pkgdesc="$pkgdesc (demos)"
 	depends="$pkgname-jdk=$pkgver-r$pkgrel"
+
 	provides="openjdk$_majorver-demos"
 	replaces="openjdk$_majorver-demos"
 
@@ -273,7 +296,9 @@ demos() {
 jdk() {
 	pkgdesc="$pkgdesc (JDK) ($_jvm_variants variant)"
 	depends="$pkgname-jre=$pkgver-r$pkgrel $pkgname-jmods=$pkgver-r$pkgrel"
-	provides="java-jdk openjdk$_majorver-jdk"
+
+	$_provide_java && provides="java-jdk"
+	provides="$provides openjdk$_majorver-jdk"
 	replaces="openjdk$_majorver-jdk"
 
 	amove \
@@ -283,11 +308,13 @@ jdk() {
 }
 
 sha512sums="
-33ce2d1ae6158426806c68150024ddc7e6613e7eb70dd7dbcb5d175b94fe90e9e83ed6dba3788c1ed529241514886688a0c7bc2c39c74dc10e98a5afa934ba4f  openjdk23-loongarch-jdk-23+25-ls-0.tar.gz
-9046841044a2bf7edfd96854ad9c44ffae4fcb9fb59a075b367507c0762a98eb32cb6968d46663228272e26321e96f4dd287c95baa22c6af9bad902b8b6ede4e  gtest-1.15.2.tar.gz
-25dd3e79a9132b271b4d1d3c70b8719290c69e9143969e06cf8e22f0a3f2b76c583a8df9631c1e021146a4f42f27071c84f0415c9094bd8c895c2af86b6f547a  JDK-8218814_Wformat-security.patch
+e5e9ac6a11a22290688b98bc75d7ff84af0f4d146f48a0452351811a97c5d049567def2101aed1e68c521f5d7380820e04e99c50ffdb9afc98dcce960b064696  openjdk22-loongarch-jdk-22+27-ls-0.tar.gz
+765c326ccc1b87a01027385e69238266e356361cd4ee3e18e3c9d137a5d11fa5d657c164d02dd1be8fe693c8e10f2b580588dbfa57d27f070e2750f50d3e662c  gtest-1.14.0.tar.gz
+b2af7ec861a424e4f9ee4a968897d112cae862a76edc9f1f0df3b09e887a2debd51181ca7c72b70cd5387af896a01004c40ddb7a0a952591be580d3a00ddb8af  JDK-8218814_Wformat-security.patch
 403862d6e6919f40d705c59463e9d6ecc5ac5b3f95e107a7e91f84d64068176e4abe7b63f15ba8fc9b4ab2f1ab58f3a489e07716e4c370356e40c2699e870b4f  JDK-8299245_disable-tests.patch
-78442694805b2f09330c1911f170c154d854192a75745637d4db688f6ded7ef38bb97c43ee63db5f3e47c5e2ea05f4713c0a5b578ad9b1e86f39b15d341d2532  basename.patch
+861ed6ff852429d86ca769f941a8b65c0d148c871b476130da483ba56eb91220ffc820c24b8c6f6403997b519c742651cb07fbd13966b5a6afaaa499dbe16035  JDK-8324243_calloc-args.patch
+d7db30739f57eaca59a664bc146f3d088f34a70807c2bfcd2a9592d13d758ddbacc1e50bf873686d0b1b9c11bc4e721fc02d1dcffe3a1abec4fda6589d7f67ff  JDK-8328997_template-id.patch
+820e06a8767f0fe3a319b71117c89457f6f1538a101b8db96626dfd0a601631bbb0606e72c47b4e8c66d451fdc41dd81f6be0a48e3d01bd61031ce6480f71946  JDK-8331352_template-id.patch
 e1869d5a0ff74883b8289eb9feb5e919894cfcf418e0a07ce353d4ff2f678e81cbbba3bcf7b3642aefda963e9d9f2e6c33974ad4bb55da8aab1618ff98fd1fe1  fpu_control.patch
-bfc615e3bbf9efc6c017bb882c465755afac3dce26a5ca1b6d9b2cfbd8096bc835c8b38c458f17d685b25d8dbab4946a22e9803aa04b5ef1d9bda5be7d38b34f  lfs64.patch
+c77b6184d9eb50cbc62e188ad334bf3498eec4955868195aec5b71311e785bb350c667c66ad9771b98f3d12b798f6a4f51d1e7e0718a1c254f6dde50750c09cb  lfs64.patch
 "
