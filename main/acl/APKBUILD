@@ -3,14 +3,14 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=acl
 pkgver=2.3.2
-pkgrel=0
+pkgrel=1
 pkgdesc="Access control list utilities"
 url="https://savannah.nongnu.org/projects/acl"
 arch="all"
 license="LGPL-2.1-or-later AND GPL-2.0-or-later"
 makedepends_host="attr-dev"
 makedepends="$makedepends_host"
-subpackages="$pkgname-static $pkgname-dev $pkgname-doc libacl"
+subpackages="$pkgname-static $pkgname-dev $pkgname-doc $pkgname-libs"
 # depends on order of nftw, and requires test machine to have ACLs enabled on FS
 options="!check"
 source="https://download.savannah.nongnu.org/releases/acl/acl-$pkgver.tar.gz"
@@ -20,23 +20,12 @@ build() {
 		--build=$CBUILD \
 		--host=$CHOST \
 		--prefix=/usr \
-		--libdir=/lib \
 		--libexecdir=/usr/libexec
 	make
 }
 
 package() {
 	DESTDIR="$pkgdir" make install
-
-	# fix install path of pkgconf files
-	mkdir -p "$pkgdir"/usr/lib/
-	mv "$pkgdir"/lib/pkgconfig "$pkgdir"/usr/lib/
-}
-
-libacl() {
-	pkgdesc="Dynamic library for access control list support"
-	mkdir -p "$subpkgdir"/lib
-	mv "$pkgdir"/lib/libacl.so.* "$subpkgdir"/lib/
 }
 
 sha512sums="
