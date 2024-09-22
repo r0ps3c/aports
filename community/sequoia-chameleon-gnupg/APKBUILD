@@ -1,6 +1,6 @@
 # Maintainer: Simon Rupf <simon@rupf.net>
 pkgname=sequoia-chameleon-gnupg
-pkgver=0.11.0
+pkgver=0.11.2
 pkgrel=0
 pkgdesc="Sequoia's reimplementation of the GnuPG interface"
 url="https://sequoia-pgp.org/"
@@ -40,5 +40,5 @@ package() {
 }
 
 sha512sums="
-a1778330ef28d527dd2de189efd027da88fcdc41bd9d38f26f09fb46d4817c816401f6167d36c140a3e8898313c91d7c60043d56728346afae58165c3538aef7  sequoia-chameleon-gnupg-v0.11.0.tar.gz
+8069ea51939ca1836e36ad313eba4303956242a7ea7a883682ffaaf1f245f8d768c3aaac7c9854578a21eb33d8985ebee25be9eeebfaec20c6142e7b9dbb4fcb  sequoia-chameleon-gnupg-v0.11.2.tar.gz
 "
