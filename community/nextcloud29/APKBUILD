@@ -3,8 +3,8 @@
 # Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
 _pkgname=nextcloud
 pkgver=29.0.7
-pkgrel=0
-is_latest=true
+pkgrel=1
+is_latest=false
 _pkgvermaj=${pkgver%%.*}
 pkgname=nextcloud$_pkgvermaj
 _replaced_ver=$(( _pkgvermaj - 1 ))
