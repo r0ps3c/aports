@@ -25,7 +25,7 @@ shift $(( $OPTIND - 1))
 cat "$repositories_file"
 
 if [ -z "$outfile" ]; then
-	outfile=$name-$arch.tar.gz
+	outfile=rootfs-$arch.tar.gz
 fi
 
 ${APK:-apk} add --keys-dir "$keys_dir" --no-cache \
@@ -40,7 +40,7 @@ ${APK:-apk} fetch --keys-dir "$keys_dir" --no-cache \
 	--repositories-file "$repositories_file" --root "$tmp" \
 	--stdout --quiet alpine-release | tar -zx -C "$tmp" etc/ usr/
 
-# make sure root login is disabled
+# disable password login but allow login with ssh keys for root
 sed -i -e 's/^root::/root:*:/' "$tmp"/etc/shadow
 
 branch=edge
