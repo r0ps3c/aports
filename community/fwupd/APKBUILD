@@ -2,11 +2,11 @@
 # Maintainer: Timo Teräs <timo.teras@iki.fi>
 pkgname=fwupd
 pkgver=1.9.25
-pkgrel=0
+pkgrel=1
 pkgdesc="Firmware update daemon"
 url="https://fwupd.org/"
-# armhf, ppc64le, loongarch64 and s390x blocked by gnu-efi/fwupd-efi
-arch="all !armhf !ppc64le !s390x !riscv64 !loongarch64"
+# armhf, ppc64le and s390x blocked by gnu-efi/fwupd-efi
+arch="all !armhf !ppc64le !s390x !riscv64"
 license="LGPL-2.1-or-later"
 depends="dbus"
 makedepends="
@@ -106,7 +106,6 @@ build() {
 		-Dsystemd=disabled \
 		-Delogind=enabled \
 		-Dtests=true \
-		-Dudevdir=/lib/udev \
 		. output
 
 	meson compile -C output
@@ -138,7 +137,7 @@ udev() {
 	depends=""
 	install_if="$pkgname=$pkgver-r$pkgrel udev"
 
-	amove lib/udev
+	amove usr/lib/udev
 }
 
 polkit() {
