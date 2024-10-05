@@ -2,7 +2,7 @@
 # Contributor: Celeste <cielesti@protonmail.com>
 # Maintainer: Celeste <cielesti@protonmail.com>
 pkgname=spvm
-pkgver=0.990013
+pkgver=0.990016
 pkgrel=0
 #_pkgreal is used by apkbuild-cpan to find modules at MetaCpan
 _pkgreal=SPVM
@@ -38,5 +38,5 @@ package() {
 }
 
 sha512sums="
-137124280bc684798ec0bc49ad43bd0e4af78078d42eba0fc325deb98abfd8deaf437f2850bc6f417311df0a992fb6a1f0b9aba9ee35586bbd8904d3f7d2a2d7  SPVM-0.990013.tar.gz
+9508c1014c75b7ee7b9f62619702ef3e77382385a01d7ebf3c874da5726bad45e1e4da1f7cd98dfc1dec49e8fe1cca469742de414c55595c1804dec2f272e5e9  SPVM-0.990016.tar.gz
 "
