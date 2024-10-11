@@ -1,15 +1,14 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=abuild
-pkgver=3.13.0
+pkgver=3.14.0_rc2
 _ver=${pkgver%_git*}
-pkgrel=6
+pkgrel=2
 pkgdesc="Script to build Alpine Packages"
 url="https://git.alpinelinux.org/cgit/abuild/"
 arch="all"
 license="GPL-2.0-only"
 depends="
 	apk-tools>=2.0.7-r1
-	attr
 	cmd:getcap
 	fakeroot
 	musl-utils
@@ -36,9 +35,7 @@ subpackages="
 options="suid"
 pkggroups="abuild"
 source="https://gitlab.alpinelinux.org/alpine/abuild/-/archive/$pkgver/abuild-$pkgver.tar.gz
-	0001-abuild-pass-APORTS_BOOTSTRAP-to-bubblewrap.patch
-	0001-abuild-allow-packages-to-install-under-run.patch
-	0001-abuild-skip-var-run-in-fhs-check.patch
+	0001-abuild-fix-default_libs.patch
 	"
 builddir="$srcdir"/abuild-$pkgver
 
@@ -123,8 +120,6 @@ _sudo() {
 }
 
 sha512sums="
-9aa46693984bd65a1a940d4547239e0a10170e82f186ab231b0d3a26b09a75cf258fae0e16f936e79cf52353dce9fc8a18881e84042b7961f390aba3f34d88da  abuild-3.13.0.tar.gz
-2d7cf76202bd50e97fa3ed517c82dd94cbddd27b43d51e41e97c4281092565046aa55cab0869b20753c6bc1d592194528700a779426b67177b9ee7632c943742  0001-abuild-pass-APORTS_BOOTSTRAP-to-bubblewrap.patch
-f7a4240972d33be36931527f4764cb8852989f724406cc079567e71875e7ca7b4c897755770a26f9901ebe9faf166d0e8eb88cb028cbf012f55ddd6efad47e6e  0001-abuild-allow-packages-to-install-under-run.patch
-b94819e61a0a5a7a835bbf7d879371ff1f1573e93c40bb9f7a05b8a54fafbf8fe9234ddaefc2f0dc280d918639fe4193422fa8a56225c622d65466049efe9824  0001-abuild-skip-var-run-in-fhs-check.patch
+eaac8b30f8b44fe812a4c4a6b94565bcf322e50e2846f87d7ea5914d30f263c0b6cf1274b720ae8936be4fee10ca1ef9ec483bde7d53cdf656679dab9f45d780  abuild-3.14.0_rc2.tar.gz
+3da09d421c5d4af3152c3233f17b2d86c0864c0b20a9db5902f4d0cd649787279f179ac090ed511e3c2f8ce20725126835872563d6ec603475f15787493e91f5  0001-abuild-fix-default_libs.patch
 "
