@@ -3,17 +3,16 @@
 # Contributor: Duncan Bellamy <dunk@denkimushi.com>
 # Maintainer: Duncan Bellamy <dunk@denkimushi.com>
 _pkgname=ceph
-pkgver=17.2.7
-pkgrel=11
+pkgver=19.2.0
+pkgrel=1
 _majorver=${pkgver%%.*}
 pkgname=$_pkgname$_majorver
 pkgdesc="Ceph is a distributed object store and file system, version $_majorver"
 pkgusers="ceph"
 pkggroups="ceph"
 url="https://ceph.io/en/"
-# 32-bit: doesn't build ui + useless
-# riscv64 and loongarch64: doesn't build
-arch="all !armhf !armv7 !x86 !riscv64 !loongarch64"
+# 32-bit: needs more patching specific to 32bit builds
+arch="all !armhf !armv7 !x86"
 # https://github.com/ceph/ceph/blob/master/COPYING
 license="LGPL-2.1-only AND LGPL-2.0-or-later AND GPL-2.0-only AND GPL-3.0-only AND CC-BY-SA-1.0 AND BSL-1.0 AND GPL-2.0-or-later WITH Autoconf-exception-2.0 AND BSD-3-Clause AND MIT AND custom"
 depends="$pkgname-mds=$pkgver-r$pkgrel $pkgname-mgr=$pkgver-r$pkgrel $pkgname-mon=$pkgver-r$pkgrel $pkgname-osd=$pkgver-r$pkgrel"
@@ -41,9 +40,8 @@ _ceph_test_deps="
 	xmlstarlet
 	"
 _dashboard_deps="
-	py3-bcrypt
+	py3-bcrypt-ceph
 	py3-cherrypy
-	py3-jwt
 	py3-more-itertools
 	py3-openssl
 	py3-prettytable
@@ -52,6 +50,7 @@ _dashboard_deps="
 	py3-yaml
 	"
 _mgr_modules_deps="
+	py3-bcrypt-ceph
 	py3-cherrypy
 	py3-dateutil
 	py3-natsort
@@ -60,10 +59,9 @@ _mgr_modules_deps="
 	py3-requests
 	py3-werkzeug
 	"
-case "$CARCH" in
-	s390x) _arrow_deps="" ;;
-	*)     _arrow_deps="apache-arrow-dev c-ares-dev re2-dev" ;;
-esac
+_arrow_deps="apache-arrow-dev c-ares-dev re2-dev"
+# TODO
+#_crimson_deps="gnutls-dev libucontext-dev lksctp-tools-dev numactl-dev protobuf-dev ragel valgrind-dev yaml-cpp-dev"
 makedepends="
 	acl-dev
 	argp-standalone
@@ -83,14 +81,17 @@ makedepends="
 	expat-dev
 	fcgi-dev
 	flex
-	fuse3-dev
+	fmt-dev
+	fuse-dev
 	git
 	graphviz-dev
 	gperf
+	isa-l-dev
 	jq
 	keyutils-dev
 	libaio-dev
 	libatomic_ops-dev
+	libcap-dev
 	libcap-ng-dev
 	libedit-dev
 	librdkafka-dev
@@ -100,6 +101,7 @@ makedepends="
 	liburing-dev
 	libxml2-dev
 	linux-headers
+	lmdb-dev
 	lua$_lua-dev
 	lvm2-dev
 	lz4-dev
@@ -124,6 +126,8 @@ makedepends="
 	userspace-rcu-dev
 	util-linux-dev
 	xfsprogs-dev
+	xxhash-dev
+	yarn
 	zstd-dev
 	$_dashboard_deps
 	$_mgr_modules_deps
@@ -134,39 +138,35 @@ makedepends="
 	$_ceph_test_deps
 	$_arrow_deps
 	"
+case "$CARCH" in
+aarch64|x86_64) makedepends="$makedepends isa-l_crypto-dev" ;;
+esac
 source="https://download.ceph.com/tarballs/ceph-$pkgver.tar.gz
 	ceph.confd
 	ceph.initd
-	fuse3.patch
+	10-isal_crypto.patch
+	10-isal.patch
 	10-musl-fixes.patch
+	10-xxhash.patch
 	11-dump_time_header_impl.patch
+	11-lfs.patch
 	11-parse_rfc1123_alt.patch
-	11-s3_expiration_header.patch
-	13-liburing.patch
-	20-pci.patch
-	21-npm.patch
+	21-yarn.patch
 	35-fix_ErasureCodeShec.patch
-	$pkgname-aio.patch::https://github.com/ceph/ceph/commit/5120789f8842b102554d5ca40ec74fb60dac4189.patch
-	$pkgname-nasm.patch::https://github.com/ceph/ceph/commit/69a1e620e600e7f1dff8a6e39dd19eff8cdb398c.patch
-	$pkgname-req_bytes.patch::https://github.com/ceph/ceph/commit/6190f90a5d5718688465f04854c1a256b931a98f.patch
-	46-fmt9-1.patch
-	46-fmt9-2.patch
-	46-arrow9.patch
-	boost-1.81.patch
+	47-bcrypt.patch
 	gcc13.patch
-	fmt.patch
-	cython3.patch
+	gcc14.patch
+	boost-url.patch
+	ppc64le.patch
 	"
 # to prevent things from installing wrong ceph libs, since they have the same SOMAJOR
 sonameprefix="ceph$_majorver:so:"
 options="!check" # todo
-
 subpackages="
 	$pkgname-doc
 	$pkgname-base
 	$pkgname-common
 	$pkgname-mds
-	$pkgname-mgr-dashboard:mgr_dashboard:noarch
 	$pkgname-mgr-diskprediction-local:mgr_diskpredicton_local:noarch
 	$pkgname-mgr-modules-core:mgr_modules_core:noarch
 	$pkgname-mgr-rook:mgr_rook:noarch
@@ -175,6 +175,7 @@ subpackages="
 	$pkgname-mon::noarch
 	$pkgname-mon-daemon:mon_daemon
 	$pkgname-mon-tools:mon_tools
+	$pkgname-mount:ceph_mount
 	$pkgname-fuse:ceph_fuse
 	$pkgname-openrc
 	$pkgname-osd::noarch
@@ -188,6 +189,7 @@ subpackages="
 	$pkgname-utils
 	$pkgname-cephadm::noarch
 	cephfs$_majorver-mirror:mirror
+	cephfs$_majorver-shell:shell:noarch
 	cephfs$_majorver-top:top:noarch
 	rbd-fuse$_majorver:rbd_fuse
 	rbd-mirror$_majorver:rbd_mirror
@@ -200,15 +202,20 @@ subpackages="
 	libradosstriper$_majorver:libradosstriper
 	py3-rbd$_majorver:_py3_rbd
 	py3-cephfs$_majorver:_py3_cephfs
-	py3-$pkgname-common:_py3_ceph_common
+	py3-$pkgname-common:_py3_ceph_common:noarch
 	"
+case "$CARCH" in
+riscv64) ;;
+*) subpackages="$pkgname-mgr-dashboard:mgr_dashboard:noarch $subpackages" ;;
+esac
+
 # Whether this package is the default (latest) ceph version.
-# remove ceph-dev above if no
-_default_ceph="no"
+_default_ceph="yes"
 
 if [ "$_default_ceph" = yes ]; then
 	provides="ceph=$pkgver-r$pkgrel"
 	replaces="ceph"
+	subpackages="$subpackages ceph-dev:_dev"
 fi
 
 _ceph_uid=167
@@ -218,49 +225,63 @@ _py3_sitelib() {
 	python3 -c "import site; print(site.getsitepackages()[0])"
 }
 
+prepare() {
+	default_prepare
+	rm -r src/isa-l
+	rm -r src/xxHash
+	rm -r src/seastar
+}
+
 build() {
 	export CEPH_BUILD_VIRTUALENV="$builddir"
-	export NPM_REGISTRY="https://npm.open-registry.dev"
 	export CFLAGS="${CFLAGS/-fno-plt} -O2 -DNDEBUG"
-	# XXX: LARGEFILE64
-	export CXXFLAGS="${CXXFLAGS/-fno-plt} -D_LARGEFILE64_SOURCE -O2 -DNDEBUG -DSTATX_INO=0x100U -Wno-deprecated-declarations"
+	export CXXFLAGS="${CXXFLAGS/-fno-plt} -O2 -DNDEBUG -Wno-deprecated-declarations -fno-permissive"
 
 	case "$CARCH" in
-	s390x) local par="OFF" ;;
-	*) local par="ON" ;;
+	riscv64) local _dash="OFF" ;;
+	*)	local _dash="ON" ;;
 	esac
 
-	cmake -B build -G Ninja \
+	cmake -B build -G Ninja -Wno-dev \
 		-DCMAKE_BUILD_TYPE=MinSizeRel \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_INSTALL_LIBDIR=/usr/lib \
 		-DCMAKE_INSTALL_LOCALSTATEDIR=/var \
 		-DCMAKE_INSTALL_SYSCONFDIR=/etc \
+		-DNINJA_MAX_COMPILE_JOBS=$JOBS \
 		-DALLOCATOR=libc \
+		-DENABLE_GIT_VERSION=OFF \
 		-DLUA_LIBRARIES=/usr/lib/lua"$_lua"/liblua.so \
 		-DWITH_BABELTRACE=OFF \
+		-DWITH_JAEGER=OFF \
 		-DWITH_LTTNG=OFF \
 		-DWITH_MANPAGE=ON \
+		-DWITH_MGR_DASHBOARD_FRONTEND="$_dash" \
 		-DWITH_PYTHON3=3 \
 		-DWITH_RADOSGW_AMQP_ENDPOINT=OFF \
-		-DWITH_RADOSGW_SELECT_PARQUET="$par" \
+		-DWITH_RADOSGW_SELECT_PARQUET=ON \
+		-DWITH_RADOSGW_POSIX=OFF \
 		-DWITH_RDMA=OFF \
 		-DWITH_REENTRANT_STRSIGNAL=ON \
+		-DWITH_SEASTAR=OFF \
 		-DWITH_SPDK=OFF \
 		-DWITH_SYSTEMD=OFF \
+		-DWITH_CEPHFS_SHELL=ON \
 		-DWITH_SYSTEM_ARROW=ON \
 		-DWITH_SYSTEM_BOOST=ON \
+		-DWITH_SYSTEM_FMT=OFF \
 		-DWITH_SYSTEM_LIBURING=ON \
 		-DWITH_SYSTEM_NPM=ON \
 		-DWITH_SYSTEM_ROCKSDB=ON \
 		-DWITH_SYSTEM_ZSTD=ON \
+		-DWITH_QATLIB=OFF \
+		-DWITH_QATZIP=OFF \
 		-DWITH_TESTS="$(want_check && echo ON || echo OFF)" \
 		-DWITH_THREAD_SAFE_RES_QUERY=ON
 
-	export NODE_OPTIONS=--openssl-legacy-provider
-	cmake --build build --target cmake_object_order_depends_target_common-options-objs
+	export NODE_OPTIONS="--openssl-legacy-provider"
+	cmake --build build --target common-options-objs
 	cmake --build build
-
 }
 
 package() {
@@ -291,9 +312,6 @@ package() {
 	mkdir -p "$pkgdir"/usr/share/doc/ceph/dashboard
 	mv "$pkgdir"/usr/share/ceph/mgr/dashboard/*.rst "$pkgdir"/usr/share/doc/ceph/dashboard/
 	mv "$pkgdir"/usr/share/ceph/mgr/cephadm/HACKING.rst "$pkgdir"/usr/share/doc/ceph/cephadm-HACKING.rst
-
-	# cephadm
-	install -Dm 755 "$builddir"/src/cephadm/cephadm "$pkgdir"/usr/bin/cephadm
 }
 
 check() {
@@ -341,6 +359,7 @@ base() {
 		usr/lib/ceph/erasure-code/libec_*.so* \
 		usr/lib/ceph/compressor/libceph_*.so* \
 		usr/lib/ceph/crypto/libceph_*.so* \
+		usr/lib/ceph/extblkdev/*.so* \
 		etc/logrotate.d/ceph
 	for dir in crash crash/posted tmp bootstrap-osd bootstrap-mds \
 			bootstrap-rgw bootstrap-mgr bootstrap-rbd \
@@ -367,7 +386,6 @@ common() {
 		usr/bin/rados \
 		usr/bin/rbd \
 		usr/bin/rbdmap \
-		sbin/mount.ceph \
 		usr/share/ceph/*.ceph.com* \
 		etc/ceph/rbdmap
 
@@ -423,10 +441,18 @@ mon_tools() {
 
 ceph_fuse() {
 	pkgdesc="FUSE based client for Ceph distributed network file system."
-	depends="fuse3"
+	depends=
 	_default_replace_majorversion
 
 	amove usr/bin/ceph-fuse sbin/mount.fuse.ceph
+}
+
+ceph_mount() {
+	pkgdesc="CephFS mount tools"
+	depends="librados$_majorver=$pkgver-r$pkgrel"
+	_default_replace_majorversion
+
+	amove	sbin/mount.ceph
 }
 
 rbd_fuse() {
@@ -569,9 +595,18 @@ mirror() {
 	amove /usr/bin/cephfs-mirror
 }
 
+shell() {
+	pkgdesc="interactive shell for the Ceph distributed file system"
+	depends="py3-rados$_majorver=$pkgver-r$pkgrel"
+	_default_replace_majorversion
+
+	amove "$(_py3_sitelib)"/cephfs_shell*
+	amove /usr/bin/cephfs-shell
+}
+
 top() {
 	pkgdesc="top like utility to display various filesystem metrics in realtime"
-	depends="python3 py3-rados17=$pkgver-r$pkgrel"
+	depends="py3-rados$_majorver=$pkgver-r$pkgrel"
 	_default_replace_majorversion
 
 	amove "$(_py3_sitelib)"/cephfs_top*
@@ -693,10 +728,10 @@ mgr() {
 
 cephadm() {
 	pkgdesc="cephadm tool $pkgver"
-	depends="lvm2 python3"
+	depends="lvm2"
 	 _default_replace_majorversion
 
-	amove usr/bin/cephadm
+	amove usr/sbin/cephadm
 }
 
 _default_replace_majorversion() {
@@ -709,26 +744,21 @@ _default_replace_majorversion() {
 }
 
 sha512sums="
-9005de7661c6a9d1054f1388cff2f48eb1af93565ebf852669de546eed594ed6a2668944b25a64c406d00f88bd2f7a6eac2ae96b04789c03ea4d248d1a683e7b  ceph-17.2.7.tar.gz
+c7c68229b0bc5cf33ec30945c07ee464c757dc47812c0a901dd6e73a088f7a053ecd537468c6ca7caae91ed7d1fb25bde4630e5004f1717e22355ce276da005f  ceph-19.2.0.tar.gz
 110bdbcb40216c7ed155a8d23020784741b4992d895f4f04a146d275506e4e68053854d3b063b41e9c9b3e3e4f95b6b90602f92c185c853c0d8f47ad0c6b7121  ceph.confd
 ce5f162501f6b67fe254546dddf880d1a5b1d1a0fa69e0b1918de17e8da45c5c6124512b8cbd98b76f29d931403de0d11c5ffd330ed8ee1f4dc75bb04baecae3  ceph.initd
-eb136eb0df1ee3d246c5d1c65656306a61891cd90ef0013fc8331204c8ab1bcd02933642aa0aeec440bcd91dc3644bed9e07ed3ad7e08328153b8f7c3eabfa88  fuse3.patch
+9d41023c3265b78186457810ce62562455358d48775da2a382e13212b1e9f50bc909a36806d728a2dd2028c1529e1aa802b92699fe1fc5cb2df07c7086a3d4a8  10-isal_crypto.patch
+1edb30da73fa99d8f20889bd5a0f1405019c7268190bc6c2b10dc3835f5301bf15692f6bbf11174b9c780c07678ea848e81b3b727d6966bbb76107c2b8000601  10-isal.patch
 94687578411bf0de1b17555ed81c188c88ea63ac4a25993bd8fde9cf68afbbfbdec7b2d7c54fdcfbd4aed4eb78754e8061c308955596cbe037ff15b575874cc6  10-musl-fixes.patch
+54ff5e84b3b6fea2e259b74d4cba9c0bedda89ad6b11ec8be24507bca1c6175912b71b9006ea616af8d7527ae7339c24d74c68b4379ebc110b1315d0e3d47f85  10-xxhash.patch
 211e6f5f8fc962878196ec917984781eb4a8a9495bcc8d1729b34ac66abd2d4a0b7388ae2caee9d5deb664d54860d120a37215924625e82eac9bfca16179667a  11-dump_time_header_impl.patch
+149cdeccedcd9cf951769814a93b2eea654fd98361853ae040c18862e133c4419d3cf0de2d77dc5328e9c437122424159c6384c74e55e297309f58ae9933e36f  11-lfs.patch
 253a7bf9fa6a68547f2c9269570be86aa659ef75ab0ed4c9d1a53be70de1ca6079508f19fe5ddb02ed9edda349e121037f8ed4d6b5b0e640edaab863ce6b280d  11-parse_rfc1123_alt.patch
-52b11dfd157dfb7363d2d3428901559189263caaa1c5f29a924b9be7ea012d4f54a887b22d2e2a3d756f6fd771f626505912dca52e6b19a56e018be45b7acb8b  11-s3_expiration_header.patch
-3ba1801d9e2ab427ed14abd01881ef2115cd38309134145ec5a0a2a7adee2007e8b84b66ac1c7d5ea1139946aa87159dfb0768cd80181f42140979d790efe817  13-liburing.patch
-03ef3598181c45ecba5600a1e4db7fd897ea9d3c8abdfaad2dcf84c7a241d9ba18e7f7885d69ee0572ee307fc94600a2784a07da909d37a51de27f8ded2e3a70  20-pci.patch
-4570da5c480046cd617a1681821c68aa7140b0153af6dc2c808effdb34b2cf05ea61b1743553be90f7648f3fbfed6ce472f0d04cb742d12c3dcaba0bc652f384  21-npm.patch
+b947a8f13e08b1cfaad82906ac04fa875c651cff660e64c43c7ba52eedb2a79fb2dc276f8e3ac9ee7d1264414bcee78640ec0cfc31600394313ddb0c6baf76c8  21-yarn.patch
 abb3cab9c01cc3d6d42a9858678059a8c9c43bda2649bf97b489fdc205eb10ae27f9fb7302062e0fb41f5cffddbfc2ae529130569034f373732a0a5d33aba86e  35-fix_ErasureCodeShec.patch
-45a4e39b6355eb7d2330390c3d1387d70fbee6f51c4692c0d4d3bd88b83488e36de059ad83364dc0c280481d6589a79d2bcf76b46248b61dcc97848f0369d82a  ceph17-aio.patch
-80500815e01fff241eaa515d7607ea872ca6f530041d0b03092a8c80b383d281c344c0e8539e5a87c8503674c4bd1dcffa63302c952b11f09398c7482d048ef8  ceph17-nasm.patch
-85c92c05382d9ab34fde47a8ac0adc3694006a809ad2c68b3d420eddb15152d520913ed9d7852ef61683beab6bc96fbd0e9a3403c1663380168c067ff078e760  ceph17-req_bytes.patch
-0dee0e3ebbf49056db06f665084bbf41109f22e513f44b7e3602e8f8717f2f658b0e1cab3893ea2fbc86045bf7982a76bee7af5b90a55d6cc4f2698c95f18aa3  46-fmt9-1.patch
-ab7c330c2fa8f18f4cc7d2de67b75543a9396daaf8861ca60063c30441c8aae88e1bebad0ff2648e10788b43059bda813da85169393c8260f4b3d4be3017f302  46-fmt9-2.patch
-dcca6a063cbca26b1a8e5ffe11e1f284ba0efb2a0408428e87948ff83659b17e414ab4562f03fbdce1932548259eac681294b1840435c01a688666c3bd983c0e  46-arrow9.patch
-ad71fda050df8658d653f9131855c28ff889395dfcc70a3124575c8b063c8e84eca7eb390232b6ee5a05238c4f953c5b55af7e961b1a99360696097a702686cd  boost-1.81.patch
+71ffe6f3263b3546bb3d3593981a288ee8136d44f8c1e734ecfae65b71ea3f7c91e6040c337f237fa41269328378c955e93ed13b9d35e0ad8efd785b75d0f595  47-bcrypt.patch
 afef1cc7e43f500d95d2ffd1687cfcb756e9d8dec729186a25d513d4401b38f00edac922562a161575b1da1a65ded3e99d01cf34f9bc329f6d08cf2b896acd0c  gcc13.patch
-04a55d03f71bd4a37ca3f177a1aecb602c761bf8fd447444a43b35ecb45e76bffd96c8a811507e27e5a7a5330d0ef22b92466b77dadab44728f8b78eb53727e7  fmt.patch
-632e6dcb8d5e2ed32a7db8ae589353adfe177cbd09d2522c4032e4af0dad7875fb8a5050212b99cd1118f6d29f10cbff29cc1d557493fbb1fdc460bc9e4a50ce  cython3.patch
+7dbb53629339d702e604314102ae3908ba8adfb0f850858e88727ab13d1e8081ea426048f1c9293fadc0551a4c38954bcaf0a44e37122db9b21355aa4033215b  gcc14.patch
+8290fdfe74573ad5558066425f59185230f040e01c6a5437116b27715914dc56fda86a1b73fbed7abf727a574f1d50fe643c62958d9ce7162e769b6eaf880d80  boost-url.patch
+c2e047da6f721bf64053571bbad60c5948a2bfd7c28f01b4816a274c2f0b8a60812344030d9b2cfd224edaf54fcfa94858d7ba5d3c0d3e2519585f3e61d34cda  ppc64le.patch
 "
