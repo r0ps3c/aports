@@ -3,9 +3,9 @@
 # Contributor: Rasmus Thomsen <oss@cogitri.dev>
 # Maintainer: Patrycja Rosa <alpine@ptrcnull.me>
 pkgname=firefox
-pkgver=131.0.2
-_releasedate=2024-10-09
-pkgrel=1
+pkgver=131.0.3
+_releasedate=2024-10-14
+pkgrel=0
 pkgdesc="Firefox web browser"
 url="https://www.firefox.com/"
 # s390x blocked by lld
@@ -20,7 +20,7 @@ depends="
 	mesa-gl
 	pciutils-libs
 	"
-_llvmver=18
+_llvmver=19
 makedepends="
 	alsa-lib-dev
 	automake
@@ -65,6 +65,7 @@ makedepends="
 	python3
 	scudo-malloc
 	sed
+	wasi-compiler-rt
 	wasi-sdk
 	wireless-tools-dev
 	xvfb-run
@@ -95,6 +96,7 @@ source="$pkgname-$pkgver.tar.xz::https://ftp.mozilla.org/pub/firefox/releases/$p
 	loong0002-Rust-libc-add-support-for-loongarch64-musl.patch
 	loong0003-Define-HWCAP_LOONGARCH_LSX_and_LASX.patch
 	loong0004-Fix-ycbcr-chromium_types-warning.patch
+	loong0005-Fix-libyuv-build-with-LSX-LASX.patch
 
 	stab.h
 
@@ -763,7 +765,7 @@ intl() {
 }
 
 sha512sums="
-fb1a1179a8c62de975c93e1ac6f058cb5492e955bbb7ac2d4b83cdd14ba17bdb2450078bd6f626124b14542f3fda9514bea476aaa34ff4f5a2bee6b1625ec963  firefox-131.0.2.tar.xz
+3aa96db839f7a45e34c43b5e7e3333e1100ca11545ad26a8e42987fbc72df5ae7ebebe7dfc8c4e856d2bb4676c0516914a07c001f6047799f314146a3329c0ce  firefox-131.0.3.tar.xz
 19eea840aa9c1c21e7bd1f832ec078989fe6f08fca40baa271be7e74f1cffeb5ab8d3218a93e664b8d90a41506dede524e2a5174cd47580866109bc6711ea969  fix-fortify-system-wrappers.patch
 cd68b89e29e5f6379fbd5679db27b9a5ef70ea65e51c0d0a8137e1f1fd210e35a8cfb047798e9549bc7275606d7ec5c8d8af1335d29da4699db7acd8bc7ff556  fix-rust-target.patch
 305c874fdea3096e9c4c6aa6520ac64bb1c347c4b59db8360096646593fe684c3b5377874d91cecd33d56d1410b4714fbdea2b514923723ecbeff79d51265d9b  fix-webrtc-glibcisms.patch
@@ -782,6 +784,7 @@ f8c3555ef6207933cbffbf4fc101a9b4c0d2990c0063162f0f0bde70ef0b46f86bfac42e71106951
 39a1d3de17e9a3fcd8328e677e76eca1fdc6d850f0febbcb88a747c9b3ed0d4dafc4ee9e04de7bbcb3d851b34d9681bedaed954f8651c5f70043683717138a54  loong0002-Rust-libc-add-support-for-loongarch64-musl.patch
 bcc6987568082e5471962fed98110c13f9a81de7bba11cd961c2ac6c1240e677dc141d6834bf5755d2d85fc8251e522920dd3d9afae20ed9d9896b632ee9336f  loong0003-Define-HWCAP_LOONGARCH_LSX_and_LASX.patch
 f95b3a8338b34c98ae028278fcec3a1ae48d8de9fa9eed54544151ae994b57b8d0ff0e6363632257d3cbe9452bcd93ade5c139cf728d0a149a038a179a0b4016  loong0004-Fix-ycbcr-chromium_types-warning.patch
+530a695c6f456db6988d850571b9b640320444fe46aba97371b5553ddad2103fed5e1064b790924dd90af47861807de4386958cabe3bcaa48700f330ce5bd6df  loong0005-Fix-libyuv-build-with-LSX-LASX.patch
 0b3f1e4b9fdc868e4738b5c81fd6c6128ce8885b260affcb9a65ff9d164d7232626ce1291aaea70132b3e3124f5e13fef4d39326b8e7173e362a823722a85127  stab.h
 4560083a0642ba2764539e56cdd45a8d5c1a7a5855f8b09b7f5f7a3c107520a2b6aac84df62a24394f18003c0429ad3f177342c1667e40820870d7d950975bc1  firefox.desktop
 9869ef092609af4caed6aa27f3de6ac49b91ef993ccbfd8a2080465def442d3b02745fbe3c71d362f07c3075d46f388a023c0ad8ebb5f6ffd37e601d997b74f7  distribution.ini
