@@ -1,5 +1,5 @@
-# Contributor: Celeste <cielesti@protonmail.com>
 # Maintainer: Celeste <cielesti@protonmail.com>
+maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=ocaml-cohttp
 pkgver=5.3.1
 pkgrel=0

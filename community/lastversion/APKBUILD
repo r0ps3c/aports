@@ -1,5 +1,5 @@
-# Contributor: Celeste <cielesti@protonmail.com>
 # Maintainer: Celeste <cielesti@protonmail.com>
+maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=lastversion
 pkgver=3.5.6
 pkgrel=0

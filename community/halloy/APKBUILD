@@ -1,5 +1,5 @@
-# Contributor: Celeste <cielesti@protonmail.com>
 # Maintainer: Celeste <cielesti@protonmail.com>
+maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=halloy
 pkgver=2024.12
 pkgrel=0

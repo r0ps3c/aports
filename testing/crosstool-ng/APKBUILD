@@ -1,5 +1,6 @@
 # Contributor: Natanael Copa <ncopa@alpinelinux.org>
 # Maintainer: Celeste <cielesti@protonmail.com>
+maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=crosstool-ng
 pkgver=1.26.0_git20240914
 pkgrel=0
@@ -31,8 +32,10 @@ makedepends="ncurses-dev help2man xz gettext-dev"
 subpackages="$pkgname-doc $pkgname-bash-completion"
 #source="http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-$pkgver.tar.xz
 source="https://github.com/crosstool-ng/crosstool-ng/archive/$_gitrev/crosstool-ng-$_gitrev.tar.gz
-	0001-sunrpc.diff"
+	0001-sunrpc.diff
+	"
 builddir="$srcdir/$pkgname-$_gitrev"
+options="!check" # FIXME: run tests if possible!
 
 prepare() {
 	default_prepare

@@ -1,5 +1,5 @@
-# Contributor: Celeste <cielesti@protonmail.com>
 # Maintainer: Celeste <cielesti@protonmail.com>
+maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=emacs-pyim-smzmdict
 pkgver=0_git20210505
 _gitrev=b66c7c52cfd862b3fdace04f49c2af6c394232b4

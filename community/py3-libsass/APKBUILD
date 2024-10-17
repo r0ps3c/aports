@@ -1,5 +1,5 @@
-# Contributor: Celeste <cielesti@protonmail.com>
 # Maintainer: Celeste <cielesti@protonmail.com>
+maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=py3-libsass
 pkgver=0.23.0
 pkgrel=1

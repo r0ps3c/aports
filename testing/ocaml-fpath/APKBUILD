@@ -1,5 +1,6 @@
 # Contributor: rubicon <rubicon@mailo.com>
 # Maintainer: Celeste <cielesti@protonmail.com>
+maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=ocaml-fpath
 _pkgname=fpath
 pkgver=0.7.3
@@ -22,6 +23,7 @@ subpackages="$pkgname-dev"
 source="$pkgname-$pkgver.tar.bz2::https://erratique.ch/software/fpath/releases/fpath-$pkgver.tbz"
 builddir="$srcdir/$_pkgname-$pkgver"
 _ocamldir=usr/lib/ocaml
+options="!check" # FIXME: run tests if possible!
 
 # 32-bit archs
 case "$CARCH" in

@@ -1,5 +1,6 @@
 # Contributor: rubicon <rubicon@mailo.com>
 # Maintainer: Celeste <cielesti@protonmail.com>
+maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=ocaml-mtime
 _pkgname=mtime
 pkgver=1.4.0
@@ -21,6 +22,7 @@ subpackages="$pkgname-dev"
 source="$pkgname-$pkgver.tar.bz2::https://erratique.ch/software/mtime/releases/mtime-$pkgver.tbz"
 builddir="$srcdir/$_pkgname-$pkgver"
 _ocamldir=usr/lib/ocaml
+options="!check" # FIXME: run tests if possible!
 
 # 32-bit archs
 case "$CARCH" in

@@ -1,5 +1,5 @@
-# Contributor: Celeste <cielesti@protonmail.com>
 # Maintainer: Celeste <cielesti@protonmail.com>
+maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=emacs-memoize
 pkgver=1.1_git20200103
 _gitrev=51b075935ca7070f62fae1d69fe0ff7d8fa56fdd
