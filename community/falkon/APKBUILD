@@ -8,9 +8,7 @@ pkgver=24.08.2
 pkgrel=0
 pkgdesc="Cross-platform Qt Web Browser"
 url="https://github.com/KDE/falkon"
-# armhf blocked by extra-cmake-modules
-# ppc64le, s390x and riscv64 blocked by qt6-qtwebengine
-# loongarch64 blocked by purpose
+# armhf, ppc64le, s390x, riscv64 and loongarch64 blocked by qt6-qtwebengine
 arch="all !armhf !ppc64le !s390x !riscv64 !loongarch64"
 license="GPL-3.0-or-later"
 depends="qt6-qtbase-sqlite"
@@ -51,7 +49,7 @@ build() {
 check() {
 	# Requires working OpenGL
 	# qmlhistoryapitest, qmlcookiesapitest, qmltabsapitest and qmlwindowsapitest are SIGTRAP'ing
-	xvfb-run ctest --test-dir build --output-on-failure -E "falkon-(locationbar|webtab|qml-qml(tabsapi|topsitesapi)|sitesettings)test" -j1
+	xvfb-run -a ctest --test-dir build --output-on-failure -E "falkon-(locationbar|webtab|qml-qml(tabsapi|topsitesapi)|sitesettings)test" -j1
 }
 
 package() {

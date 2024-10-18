@@ -8,8 +8,8 @@ pkgver=6.2.1
 pkgrel=0
 pkgdesc="KDE Plasma Desktop"
 # armhf blocked by qt6-qtdeclarative
-# ppc64le, s390x, and riscv64 blocked by qt6-qtwebengine -> kaccounts-integration
-arch="all !armhf !ppc64le !s390x"
+# s390x blocked by plasma-workspace
+arch="all !armhf !s390x"
 url='https://kde.org/plasma-desktop/'
 license="GPL-2.0-only AND LGPL-2.1-only"
 depends="
@@ -104,10 +104,13 @@ build() {
 }
 
 check() {
+	local tests="kcm-keyboard-keyboard_memory_persister_test"
+
 	case "$CARCH" in
-		aarch64) dbus-run-session -- xvfb-run -a ctest --test-dir build --output-on-failure -E "kcm-keyboard-keyboard_memory_persister_test|tst_calibration" ;;
-		*) dbus-run-session -- xvfb-run -a ctest --test-dir build --output-on-failure -E "kcm-keyboard-keyboard_memory_persister_test" ;;
+		aarch64) tests="$tests|tst_calibration" ;;
+		riscv64|loongarch64|ppc64le) tests="$tests|tst_calibrationtool" ;;
 	esac
+	dbus-run-session -- xvfb-run -a ctest --test-dir build --output-on-failure -E "$tests"
 }
 
 package() {
