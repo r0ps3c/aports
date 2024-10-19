@@ -16,9 +16,9 @@ supported:
    `${var/pattern/string}`). The [bash manual][bash expansion]
    contains further information on these two expansions.
 
-**NOTE:** `busybox ash` is currently used to evaluate APKBUILDs since it
-supports additional POSIX shell extensions your APKBUILD might be
-evaluated correctly even if it is not confirming to this policy
+**NOTE:** `busybox ash` is currently used to evaluate APKBUILDs - since it
+supports additional POSIX shell extensions, your APKBUILD might be
+evaluated correctly, even if it is not confirming to this policy
 document.
 
 # Shell Style Considerations
@@ -67,10 +67,12 @@ Put `; do` and `; then` on the same line as the `while`, `for` or `if`.
 ### Quoting
 
 * Always quote string literals (exceptions are assigning `pkgname` and
-  `pkgver`, more on this below).
+  `pkgver`, which must not be quoted).
 * Always quote variables, command substitutions or shell meta characters
   when used in strings. Prefer `"$var"/foo/bar` over `"$var/foo/bar"`.
 * Never quote literal integers.
+* Double quotes should be used, unless preventing variable interpolation
+  is necessary.
 
 ## Features
 
@@ -100,10 +102,11 @@ Put `; do` and `; then` on the same line as the `while`, `for` or `if`.
 
 ## Calling Commands
 
-### Command Substitutions and Global Variables
+### Top-level Scope
 
-* Avoid command Substitutions in global variables, use parameter
-  expansions instead.
+* External commands should not be called outside of functions;
+  in variables, use parameter expansions instead
+  (e.g. `${pkgver/-/.}` instead of `$(echo $pkgver | tr '-' '.')`)).
 
 ### Return Values
 
@@ -125,8 +128,8 @@ Put `; do` and `; then` on the same line as the `while`, `for` or `if`.
 
 <!--
 This section attempts to document policies enforced by the linter from
-atools <https://github.com/maxice8/atools>, newapkbuild and existing
-APKBUILDs.
+atools-go <https://gitlab.alpinelinux.org/alpine/infra/atools-go>,
+newapkbuild and existing APKBUILDs.
 -->
 
 ## Comments
@@ -139,12 +142,7 @@ APKBUILDs.
 
 ### Maintainer Comment
 
-* All APKBUILDs contain exactly one maintainer comment containing a
-  valid RFC 5322 address. For example, `# Maintainer: Max Mustermann
-  <max@example.org>`.
-* The Maintainer comment should immediately follow the Contributor comment(s).
-* In the case of package being abandoned, the comment should still be present,
-  but left empty: `# Maintainer:`.
+* Deprecated, see *Maintainer Variable* below.
 
 ## Metadata Variables
 
@@ -154,6 +152,15 @@ Metadata Variables are variables used directly by abuild itself, e.g. `pkgname` 
 
 * `pkgname` must only contain lowercase characters.
 * `pkgname` must match the name of the directory the `APKBUILD` file is located in.
+
+### Maintainer Variable
+
+* All APKBUILDs should contain exactly one variable named `maintainer`,
+  containing a valid RFC 5322 address. For example,
+  `maintainer="Max Mustermann <max@example.org>"`.
+* `maintainer` should immediately follow the Contributor comment(s), above `pkgname`.
+* In the case of package being abandoned, the variable should still be present,
+  but left empty: `maintainer=""`.
 
 ### Variable Assignments
 
@@ -168,6 +175,14 @@ Metadata Variables are variables used directly by abuild itself, e.g. `pkgname` 
 * Checksum Metadata Variables must be declared after the last function
   declaration, `abuild checksum` will automatically take care of this.
 
+### Comments
+
+* For Metadata Variables such as `options` or `arch`,
+  comments are encouraged to help other contributors understand the choices;
+  in those cases, they should be put either on the same line after the variable,
+  or above it, on a separate line, with an appropriate prefix
+  (e.g. `# check: no test suite` or `# armhf: blocked by qt6-qtwebengine`).
+
 ## Build Functions
 
 ### Function Declaration
@@ -177,6 +192,8 @@ Metadata Variables are variables used directly by abuild itself, e.g. `pkgname` 
   to `$builddir` must be avoided (if possible).
 * Variables local to functions must always be declared with the `local`
   keyword.
+* If a function body is empty, contains only the default comment from `newapkbuild`,
+  or only calls `default_*`, it should be completely omitted from the file.
 
 ### Function Overwriting
 
