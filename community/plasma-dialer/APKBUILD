@@ -4,8 +4,8 @@
 # group=kde-plasma
 maintainer="team/kde <bribbers@disroot.org>"
 pkgname=plasma-dialer
-pkgver=6.2.1
-pkgrel=0
+pkgver=6.2.2
+pkgrel=1
 pkgdesc="A dialer for Plasma Mobile"
 # armhf blocked by extra-cmake-modules
 arch="all !armhf"
@@ -40,7 +40,9 @@ makedepends="
 	"
 subpackages="$pkgname-lang"
 _repo_url="https://invent.kde.org/plasma-mobile/plasma-dialer.git"
-source="https://download.kde.org/stable/plasma/$pkgver/plasma-dialer-$pkgver.tar.xz"
+source="https://download.kde.org/stable/plasma/$pkgver/plasma-dialer-$pkgver.tar.xz
+	0001-plasma-dialer-Improve-positioning-of-the-number-selector.patch
+	"
 options="!check" # No tests
 
 build() {
@@ -60,5 +62,6 @@ package() {
 }
 
 sha512sums="
-a5bcd31c6ab124d24e948e71c27a89fcdfa321ca9a84d6d48d7b63f03c527df55b3760ab9e266e62e30ff7497ca30d204556f1559d809c0c34744be5ab8bceac  plasma-dialer-6.2.1.tar.xz
+8da0943b3a2888468299202c3d05bcf66db9afe9bccc6f6e07153ffcd333f2a6062da7335dbe0becd5181b60f65825f3fbf1578a08e40e51220b58e8a2065852  plasma-dialer-6.2.2.tar.xz
+ae53a602011c15bfb5c1708da0d1b3c008335885b4e01d781d8f74fbe947394bc2d0e11f034a1c486c8370a64ceb684a9f43c353fc2b078cf561685b992b867b  0001-plasma-dialer-Improve-positioning-of-the-number-selector.patch
 "
