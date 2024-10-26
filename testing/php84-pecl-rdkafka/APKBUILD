@@ -1,35 +1,39 @@
 # Contributor: Gennady Feldman <gena01@gmail.com>
 # Maintainer: Andy Postnikov <apostnikov@gmail.com>
-pkgname=php81-pecl-rdkafka
+pkgname=php84-pecl-rdkafka
 _extname=rdkafka
 pkgver=6.0.4
 pkgrel=0
-pkgdesc="A librdkafka bindings for PHP 8.1 providing a working client for Kafka - PECL"
+pkgdesc="librdkafka bindings for PHP 8.4 providing a working client for Kafka - PECL"
 url="https://pecl.php.net/package/rdkafka"
 arch="all"
 license="MIT"
-depends="php81-common"
-makedepends="php81-dev file librdkafka-dev"
+_phpv=84
+_php=php$_phpv
+depends="$_php-common"
+makedepends="$_php-dev file librdkafka-dev"
 source="php-pecl-$_extname-$pkgver.tgz::https://pecl.php.net/get/$_extname-$pkgver.tgz
 	fix-32bit.patch"
 builddir="$srcdir/$_extname-$pkgver"
 
-install_if="php-$_extname php81"
+install_if="php-$_extname php$_phpv"
 
 build() {
-	phpize81
-	./configure --prefix=/usr --with-php-config=/usr/bin/php-config81
+	phpize$_phpv
+	./configure \
+		--prefix=/usr \
+		--with-php-config=/usr/bin/php-config$_phpv
 	make
 }
 
 check() {
-	php81 -dextension=modules/$_extname.so --ri $_extname
+	$_php -dextension=modules/$_extname.so --ri $_extname
 	make NO_INTERACTION=1 REPORT_EXIT_STATUS=1 test TESTS=--show-diff
 }
 
 package() {
 	make INSTALL_ROOT="$pkgdir" install
-	local _confdir="$pkgdir"/etc/php81/conf.d
+	local _confdir="$pkgdir"/etc/$_php/conf.d
 	install -d $_confdir
 	echo "extension=$_extname" > $_confdir/$_extname.ini
 }
