@@ -2,8 +2,8 @@ __BEGIN_DECLS / __END_DECLS are a glibc-only wrapper mechanism to make
 C declarations work in C++ code. As musl does not support these and the
 OpenSMTPD codebase is solely C anyway, simply remove them.
 
---- a/extras/tables/table-ldap/ber.h
-+++ b/extras/tables/table-ldap/ber.h
+--- a/ber.h
++++ b/ber.h
 @@ -75,7 +75,6 @@
  	size_t		bo_n;
  };
