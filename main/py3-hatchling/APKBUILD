@@ -1,7 +1,7 @@
 # Contributor: Duncan Bellamy <dunk@denkimushi.com>
 # Maintainer: Duncan Bellamy <dunk@denkimushi.com>
 pkgname=py3-hatchling
-pkgver=1.25.0
+pkgver=1.26.1
 pkgrel=0
 pkgdesc="Modern, extensible Python build backend"
 url="https://hatch.pypa.io/latest/"
@@ -21,5 +21,5 @@ package() {
 }
 
 sha512sums="
-337892f0b647a20f43b8fbc46575166b0a051d8cdd3e7a36771ddb66b3666cb53301c5b992ce9c6df1ccf7faee011e1df888b7e5eb5e85c97f76277665aed630  hatchling-1.25.0-py3-none-any.whl
+2906cd16fb9904001608e08291bc1a0d59b81771b0183d7edefc82ef7fe4d838c02328c0a7a193df34cf49c62a0f92d2f00d46c753fcb015667ebc0c3e23bb73  hatchling-1.26.1-py3-none-any.whl
 "
