@@ -1,31 +1,22 @@
 # Contributor: Jakub Jirutka <jakub@jirutka.cz>
 # Maintainer: Jakub Jirutka <jakub@jirutka.cz>
-pkgname=ruby-rss
-_gemname=rss
-pkgver=0.3.1
+pkgname=ruby-test-unit-ruby-core
+_gemname=test-unit-ruby-core
+pkgver=1.0.5
 pkgrel=0
-pkgdesc="RSS reading and writing for Ruby"
-url="https://github.com/ruby/rss"
+pkgdesc="Additional test assertions for Ruby standard libraries"
+url="https://github.com/ruby/test-unit-ruby-core"
 arch="noarch"
-license="BSD-2-Clause"
-depends="ruby ruby-rexml"
-checkdepends="ruby-test-unit"
+license="BSD-2-Clause AND Ruby"
+depends="ruby"
 makedepends="ruby-rdoc"
 subpackages="$pkgname-doc"
-source="https://github.com/ruby/rss/archive/$pkgver/ruby-rss-$pkgver.tar.gz"
+source="https://github.com/ruby/test-unit-ruby-core/archive/v$pkgver/$_gemname-$pkgver.tar.gz"
 builddir="$srcdir/$_gemname-$pkgver"
-
-prepare() {
-	default_prepare
-	sed -i '/require .bundler/d' Rakefile
-}
+options="!check"  # no tests provided
 
 build() {
 	gem build $_gemname.gemspec
-}
-
-check() {
-	ruby test/run-test.rb
 }
 
 package() {
@@ -51,5 +42,5 @@ doc() {
 }
 
 sha512sums="
-bc0238a020f5a330e6bca45dbcdfaa40c37bb5220f7de35636547c6b75aa64955cc5c7840097b9e1525a545196f0374d7108de8b50672bc2aeefce72f60a9ea5  ruby-rss-0.3.1.tar.gz
+5f107cc054abfa422c5a82c58b4a67de4c6c6cf60a0c3e18cc8408162cff5dd1689e1c61cff4900635f09b8ba908ec4394c2b5ef7e072c3eb4759463dc4b4f90  test-unit-ruby-core-1.0.5.tar.gz
 "
