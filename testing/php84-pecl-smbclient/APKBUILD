@@ -1,15 +1,15 @@
 # Contributor: Andy Postnikov <apostnikov@gmail.com>
 # Maintainer: Andy Postnikov <apostnikov@gmail.com>
-
-pkgname=php83-pecl-smbclient
+maintainer="Andy Postnikov <apostnikov@gmail.com>"
+pkgname=php84-pecl-smbclient
 _extname=smbclient
 pkgver=1.1.1
-pkgrel=1
-pkgdesc="PHP 8.3 extension that uses Samba's libsmbclient library to provide Samba related functions and 'smb' streams to PHP programs."
+pkgrel=0
+pkgdesc="PHP 8.4 extension that uses Samba's libsmbclient library to provide Samba related functions and 'smb' streams to PHP programs."
 url="https://pecl.php.net/package/smbclient"
 arch="all"
 license="BSD-2-Clause"
-_phpv=83
+_phpv=84
 _php=php$_phpv
 depends="$_php-common"
 makedepends="$_php-dev samba-dev"
