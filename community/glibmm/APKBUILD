@@ -1,14 +1,14 @@
 # Contributor: Rasmus Thomsen <oss@cogitri.dev>
-# Contributor: Natanael Copa <ncopa@alpinelinux.org>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=glibmm
-pkgver=2.66.7
+pkgver=2.82.0
 pkgrel=0
 pkgdesc="C++ wrapper for the GLib toolkit"
 url="https://www.gtkmm.org/"
 arch="all"
 license="LGPL-2.1-or-later"
-makedepends="glib-dev libsigc++-dev perl meson m4"
+makedepends="glib-dev libsigc++3-dev perl meson m4"
+checkdepends="glib-networking"
 subpackages="$pkgname-dev"
 source="https://download.gnome.org/sources/glibmm/${pkgver%.*}/glibmm-$pkgver.tar.xz"
 
@@ -26,10 +26,14 @@ package() {
 }
 
 dev() {
-	amove usr/lib/glibmm-*
+	amove usr/lib/glibmm-* usr/lib/giomm-*
 	default_dev
 }
 
+check() {
+	meson test --no-rebuild --print-errorlogs -C output
+}
+
 sha512sums="
-09b99622c051afd264d7a9b23025ee28ec870c6d23a5084ef7192f67b96fb8f16be5dbb2e8a4ff8a1d4ff873d3e73b4e25dee122049266687f471dcd3989b5bb  glibmm-2.66.7.tar.xz
+9c9bdeac019cfc3300233929128cb8025b8c0b5e69584f9be3295e9c2670af9481a69e31feced513f73ceb9fed86df7a3b7ad66eb346c95e6658c6fcfead7343  glibmm-2.82.0.tar.xz
 "
