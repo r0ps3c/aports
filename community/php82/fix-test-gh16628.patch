@@ -1,8 +1,8 @@
-Patch-Source: https://github.com/php/php-src/commit/3f1ea1b663c5cde0eea986dad2ad42532a55e375
-From 3f1ea1b663c5cde0eea986dad2ad42532a55e375 Mon Sep 17 00:00:00 2001
+Patch-Source: https://github.com/php/php-src/pull/16705
+From 2b445194a0732e548acab4fdf63c05cdf7f18f98 Mon Sep 17 00:00:00 2001
 From: Niels Dossche <7771979+nielsdos@users.noreply.github.com>
-Date: Tue, 5 Nov 2024 21:35:47 +0100
-Subject: [PATCH] Fix test with shared zend_test (#16705)
+Date: Tue, 5 Nov 2024 20:38:46 +0100
+Subject: [PATCH] Fix test with shared zend_test
 
 ---
  sapi/fpm/tests/gh16628.phpt | 2 +-
