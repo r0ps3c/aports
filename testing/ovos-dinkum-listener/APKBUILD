@@ -1,7 +1,6 @@
-# Contributor: Bart Ribbers <bribbers@disroot.org>
-# Maintainer: Bart Ribbers <bribbers@disroot.org>
+maintainer="Bart Ribbers <bribbers@disroot.org>"
 pkgname=ovos-dinkum-listener
-pkgver=0.2.1
+pkgver=0.3.4
 pkgrel=0
 pkgdesc="ovos-listener based on the voice loop from mycroft-dinkum"
 url="https://github.com/OpenVoiceOS/ovos-dinkum-listener"
@@ -19,6 +18,7 @@ depends="
 	py3-ovos-utils
 	py3-ovos-vad-plugin-webrtcvad
 	py3-speechrecognition
+	py3-xdoctest
 	"
 makedepends="
 	py3-gpep517
@@ -48,5 +48,5 @@ package() {
 }
 
 sha512sums="
-0ba18c897c2d53f1ef61fa1d3bee5039b4f3a63cc754702e6786f42ae6c4eb999862bbcccde4580f8b5cc5a1cc2b59fb473610cca0b8567e412f49f3090dc697  ovos-dinkum-listener-0.2.1.tar.gz
+3d17ed494fc9edfe691c0dae48d143b4a9ca78bd7e0c79b146e307b31a64a2efe6921cbc88c2486be2d77a35e877c9c9c2f3650229265b5051d0500dce3fb124  ovos-dinkum-listener-0.3.4.tar.gz
 "
