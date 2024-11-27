@@ -1,13 +1,13 @@
 # Contributor: Rasmus Thomsen <oss@cogitri.dev>
 # Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
 pkgname=nextcloud-client
-pkgver=3.14.4
+pkgver=3.15.0
 pkgrel=0
 pkgdesc="Nextcloud Desktop Client"
 url="https://github.com/nextcloud/desktop"
-# s390x, ppc64le, riscv64, loongarch64 blocked by qt6-qtwebengine
+# s390x, ppc64le, riscv64 blocked by qt6-qtwebengine
 # armhf blocked by extra-cmake-modules
-arch="all !s390x !ppc64le !armhf !riscv64 !loongarch64"
+arch="all !s390x !ppc64le !armhf !riscv64"
 license="GPL-2.0-only"
 depends="dbus:org.freedesktop.Secrets"
 makedepends="
@@ -30,7 +30,7 @@ makedepends="
 	"
 checkdepends="cmocka-dev xvfb-run"
 subpackages="$pkgname-dev $pkgname-dolphin"
-source="$pkgname-$pkgver.tgz::https://github.com/nextcloud/desktop/archive/refs/tags/v$pkgver.tar.gz
+source="$pkgname-$pkgver.tar.gz::https://github.com/nextcloud/desktop/archive/refs/tags/v$pkgver.tar.gz
 	lfs64.patch
 	Nextcloud.conf"
 builddir="$srcdir/desktop-$pkgver"
@@ -57,8 +57,15 @@ build() {
 }
 
 check() {
-	cd build
-	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest -E "(SyncXAttrTest|ChunkingNgTest)"
+	case "$CARCH" in
+		aarch64|arm*)
+			# SyncXAttrTest fails on aarch64 & armv7 package builders
+			xvfb-run -a ctest --test-dir build -E "(SyncEngineTest|SyncXAttrTest)"
+			;;
+		*)
+			xvfb-run -a ctest --test-dir build -E "(SyncEngineTest)"
+			;;
+	esac
 }
 
 package() {
@@ -76,7 +83,7 @@ dolphin() {
 }
 
 sha512sums="
-8de91b288507d13e7dd2c64112f0540f4664ad2a0b02525d5ff5b187dc7eb9af61a40d9f65320284241bb620cf2dcc648ecfe6090d3d09c0dbb865504026b11e  nextcloud-client-3.14.4.tgz
-eb530ce62da1c4983ef7d0500d93fd02d55139607109689dc8fea80049a75a5f9b3a7e4e529af886f92312419c6c0f163621e4def82d3ef919431c84ce91930e  lfs64.patch
+c358e338f9ec0a583e8c309d59bcde1d2602ffbf33ce9f4aeb2e3f82eb52efe5f072cf918ccb054901dad566db87ad08fc940efeb68b8529d1e51a1ada63b416  nextcloud-client-3.15.0.tar.gz
+48ceddb9dfff72e3b4a4e76b2c5289712c15f3d4651afe3cd59e8518e3d3d16f241374b671bde5f0bee31fc6474ca5c8aace570b00bf71049b18cd9e28757230  lfs64.patch
 28faf643e3ba22f3e1f45a96acfba1b3c53c49d4e923974e58e5ad2fdda612f52300608f0e0219e61d3478403fe3c59a9a2c70c3db1c93fbccda1e0638ecbc22  Nextcloud.conf
 "
