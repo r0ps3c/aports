@@ -4,23 +4,26 @@ pkgver=0.24.2
 pkgrel=0
 pkgdesc="The Hare systems programming language"
 url="https://harelang.org"
-arch="x86_64 aarch64 riscv64"
+arch="aarch64 riscv64 x86_64"
 license="MPL-2.0 AND GPL-3.0-only"
 depends="qbe harec binutils"
 makedepends="scdoc"
 checkdepends="tzdata"
 subpackages="$pkgname-doc"
-source="
-	$pkgname-$pkgver.tar.gz::https://git.sr.ht/~sircmpwn/hare/archive/$pkgver.tar.gz
-	"
+source="$pkgname-$pkgver.tar.gz::https://git.sr.ht/~sircmpwn/hare/archive/$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+
+	cp configs/linux.mk config.mk
+}
 
 build() {
-	cp configs/linux.mk config.mk
-	make PREFIX=/usr ARCH=$CARCH VERSION="$pkgver"-alpine
+	make PREFIX=/usr ARCH="$CARCH" VERSION="$pkgver"-alpine
 }
 
 check() {
-	make ARCH=$CARCH STDLIB_SLOW_TESTS=1 check
+	make ARCH="$CARCH" STDLIB_SLOW_TESTS=1 HARECACHE=.testcache check
 }
 
 package() {
