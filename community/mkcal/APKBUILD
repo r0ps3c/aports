@@ -1,11 +1,10 @@
-# Contributor: Bart Ribbers <bribbers@disroot.org>
-# Maintainer: Bart Ribbers <bribbers@disroot.org>
+maintainer="Bart Ribbers <bribbers@disroot.org>"
 pkgname=mkcal
 pkgver=0.6.7
-pkgrel=1
+pkgrel=2
 pkgdesc="The mobile version of the original KCAL from KDE"
 url="https://github.com/sailfishos/mkcal"
-# armhf blocked extra-cmake-modules
+# armhf blocked by kcalendarcore5-dev
 arch="all !armhf"
 license="LGPL-2.0-or-later"
 depends_dev="
@@ -19,9 +18,13 @@ makedepends="$depends_dev
 	graphviz
 	samurai
 	"
+checkdepends="
+	dbus
+	xvfb-run
+	"
 subpackages="$pkgname-dev $pkgname-doc $pkgname-tools"
 source="https://github.com/sailfishos/mkcal/archive/$pkgver/mkcal-$pkgver.tar.gz"
-options="!check" # Broken and requires running DBus server
+options="!check" # Fails to connect to DBus server
 
 build() {
 	cmake -B build -G Ninja \
@@ -31,11 +34,12 @@ build() {
 		-DBUILD_PLUGINS=OFF \
 		-DBUILD_DOCUMENTATION=ON
 	cmake --build build
+	# workaround for https://bugs.kde.org/show_bug.cgi?id=496781
+	sed -i -e 's: -I\${prefix}/_EGPF_TARGET_INCLUDE_DIRS-NOTFOUND::' build/src/libmkcal-qt5.pc
 }
 
 check() {
-	cd build
-	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+	dbus-run-session -- xvfb-run ctest --test-dir build
 }
 
 package() {
