@@ -1,7 +1,7 @@
 # Contributor: André Klitzing <aklitzing@gmail.com>
 # Maintainer: André Klitzing <aklitzing@gmail.com>
 pkgname=ostree
-pkgver=2024.8
+pkgver=2024.9
 pkgrel=0
 pkgdesc="Operating system and container binary deployment and upgrades"
 url="https://github.com/ostreedev/ostree"
@@ -12,6 +12,7 @@ makedepends="
 	curl-dev
 	e2fsprogs-dev
 	fuse3-dev
+	gobject-introspection-dev
 	gpgme-dev
 	gtk-doc
 	libarchive-dev
@@ -29,6 +30,7 @@ subpackages="
 	$pkgname-dev
 	$pkgname-doc
 	$pkgname-dbg
+	$pkgname-gir
 	$pkgname-grub:grub:noarch
 	$pkgname-bash-completion:bashcomp:noarch
 	"
@@ -54,6 +56,7 @@ build() {
 		--sbindir=/usr/bin \
 		--libexecdir=/usr/lib \
 		--enable-gtk-doc \
+		--enable-introspection \
 		--disable-static \
 		--disable-glibtest \
 		--with-curl \
@@ -98,6 +101,13 @@ bashcomp() {
 	amove usr/share/bash-completion
 }
 
+gir() {
+	depends="gobject-introspection"
+	pkgdesc="$pkgname (GObject-Introspection metadata)"
+
+	amove usr/lib/girepository-1.0/OSTree-1.0.typelib
+}
+
 sha512sums="
-6faed3daebce443134141bbf98add459c6f0c8239cc0e050cf2517d1127f3fd6aededd4af5d8400f869683b96aea2abb93bab8869dbf2f9a4ba02324c3005e5d  libostree-2024.8.tar.xz
+b441c99bfbcc030f0a6b5eb005e797f2897a60177f07c31b1d21d8a800ed3c64bd1bd647551e29dcd03134b26b373bc20d8322a49ba42d846169810545f5d3de  libostree-2024.9.tar.xz
 "
