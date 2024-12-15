@@ -6,7 +6,7 @@
 # Maintainer: Duncan Bellamy <dunk@denkimushi.com>
 pkgname=rspamd
 pkgver=3.10.2
-pkgrel=1
+pkgrel=2
 pkgdesc="Fast, free and open-source spam filtering system"
 url="https://rspamd.com/"
 arch="all"
@@ -27,6 +27,7 @@ makedepends="
 	libstemmer-dev
 	libunwind-dev
 	fasttext-dev
+	fmt-dev
 	openssl-dev>3
 	pcre2-dev
 	perl
@@ -99,7 +100,7 @@ build() {
 		-DRSPAMD_USER=$pkgusers \
 		-DRSPAMD_GROUP=$pkggroups \
 		-DENABLE_FASTTEXT=ON \
-		-DSYSTEM_FMT=OFF \
+		-DSYSTEM_FMT=ON \
 		-DENABLE_BACKWARD="$_backward" \
 		-DENABLE_HYPERSCAN="$_hm" \
 		-DENABLE_LUAJIT="$_luajit" \
