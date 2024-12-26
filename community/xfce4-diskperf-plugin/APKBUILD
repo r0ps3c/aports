@@ -1,21 +1,20 @@
 # Contributor: Saijin-Naib <Saijin-Naib_package-maintenance@outlook.com>
 # Maintainer: Saijin-Naib <Saijin-Naib_package-maintenance@outlook.com>
-pkgname=xfce4-verve-plugin
-pkgver=2.0.3
+pkgname=xfce4-diskperf-plugin
+pkgver=2.7.1
 pkgrel=0
-pkgdesc="Command line interface with auto-completion and command history"
-url="https://docs.xfce.org/panel-plugins/xfce4-verve-plugin/start"
+pkgdesc="Displays disk I/O performance"
+url="https://docs.xfce.org/panel-plugins/xfce4-diskperf-plugin/start"
 arch="all"
-license="GPL-2.0-or-later"
+license="BSD-2-Clause"
 makedepends="
 	gtk+3.0-dev
 	libxfce4ui-dev
-	pcre2-dev
 	xfce4-dev-tools
 	xfce4-panel-dev
 	"
 subpackages="$pkgname-lang"
-source="$pkgname-$pkgver.tar.gz::https://gitlab.xfce.org/panel-plugins/xfce4-verve-plugin/-/archive/xfce4-verve-plugin-$pkgver/xfce4-verve-plugin-xfce4-verve-plugin-$pkgver.tar.gz"
+source="$pkgname-$pkgver.tar.gz::https://gitlab.xfce.org/panel-plugins/xfce4-diskperf-plugin/-/archive/xfce4-diskperf-plugin-$pkgver/xfce4-diskperf-plugin-xfce4-diskperf-plugin-$pkgver.tar.gz"
 builddir="$srcdir/$pkgname-$pkgname-$pkgver/"
 
 prepare() {
@@ -43,5 +42,5 @@ package() {
 }
 
 sha512sums="
-baafbc0a6973e6392eea957ae384a7595df4277d9948b9e8a406eb3277b54460d937c11595787279605427f4244196480bfde5c80716dcca351db01eaf67b507  xfce4-verve-plugin-2.0.3.tar.gz
+262d06ecb20cb9c41cbe6f2eefc59988209f802d187958a830567733632bca088c9b13d2226dcc9ac25acceb0678213d824262d8ba61f9ec3faa318fdda31901  xfce4-diskperf-plugin-2.7.1.tar.gz
 "

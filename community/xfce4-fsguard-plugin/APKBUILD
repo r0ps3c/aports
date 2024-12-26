@@ -1,10 +1,10 @@
 # Contributor: Saijin-Naib <Saijin-Naib_package-maintenance@outlook.com>
 # Maintainer: Saijin-Naib <Saijin-Naib_package-maintenance@outlook.com>
-pkgname=xfce4-diskperf-plugin
-pkgver=2.7.0
+pkgname=xfce4-fsguard-plugin
+pkgver=1.1.4
 pkgrel=0
-pkgdesc="Displays disk I/O performance"
-url="https://docs.xfce.org/panel-plugins/xfce4-diskperf-plugin/start"
+pkgdesc="Checks the free space of a given mountpoint"
+url="https://docs.xfce.org/panel-plugins/xfce4-fsguard-plugin/start"
 arch="all"
 license="BSD-2-Clause"
 makedepends="
@@ -13,8 +13,8 @@ makedepends="
 	xfce4-dev-tools
 	xfce4-panel-dev
 	"
-subpackages="$pkgname-lang"
-source="$pkgname-$pkgver.tar.gz::https://gitlab.xfce.org/panel-plugins/xfce4-diskperf-plugin/-/archive/xfce4-diskperf-plugin-$pkgver/xfce4-diskperf-plugin-xfce4-diskperf-plugin-$pkgver.tar.gz"
+subpackages="xfce4-fsguard-plugin-lang"
+source="xfce4-fsguard-plugin-$pkgver.tar.gz::https://gitlab.xfce.org/panel-plugins/xfce4-fsguard-plugin/-/archive/xfce4-fsguard-plugin-$pkgver/xfce4-fsguard-plugin-xfce4-fsguard-plugin-$pkgver.tar.gz"
 builddir="$srcdir/$pkgname-$pkgname-$pkgver/"
 
 prepare() {
@@ -41,6 +41,7 @@ package() {
 	make DESTDIR="$pkgdir" install
 }
 
+
 sha512sums="
-6a1df3f53728c4a4a95cf36c7218653a4fb6ff15fa337e64d7918528be632193ef31ef1d2f5e1da8593868230e4ece29672ceea0720ecae8bf0da3294e1d4ad2  xfce4-diskperf-plugin-2.7.0.tar.gz
+e2361b808cce5f57d2a0a11c85c7d18f7b4fe3f65590c4fe05c9a3c9c9046b93840a70cc2aae6d45fad06c62afe2709bd23d59a45f95161273ecaa8116ca6519  xfce4-fsguard-plugin-1.1.4.tar.gz
 "
