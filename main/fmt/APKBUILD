@@ -1,7 +1,7 @@
 # Contributor: Luca Weiss <luca@lucaweiss.eu>
 # Maintainer: Duncan Bellamy <dunk@denkimushi.com>
 pkgname=fmt
-pkgver=11.0.2
+pkgver=11.1.1
 pkgrel=0
 pkgdesc="Open-source formatting library for C++"
 url="https://fmt.dev/latest/index.html"
@@ -36,5 +36,5 @@ package() {
 }
 
 sha512sums="
-06eba9a2a8d1c2269801e10a00ed26a9344b79bca0391a6b10f35e9716682f8345125fceb96e9ca36ffbd4c0558b0e63e4c45a9dff09a8ee186458ec68e34198  fmt-11.0.2.zip
+6321f29b4ddabfcd92362883ca54039f5f2f90d85d95af1410ba98607acdde02c8c02b61c4fad212337aa2938681e038cd4533013b4e1f500c6839f77a74aeca  fmt-11.1.1.zip
 "
