@@ -1,16 +1,16 @@
-# Maintainer: Antoni Aloy <aaloytorrens@gmail.com>
+maintainer="Antoni Aloy <aaloytorrens@gmail.com>"
 # Contributor: Zachary Lee Andrews <zcrayfish@gmail.com>
 pkgname=libqtxdg
 pkgver=4.1.0
-pkgrel=0
+pkgrel=1
 pkgdesc="Qt implementation of freedesktop.org xdg specifications"
 url="https://github.com/lxqt/libqtxdg"
 arch="all"
 license="LGPL-2.0-or-later"
 depends="gtk+3.0"
 makedepends="
-	cmake samurai lxqt-build-tools qt6-qtbase-dev
-	qt6-qtsvg-dev glib-dev
+	cmake samurai lxqt-build-tools qt6-qtbase-dev 
+	qt6-qtbase-private-dev qt6-qtsvg-dev glib-dev
 	"
 checkdepends="xvfb-run"
 subpackages="$pkgname-dev"
