@@ -2,7 +2,7 @@
 # group=kde-applications
 maintainer="team/kde <bribbers@disroot.org>"
 pkgname=kdepim-runtime
-pkgver=24.12.0
+pkgver=24.12.1
 pkgrel=0
 pkgdesc="Extends the functionality of kdepim"
 url="https://kontact.kde.org/"
@@ -16,7 +16,6 @@ makedepends="
 	akonadi-contacts-dev
 	akonadi-dev
 	akonadi-mime-dev
-	akonadi-notes-dev
 	extra-cmake-modules
 	kcalendarcore-dev
 	kcalutils-dev
@@ -50,7 +49,7 @@ makedepends="
 	"
 checkdepends="
 	dbus
-	xvfb-run
+	xwayland-run
 	"
 subpackages="$pkgname-dbg $pkgname-lang"
 _repo_url="https://invent.kde.org/pim/kdepim-runtime.git"
@@ -89,7 +88,7 @@ check() {
 		skipped_tests="$skipped_tests|$test"
 	done
 	skipped_tests="$skipped_tests)"
-	dbus-run-session -- xvfb-run -a ctest --test-dir build -E "$skipped_tests"
+	dbus-run-session wlheadless-run -- ctest --test-dir build -E "$skipped_tests"
 }
 
 package() {
@@ -97,5 +96,5 @@ package() {
 }
 
 sha512sums="
-37577abc4d305a4a034ac2af7e84e55765cf63d0479a080e678cceba607bff8df89e6a46bd766987321af3f6fb1cd5568346f2f47cd160101106b484a38b843e  kdepim-runtime-24.12.0.tar.xz
+3188752deefa02ec0882ee60a46c25340e7ffabcb553c700789522ad15481ce7d2d30a01715ec99a30982ec518cc1d0e97d1438b370de6c9cb8e471f4ed2737b  kdepim-runtime-24.12.1.tar.xz
 "

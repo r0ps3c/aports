@@ -1,20 +1,18 @@
-# Contributor: Bart Ribbers <bribbers@disroot.org>
-
 # The group tag is just to easily find this APKBUILD by some scripts for automation
 # group=kde-applications
 maintainer="team/kde <bribbers@disroot.org>"
 pkgname=rocs
-pkgver=24.12.0
+pkgver=24.12.1
 pkgrel=0
 pkgdesc="An educational Graph Theory IDE"
-# armhf blocked by extra-cmake-modules
+# armhf blocked by qt5-qtdeclarative
 arch="all !armhf"
 url="https://kde.org/applications/education/org.kde.rocs"
 license="GPL-2.0-or-later AND (LGPL-2.1-only OR LGPL-3.0-only) AND GFDL-1.2-only"
 makedepends="
 	boost-dev
 	extra-cmake-modules
-	grantlee-dev
+	grantlee-qt5-dev
 	karchive5-dev
 	kconfig5-dev
 	kcoreaddons5-dev
@@ -26,11 +24,12 @@ makedepends="
 	ktexteditor5-dev
 	kxmlgui5-dev
 	qt5-qtbase-dev
+	qt5-qtdeclarative-dev
 	qt5-qtsvg-dev
 	qt5-qtxmlpatterns-dev
 	samurai
 	"
-checkdepends="xvfb-run"
+checkdepends="xwayland-run"
 subpackages="$pkgname-doc $pkgname-lang $pkgname-dev"
 _repo_url="https://invent.kde.org/education/rocs.git"
 source="https://download.kde.org/stable/release-service/$pkgver/src/rocs-$pkgver.tar.xz"
@@ -44,7 +43,7 @@ build() {
 }
 
 check() {
-	xvfb-run -a ctest --test-dir build --output-on-failure
+	xwfb-run -- ctest --test-dir build
 }
 
 package() {
@@ -52,5 +51,5 @@ package() {
 }
 
 sha512sums="
-5a216fbec0fa51ef8a96610a0f6af35b3be10b6b23d7cde1352f64b229b5eaa6de159926977f2ba1e2bf5e51db6f026c73a8081a03218b6096374dd6296bda00  rocs-24.12.0.tar.xz
+fb36b041bf1837e6609e84b3f3518ec0ef98fb63552fbbf12933d3847bb63192619392e58f42d8449517251001b4044870e388a40d8c8642abd129e7fa5f4e89  rocs-24.12.1.tar.xz
 "
