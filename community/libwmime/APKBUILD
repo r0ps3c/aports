@@ -1,10 +1,9 @@
 # Maintainer: Noel Kuntze <noel.kuntze@thermi.consulting>
-pkgname=libvmime
-pkgver=0.9.2.175
-_commithash=d03ad5f0f6d3b2d54009ccdc7d1f7670218b263c
+pkgname=libwmime
+pkgver=1.0.0
 pkgrel=0
 pkgdesc="Library for working with RFC 5322, MIME messages and IMAP/POP/SMTP"
-url="https://www.vmime.org/"
+url="https://grommunio.com/"
 arch="all"
 license="GPL-3.0-only"
 # cmake config file isn't suitable for explicitely setting the TLS lib when it finds gnutls
@@ -22,11 +21,11 @@ makedepends="
 	"
 checkdepends="icu-data-full"
 subpackages="$pkgname-dbg $pkgname-dev"
-source="$pkgname-$pkgver-$_commithash.tar.gz::https://github.com/kisli/vmime/archive/$_commithash.tar.gz"
+source="$pkgname-$pkgver.tar.gz::https://github.com/grommunio/wmime/archive/refs/tags/wmime-$pkgver.tar.gz"
 
 options="!check" # test suite fails
 
-builddir="$srcdir/vmime-$_commithash"
+builddir="$srcdir/wmime-wmime-$pkgver"
 
 build() {
 	if [ "$CBUILD" != "$CHOST" ]; then
@@ -50,5 +49,5 @@ package() {
 	DESTDIR="$pkgdir" cmake --install .
 }
 sha512sums="
-a7bf716d23f5f3af05929be31cc68dfd90fa6d3b60d01f38ebfb3c4934263745d62b5f22e654e7176f2edf36e489d3ac0feec81e0f74e7cb43afa615640c4136  libvmime-0.9.2.175-d03ad5f0f6d3b2d54009ccdc7d1f7670218b263c.tar.gz
+92b9642a54b931b0135fc56c24df263d3e39256cb48e34c3bd5988b6f2b18ed3e738415f4fc20500c214efe0f0e55e28211ce1960ae14de2595fb842a2c83e3e  libwmime-1.0.0.tar.gz
 "
