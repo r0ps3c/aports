@@ -2,10 +2,7 @@
 
 pkgname=linux-rpi
 pkgver=6.12.13
-case $pkgver in
-*.*.*)	_kernver=${pkgver%.*};;
-*.*)	_kernver=$pkgver;;
-esac
+_kernver=${pkgver%.*}
 pkgrel=0
 pkgdesc="Linux kernel with Raspberry Pi patches"
 url=https://github.com/raspberrypi/linux
@@ -18,13 +15,14 @@ options="!strip !check"
 _rpi_repo="https://github.com/raspberrypi/linux.git"
 _linux_repo="https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git"
 source="https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/linux-$_kernver.tar.xz
-	https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/patch-$pkgver.xz
+	patch-$pkgver.patch.xz::https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/patch-$pkgver.xz
 	https://dev.alpinelinux.org/archive/rpi-patches/rpi-$pkgver-alpine.patch
 
 	common-changes.config
 	"
 arch="armhf armv7 aarch64"
 license="GPL-2.0-only"
+builddir="$srcdir"/linux-$_kernver
 _flavors="rpi"
 
 for _f in $_flavors; do
@@ -40,31 +38,7 @@ case "$CARCH" in
 esac
 
 prepare() {
-	local _patch_failed=
-	cd "$srcdir"/linux-$_kernver
-	if [ "${pkgver%.0}" = "$pkgver" ]; then
-		msg "Applying patch-$pkgver.xz"
-		unxz -c < "$srcdir"/patch-$pkgver.xz | patch -p1 -N
-	fi
-
-	# first apply patches in specified order
-	for i in $source; do
-		case $i in
-		*.patch)
-			msg "Applying $i..."
-			if ! patch -s -p1 -N -i "$srcdir"/${i##*/}; then
-				echo $i >>failed
-				_patch_failed=1
-			fi
-			;;
-		esac
-	done
-
-	if ! [ -z "$_patch_failed" ]; then
-		error "The following patches failed:"
-		cat failed
-		return 1
-	fi
+	default_prepare
 
 	# remove localversion from patch if any
 	rm -f localversion*
@@ -75,7 +49,7 @@ prepare() {
 		mkdir -p "$_builddir"
 		echo "-$pkgrel-$flavor" > "$_builddir"/localversion-alpine
 		_genconfig $flavor
-		make -C "$srcdir"/linux-$_kernver \
+		make -C "$builddir" \
 			O="$_builddir" \
 			ARCH="$_carch" \
 			olddefconfig
@@ -88,7 +62,7 @@ prepare() {
 # config command and values used by kernel scripts/config script.
 _genconfig() {
 	local flavor=$1 defconfig=
-	local builddir="$srcdir"/build-$flavor.$CARCH
+	local _builddir="$srcdir"/build-$flavor.$CARCH
 	local defconfig=
 	case "$CARCH" in
 		armhf) defconfig=bcmrpi_defconfig;;
@@ -97,8 +71,8 @@ _genconfig() {
 		*) die "Unknown CARCH: $CARCH" ;;
 	esac
 
-	cp "$srcdir"/linux-$_kernver/arch/$_carch/configs/$defconfig \
-		"$builddir"/.config
+	cp "$builddir"/arch/$_carch/configs/$defconfig \
+		"$_builddir"/.config
 
 	while read line; do
 		# skip comments
@@ -117,7 +91,7 @@ _genconfig() {
 		esac
 		msg "[$flavor] $cmd: $option $str"
 		"$srcdir"/linux-$_kernver/scripts/config \
-			--file "$builddir"/.config \
+			--file "$_builddir"/.config \
 			--$cmd "$option" "${str//\"/}"
 	done < "$srcdir"/common-changes.config
 }
@@ -125,7 +99,7 @@ _genconfig() {
 # verify if options are set to correct value
 _verifyconfig() {
 	local flavor=$1
-	local builddir="$srcdir"/build-$flavor.$CARCH
+	local _builddir="$srcdir"/build-$flavor.$CARCH
 	while read line; do
 		[ ${line:0:1} = "#" ] && continue
 		local option=${line%%=*} str= invert=
@@ -138,7 +112,7 @@ _verifyconfig() {
 			set-str) str=${line##*=}
 				str="$option=\"${str//\"/}\"" ;;
 		esac
-		grep -q $invert "^$str" "$builddir"/.config || \
+		grep -q $invert "^$str" "$_builddir"/.config || \
 			die "Config: $option not properly set!"
 	done < "$srcdir"/common-changes.config
 }
@@ -268,7 +242,7 @@ _dev() {
 	cp "$_builddir"/.config "$dir"/.config
 	echo "-$pkgrel-$_flavor" > "$dir"/localversion-alpine
 
-	make -j1 -C "$srcdir"/linux-$_kernver ARCH="$_carch" O="$dir" \
+	make -j1 -C "$builddir" ARCH="$_carch" O="$dir" \
 		syncconfig prepare modules_prepare scripts
 
 	# remove the stuff that points to real sources. we want 3rd party
@@ -279,7 +253,7 @@ _dev() {
 	#
 	# this is taken from ubuntu kernel build script
 	# http://kernel.ubuntu.com/git/ubuntu/ubuntu-zesty.git/tree/debian/rules.d/3-binary-indep.mk
-	cd "$srcdir"/linux-$_kernver
+	cd "$builddir"
 	find .  -path './include/*' -prune \
 		-o -path './scripts/*' -prune -o -type f \
 		\( -name 'Makefile*' -o -name 'Kconfig*' -o -name 'Kbuild*' -o \
@@ -300,7 +274,7 @@ _dev() {
 
 sha512sums="
 a37b1823df7b4f72542f689b65882634740ba0401a42fdcf6601d9efd2e132e5a7650e70450ba76f6cd1f13ca31180f2ccee9d54fe4df89bc0000ade4380a548  linux-6.12.tar.xz
-bd8c57af1e108f4c47220bced358cabb3f8bab29a10922ca4203f6c40ae02ac0ebda3250730cc760ca4671a9a20c9b0d88ae93df40890461f12455e2fae38866  patch-6.12.13.xz
+bd8c57af1e108f4c47220bced358cabb3f8bab29a10922ca4203f6c40ae02ac0ebda3250730cc760ca4671a9a20c9b0d88ae93df40890461f12455e2fae38866  patch-6.12.13.patch.xz
 8b5f874f4df061c2daee03f8bd2e5aeaf8f68bcec0768ff4eb7ae44f5f1d1dafba0a98cd3154646d3cf6a52d208059661a64b9f9348575ecb8a121ddee703f17  rpi-6.12.13-alpine.patch
 7da93feb7e6d0340ed62c579bb1b5c51121c847718f0717e69c539db7055b992df799cbd99ac1747f728b257f43fc5659aec41d8a381e284984049ee6018743d  common-changes.config
 "

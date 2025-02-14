@@ -5,10 +5,7 @@ pkgname=linux-${_flavor}
 # NOTE: this kernel is intended for testing
 # please resist urge to upgrade it blindly
 pkgver=6.11.0
-case $pkgver in
-	*.*.*)	_kernver=${pkgver%.*};;
-	*.*) _kernver=$pkgver;;
-esac
+_kernver=${pkgver%.*}
 pkgrel=0
 pkgdesc="Linux latest stable kernel for $_flavor chromebook"
 url="https://www.kernel.org"
@@ -16,13 +13,15 @@ _depends_dev="perl gmp-dev flex bison"
 makedepends="$_depends_dev sed installkernel bc linux-headers linux-firmware-any
 	openssl-dev diffutils findutils vboot-utils u-boot-tools dtc"
 options="!strip !check"
+builddir="$srcdir"/linux-$_kernver
 
 #subpackages="$pkgname-dev:_dev:$CBUILD_ARCH"
 source="https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/linux-$_kernver.tar.xz"
 case $pkgver in
 	*.*.0)	source="$source";;
-	*.*.*)	source="$source
-	https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/patch-$pkgver.xz" ;;
+	*.*.*)	source="
+	patch-$pkgver.patch.xz::https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/patch-$pkgver.xz
+	$source" ;;
 esac
 
 	source="$source
@@ -37,33 +36,7 @@ _carch="arm64"
 license="GPL-2.0"
 
 prepare() {
-	local _patch_failed=
-	cd "$srcdir"/linux-$_kernver
-	case $pkgver in
-		*.*.0);;
-		*)
-		msg "Applying patch-$pkgver.xz"
-		unxz -c < "$srcdir"/patch-$pkgver.xz | patch -p1 -N ;;
-	esac
-
-	# first apply patches in specified order
-	for i in $source; do
-		case $i in
-		*.patch)
-			msg "Applying $i..."
-			if ! patch -s -p1 -N -i "$srcdir"/$i; then
-				echo $i >>failed
-				_patch_failed=1
-			fi
-			;;
-		esac
-	done
-
-	if ! [ -z "$_patch_failed" ]; then
-		error "The following patches failed:"
-		cat failed
-		return 1
-	fi
+	default_prepare
 
 	# remove localversion from patch if any
 	rm -f localversion*
@@ -71,13 +44,12 @@ prepare() {
 }
 
 oldconfig() {
-		local _builddir="$srcdir"/linux-$_kernver
-		echo "-$pkgrel-$_flavor" > "$_builddir"/localversion-alpine \
+		echo "-$pkgrel-$_flavor" > "$builddir"/localversion-alpine \
 			|| return 1
 
-		cp "$srcdir"/config "$_builddir"/.config
-		make -C "$srcdir"/linux-$_kernver \
-			O="$_builddir" \
+		cp "$srcdir"/config "$builddir"/.config
+		make -C "$builddir" \
+			O="$builddir" \
 			ARCH="$_carch" \
 			listnewconfig oldconfig
 }
@@ -85,7 +57,6 @@ oldconfig() {
 build() {
 	unset LDFLAGS
 	export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
-	cd "$srcdir"/linux-$_kernver
 	make ARCH="$_carch" CC="${CC:-gcc}" \
 		KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-Alpine"
 }
@@ -95,7 +66,6 @@ _package() {
 	local _abi_release=${pkgver}-${pkgrel}-${_buildflavor}
 	export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
-	cd "$srcdir"/linux-$_kernver
 	# modules_install seems to regenerate a defect Modules.symvers on s390x. Work
 	# around it by backing it up and restore it after modules_install
 	cp Module.symvers Module.symvers.backup
@@ -129,9 +99,7 @@ _package() {
 package() {
 
 	_package $_flavor "$pkgdir"
-	local _builddir="$srcdir"/linux-$_kernver
-	#cp $_builddir/arch/arm64/boot/Image.gz $pkgdir/boot/vmlinuz-$_flavor
-	cd $_builddir
+	#cp $builddir/arch/arm64/boot/Image.gz $pkgdir/boot/vmlinuz-$_flavor
 	cp $srcdir/kernel.its.$_flavor .
 	mkimage -D "-I dts -O dtb -p 2048" -f kernel.its.$_flavor vmlinux.uimg
 
@@ -176,7 +144,7 @@ _dev() {
 	cp "$srcdir"/config-$_flavor.${CARCH} "$dir"/.config
 	echo "-$pkgrel-$_flavor" > "$dir"/localversion-alpine
 
-	make -j1 -C "$srcdir"/linux-$_kernver O="$dir" ARCH="$_carch" \
+	make -j1 -C "$builddir" O="$dir" ARCH="$_carch" \
 		syncconfig prepare modules_prepare scripts
 
 	# remove the stuff that points to real sources. we want 3rd party
@@ -187,7 +155,7 @@ _dev() {
 	#
 	# this is taken from ubuntu kernel build script
 	# http://kernel.ubuntu.com/git/ubuntu/ubuntu-zesty.git/tree/debian/rules.d/3-binary-indep.mk
-	cd "$srcdir"/linux-$_kernver
+	cd "$builddir"
 	find .  -path './include/*' -prune \
 		-o -path './scripts/*' -prune -o -type f \
 		\( -name 'Makefile*' -o -name 'Kconfig*' -o -name 'Kbuild*' -o \
