@@ -1,14 +1,14 @@
 # Contributor: Andy Postnikov <apostnikov@gmail.com>
 # Maintainer: Andy Postnikov <apostnikov@gmail.com>
-pkgname=php81-pecl-csv
+pkgname=php84-pecl-csv
 _extname=CSV
 pkgver=0.4.3
 pkgrel=0
-pkgdesc="CSV PHP 8.1 extension - PECL"
+pkgdesc="CSV PHP 8.4 extension - PECL"
 url="https://pecl.php.net/package/CSV"
 arch="all"
 license="PHP-3.01"
-_phpv=81
+_phpv=84
 _php=php$_phpv
 depends="$_php-common"
 makedepends="$_php-dev"
