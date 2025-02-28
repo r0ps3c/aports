@@ -1,20 +1,15 @@
-# Contributor: fossdd <fossdd@pwned.life>
-# Maintainer: fossdd <fossdd@pwned.life>
+maintainer="fossdd <fossdd@pwned.life>"
 pkgname=dump978
-pkgver=9.0
+pkgver=10.0
 pkgrel=0
 pkgdesc="FlightAware's 978MHz UAT demodulator"
 arch="all"
 url="https://github.com/flightaware/dump978"
 license="BSD-2-Clause"
-depends="
-	bladerf
-	boost
-	rtl-sdr
-	soapy-sdr
-	"
 makedepends="
+	bladerf-dev
 	boost-dev
+	librtlsdr-dev
 	soapy-sdr-dev
 	"
 source="$pkgname-$pkgver.tar.gz::https://github.com/flightaware/dump978/archive/refs/tags/v$pkgver.tar.gz"
@@ -28,11 +23,10 @@ check() {
 }
 
 package() {
-	install -D -m755 dump978-fa "$pkgdir"/usr/bin/dump978-fa
-	install -D -m755 skyaware978 "$pkgdir"/usr/bin/skyaware978
-	install -D -m755 faup978 "$pkgdir"/usr/lib/piaware/helpers/faup978
+	install -Dm755 dump978-fa skyaware978 -t "$pkgdir"/usr/bin/
+	install -Dm755 faup978 -t "$pkgdir"/usr/lib/piaware/helpers/
 }
 
 sha512sums="
-2a6effba4596a775228020c4cf3ca872179e9c5caf735126fdc4294b91e3f9447e4c6323f5ced8c92570cb6193363c796361c71b0a016ea1b1fe2b32e67a3dbc  dump978-9.0.tar.gz
+de6d75ee1399b8dd17288bd9376344bb43f1355e7cccc0f87ea61fdc4d2f052cb876e0468ae59de88a93b6429185408690b3f455a386b7e1c13af3a488b806ca  dump978-10.0.tar.gz
 "
