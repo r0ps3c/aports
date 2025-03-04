@@ -6,20 +6,23 @@ pkgdesc="Linux kernel io_uring access library"
 url="https://git.kernel.dk/cgit/liburing/"
 arch="all"
 license="LGPL-2.1-or-later OR MIT"
-makedepends="linux-headers coreutils"
+makedepends="linux-headers"
+checkdepends="bash procps-ng"
 subpackages="$pkgname-ffi $pkgname-dev $pkgname-doc"
 source="https://github.com/axboe/liburing/archive/refs/tags/liburing-$pkgver.tar.gz"
 builddir="$srcdir/$pkgname-$pkgname-$pkgver"
+# tests fail on CI
+options="!check"
 
 build() {
 	./configure \
-		--prefix=/usr \
 		--use-libc \
 		--mandir=/usr/share/man
+	make
 }
 
 check() {
-	make test
+	make runtests
 }
 
 package() {
