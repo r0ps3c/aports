@@ -1,7 +1,7 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=glade
 pkgver=3.40.0
-pkgrel=7
+pkgrel=8
 pkgdesc="User Interface Designer for GTK+ and GNOME"
 url="https://glade.gnome.org/"
 arch="all"
@@ -28,21 +28,16 @@ subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
 source="https://download.gnome.org/sources/glade/${pkgver%.*}/glade-$pkgver.tar.xz
 	webkit2gtk-4.1.patch
 	"
-# XXX: segfault in mozjs102, but it runs fine..
-options="!check"
 
 case "$CARCH" in
-armhf|s390x|riscv64)
+armhf)
+	# SIGTRAP
+	options="$options !check"
 	;;
 *)
 	makedepends="$makedepends gjs-dev"
 	;;
 esac
-
-if [ "$CARCH" = "s390x" ]; then
-	# no adwaita-icon-theme
-	options="$options !check"
-fi
 
 build() {
 	abuild-meson \
