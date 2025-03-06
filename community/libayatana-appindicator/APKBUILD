@@ -9,7 +9,6 @@ arch="all"
 license="LGPL-3.0-only"
 makedepends="
 	cmake
-	dbus-glib-dev
 	glib-dev
 	gobject-introspection-dev
 	gtk+3.0-dev
@@ -21,6 +20,10 @@ makedepends="
 checkdepends="dbus-test-runner xvfb-run"
 subpackages="$pkgname-dev"
 source="https://github.com/AyatanaIndicators/libayatana-appindicator/archive/$pkgver/libayatana-appindicator-$pkgver.tar.gz"
+case $CARCH in
+	# Unable to get name owner
+	riscv64) options="!check" ;;
+esac
 
 build() {
 	if [ "$CBUILD" != "$CHOST" ]; then
