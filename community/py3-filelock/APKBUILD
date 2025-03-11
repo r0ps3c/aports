@@ -3,7 +3,7 @@
 pkgname=py3-filelock
 _pkgname=filelock
 pkgver=3.16.1
-pkgrel=0
+pkgrel=1
 pkgdesc="A platform independent file lock for Python3"
 url="https://github.com/tox-dev/py-filelock"
 arch="noarch"
@@ -16,10 +16,8 @@ makedepends="
 	"
 checkdepends="
 	py3-pytest
-	py3-pytest-asyncio
 	py3-pytest-mock
 	py3-pytest-timeout
-	py3-virtualenv
 	"
 subpackages="$pkgname-pyc"
 source="https://files.pythonhosted.org/packages/source/f/$_pkgname/$_pkgname-$pkgver.tar.gz"
@@ -27,6 +25,13 @@ builddir="$srcdir"/$_pkgname-$pkgver
 
 replaces="py-filelock" # Backwards compatibility
 provides="py-filelock=$pkgver-r$pkgrel" # Backwards compatibility
+
+prepare() {
+	default_prepare
+
+	# circular dependency with py3-virtualenv
+	rm tests/test_virtualenv.py
+}
 
 build() {
 	SETUPTOOLS_SCM_PRETEND_VERSION=$pkgver \
