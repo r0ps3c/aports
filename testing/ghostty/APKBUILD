@@ -1,8 +1,8 @@
 # Contributor: lauren n. liberda <lauren@selfisekai.rocks>
 maintainer="lauren n. liberda <lauren@selfisekai.rocks>"
 pkgname=ghostty
-pkgver=1.1.2
-pkgrel=1
+pkgver=1.1.2_git20250311
+pkgrel=0
 pkgdesc="Fast, feature-rich, and cross-platform terminal emulator"
 url="https://ghostty.org/"
 arch="aarch64 x86_64"	# zig
@@ -12,16 +12,17 @@ depends_dev="
 	freetype-dev
 	glslang-dev
 	gtk4.0-dev
+	gtk4-layer-shell-dev
 	harfbuzz-dev
 	libadwaita-dev
 	libpng-dev
-	libxml2-dev
 	oniguruma-dev
 	simdutf-dev
 	zlib-dev
 	"
 makedepends="
 	$depends_dev
+	blueprint-compiler
 	ncurses
 	zig
 	"
@@ -30,14 +31,32 @@ makedepends="
 options="!check net"
 subpackages="
 	$pkgname-doc
+	$pkgname-lang
 	$pkgname-bash-completion
 	$pkgname-zsh-completion
 	$pkgname-fish-completion
 	"
+_commit=ce7846860f5f74b65142fc2af6ed883a178249f8
+builddir="$srcdir/ghostty-$_commit"
 source="
-	https://github.com/ghostty-org/ghostty/archive/refs/tags/v$pkgver/ghostty-$pkgver.tar.gz
+	https://github.com/ghostty-org/ghostty/archive/$_commit/ghostty-$_commit.tar.gz
 	0001-ReleaseSafe-is-not-debug.patch
 	"
+
+prepare() {
+	default_prepare
+
+	# These are unused in our builds, but if already downloaded into cache, they can cause errors
+	rm -rf ~/.cache/zig/p/12205a66d423259567764fa0fc60c82be35365c21aeb76c5a7dc99698401f4f6fefc
+	rm -rf ~/.cache/zig/p/12206ed982e709e565d536ce930701a8c07edfd2cfdce428683f3f2a601d37696a62
+	rm -rf ~/.cache/zig/p/1220e17e64ef0ef561b3e4b9f3a96a2494285f2ec31c097721bf8c8677ec4415c634
+	rm -rf ~/.cache/zig/p/12205a66d423259567764fa0fc60c82be35365c21aeb76c5a7dc99698401f4f6fefc
+	rm -rf ~/.cache/zig/p/12207831bce7d4abce57b5a98e8f3635811cfefd160bca022eb91fe905d36a02cf25
+	rm -rf ~/.cache/zig/p/12202cdac858abc52413a6c6711d5026d2d3c8e13f95ca2c327eade0736298bb021f
+	rm -rf ~/.cache/zig/p/12201a57c6ce0001aa034fa80fba3e1cd2253c560a45748f4f4dd21ff23b491cddef
+	rm -rf ~/.cache/zig/p/12207e0851c12acdeee0991e893e0132fc87bb763969a585dc16ecca33e88334c566
+	rm -rf ~/.cache/zig/p/122071ad56fd984afb4f94d441b6ea3e21f1741a0e026b02860d9a46110fac2cd109
+}
 
 build() {
 	zig build \
@@ -46,6 +65,7 @@ build() {
 		-fsys=fontconfig \
 		-fsys=freetype \
 		-fsys=glslang \
+		-fsys=gtk4-layer-shell \
 		-fsys=harfbuzz \
 		-fsys=libpng \
 		-fsys=oniguruma \
@@ -62,6 +82,6 @@ package() {
 }
 
 sha512sums="
-21f56eaa7154e67a9120286b1ce9bb4604a734f9be81d2e8db727b3fa29aaac854ce323267c3ff45e1fc978affa34a934866201ada4bdedf036689c3e2beeca6  ghostty-1.1.2.tar.gz
+467b9f85b46557532e3c63780cabbfe827228f43370627354d9af4909086e49331f6028ff5181b4ffbf12daf101503e11d8cd3c1c582a23b50fd2b214cd0d499  ghostty-ce7846860f5f74b65142fc2af6ed883a178249f8.tar.gz
 946fba6145cfcafe7ffdce908eb02fb84c0f235efe74e23feb17fa32dfa88255ab3370730c053b126da6a7469cc6be95b338732dfeb4ecfbdbed9517187c3428  0001-ReleaseSafe-is-not-debug.patch
 "
