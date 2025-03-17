@@ -1,13 +1,14 @@
 # Maintainer: Marian Buschsieweke <marian.buschsieweke@posteo.net>
 pkgname=py3-kikit
 pkgver=1.6.0
-pkgrel=0
+pkgrel=1
 pkgdesc="Python library and CLI tool to automate several tasks in KiCAD"
 url="https://github.com/yaqwsx/KiKit"
 # riscv64: py3-shapely
 # aarch64, armv7, armhf, loongarch64: py3-solidpython
 # s390x: kicad
-arch="noarch !riscv64 !aarch64 !armv7 !armhf !s390x !loongarch64"
+# ppc64le: py3-solidpython needs openscad
+arch="noarch !riscv64 !aarch64 !armv7 !armhf !s390x !loongarch64 !ppc64le"
 license="MIT"
 depends="
 	kicad
@@ -56,6 +57,8 @@ check() {
 package() {
 	python3 -m installer -d "$pkgdir" \
 		.dist/*.whl
+
+	install -Dm644 LICENCE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
 }
 
 sha512sums="

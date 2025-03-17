@@ -1,6 +1,6 @@
 # Maintainer: Marian Buschsieweke <marian.buschsieweke@posteo.net>
 pkgname=py3-pcbnewtransition
-pkgver=0.4.2
+pkgver=0.5.0
 pkgrel=0
 pkgdesc="Easily support KiCAD 7, 6 and 5 in your KiCAD plugins by monkeypatching older versions to KiCAD 7 API"
 url="https://github.com/yaqwsx/pcbnewTransition"
@@ -40,8 +40,10 @@ build() {
 package() {
 	python3 -m installer -d "$pkgdir" \
 		.dist/*.whl
+
+	install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
 }
 
 sha512sums="
-76b91d5d0c54b94ba6b6e1a2d1ad9965d6f2745b4f0d2c40c27924a33b8d64c0d27149ab4b6b373c6a6373802dbefe80eff804f94076ab9566960a95bea5535a  py3-pcbnewtransition-0.4.2.tar.gz
+3fb8dd3864aeebb07f65d17815cc8dca32945bcf1277588f9f2251bf17f8bb36a31eede902de96796b3e933c4ccb2e23ce12eceb546d0a2501f35f48233fbcba  py3-pcbnewtransition-0.5.0.tar.gz
 "

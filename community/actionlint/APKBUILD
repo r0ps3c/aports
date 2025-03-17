@@ -2,7 +2,7 @@
 # Maintainer: Galen Abell <galen@galenabell.com>
 pkgname=actionlint
 pkgver=1.7.7
-pkgrel=1
+pkgrel=2
 pkgdesc="Static checker for GitHub Actions workflow files"
 url="https://github.com/rhysd/actionlint"
 arch="all"
@@ -24,6 +24,9 @@ build() {
 }
 
 check() {
+	# actionlint.version should be empty string when running linter_test.go
+	sed -i 's/{{ getVersion | json }}/""/g' testdata/format/sarif_template.txt
+
 	# Some tests expect to be run from a git repository.
 	git init --quiet
 	go test ./...
