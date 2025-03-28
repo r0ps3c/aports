@@ -2,7 +2,7 @@
 # Maintainer: Antoine Martin (ayakael) <dev@ayakael.net>
 pkgname=zotero
 pkgver=7.0.11
-pkgrel=0
+pkgrel=1
 _fxver=115.16.0
 _gittag=$pkgver
 pkgdesc="A free, easy-to-use tool to help you collect, organize, cite, and share your research sources."
@@ -15,7 +15,7 @@ license="GPL-3.0-only AND LGPL-2.1-only AND LGPL-3.0-only AND MPL-2.0"
 depends="
 	ffmpeg-libavcodec
 	"
-_llvmver=18
+_llvmver=19
 makedepends="
 	alsa-lib-dev
 	automake
