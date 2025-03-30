@@ -10,7 +10,7 @@ _pkgname=llvm
 pkgver=15.0.7
 _majorver=${pkgver%%.*}
 pkgname=$_pkgname$_majorver
-pkgrel=15
+pkgrel=17
 pkgdesc="Low Level Virtual Machine compiler system, version $_majorver"
 arch="all !loongarch64"
 url="https://llvm.org/"
@@ -151,7 +151,7 @@ build() {
 		-DCMAKE_INSTALL_PREFIX=/$_prefix \
 		-DCMAKE_INSTALL_RPATH=/$_prefix \
 		\
-		-DLLVM_DEFAULT_TARGET_TRIPLE="$CBUILD" \
+		-DLLVM_DEFAULT_TARGET_TRIPLE="$CHOST" \
 		-DLLVM_HOST_TRIPLE="$CHOST" \
 		\
 		-DFFI_INCLUDE_DIR="$ffi_include_dir" \
