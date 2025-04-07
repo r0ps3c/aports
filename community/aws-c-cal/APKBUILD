@@ -1,7 +1,7 @@
 # Contributor: Holger Jaekel <holger.jaekel@gmx.de>
 maintainer="fossdd <fossdd@pwned.life>"
 pkgname=aws-c-cal
-pkgver=0.8.3
+pkgver=0.8.9
 pkgrel=0
 pkgdesc="AWS Crypto Abstraction Layer: Cross-Platform, C99 wrapper for cryptography primitives"
 url="https://github.com/awslabs/aws-c-cal"
@@ -45,5 +45,5 @@ package() {
 }
 
 sha512sums="
-7f05e636a7e31b83c55b22aa12d249555fa0619fab55bb61f638ba9932f831d4a914c47f1762c7e30c6320173eb44394efb9d644a65c228d8cf789329a32e7b8  aws-c-cal-0.8.3.tar.gz
+504ec2302e38cb3b002a648fadc5f154c3f0347540d02ed0361db428c7064d6546db111f04b5d9d22bcb6ce0d05840ec6bc8bf90addb5b470a8dd2df176cddb3  aws-c-cal-0.8.9.tar.gz
 "

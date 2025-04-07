@@ -1,7 +1,7 @@
 # Contributor: Peter Shkenev <santurysim@gmail.com>
 # Maintainer: Peter Shkenev <santurysim@gmail.com>
 pkgname=gajim
-pkgver=2.0.3
+pkgver=2.0.4
 pkgrel=0
 _pkgver_suffix=""
 pkgdesc="A full featured and easy to use XMPP client"
@@ -38,7 +38,7 @@ makedepends="
 	"
 checkdepends="xvfb-run font-dejavu py3-pytest"
 source="
-	https://dev.gajim.org/gajim/gajim/-/archive/$pkgver/gajim-$pkgver.tar.bz2
+	https://gajim.org/downloads/${pkgver%.*}/gajim-$pkgver.tar.gz
 	"
 subpackages="$pkgname-doc $pkgname-lang $pkgname-pyc"
 
@@ -67,5 +67,5 @@ lang() {
 }
 
 sha512sums="
-d5c051b10c326715fb12db21960078da43d9b58db8f50903978a276dc29123d3f2e75d41a54d9c5fd0aa3be3988cd65d23b9845c6779196e6ec32855d14320a3  gajim-2.0.3.tar.bz2
+33a8aa77a834c604af5e619d22094f53cd612d3ae184b7588bafdbf64534d107b8d2749cca06b4266b8f8416b68faf312deafdf5f15e5b6dec5334c480c41289  gajim-2.0.4.tar.gz
 "

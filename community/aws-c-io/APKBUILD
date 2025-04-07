@@ -1,7 +1,7 @@
 # Contributor: Holger Jaekel <holger.jaekel@gmx.de>
 maintainer="fossdd <fossdd@pwned.life>"
 pkgname=aws-c-io
-pkgver=0.16.0
+pkgver=0.18.0
 pkgrel=0
 pkgdesc="Module for the AWS SDK for C handling all IO and TLS work for application protocols"
 url="https://github.com/awslabs/aws-c-io"
@@ -52,5 +52,5 @@ package() {
 }
 
 sha512sums="
-141ec9d9e415a559b745f55cdb33387b41d4009d0fa6eeadb7d98ff29937bf1ede4015f0d417c8faf193667ce83872b4a12dd53bfb3c116cc5280a8ea6aa25f2  aws-c-io-0.16.0.tar.gz
+5bfa3df3523bd88649cf497cab87eb6e5ac3bde8e8a8f1044912a7d5cfdaabf2bbd8ee1a1db83ec66a261176bf046baae21b169e89ba9911ebcfbd47e85666ab  aws-c-io-0.18.0.tar.gz
 "

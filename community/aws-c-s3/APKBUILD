@@ -1,7 +1,7 @@
 # Contributor: Holger Jaekel <holger.jaekel@gmx.de>
 maintainer="fossdd <fossdd@pwned.life>"
 pkgname=aws-c-s3
-pkgver=0.7.11
+pkgver=0.7.15
 pkgrel=0
 pkgdesc="AWS C99 library implementation for communicating with the S3 service"
 url="https://github.com/awslabs/aws-c-s3"
@@ -51,5 +51,5 @@ package() {
 }
 
 sha512sums="
-e942a0f7b0bc7fb6c5846eab434ed3d8383962edd4794b2e92393f1466e239f6c34d27bb76a976385420a6946ef41008a7a25108961fb4bba653c9676fefc2fe  aws-c-s3-0.7.11.tar.gz
+8fd77e902bf6b91cf354099f835a8529593a5f74b2e3a1aa4edf08c71246fea12648e6fbe1ea51323b669c6a4b3aefbe0b47a5da015722a6029b234e47929674  aws-c-s3-0.7.15.tar.gz
 "
