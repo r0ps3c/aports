@@ -88,6 +88,13 @@ replaces="llvm$_prevmajorver"
 #
 _prefix="usr/lib/llvm$_majorver"
 
+_llvm_targets="-DLLVM_TARGETS_TO_BUILD=AMDGPU;BPF;WebAssembly"
+case "$CARCH" in
+	arm*) _llvm_targets="$_llvm_targets;ARM";;
+	ppc64le) _llvm_targets="$_llvm_targets;PowerPC";;
+	*) _llvm_targets="" ;;
+esac
+
 prepare() {
 	default_prepare
 
@@ -97,12 +104,6 @@ prepare() {
 	rm -v test/CodeGen/AArch64/wineh4.mir
 	# https://github.com/llvm/llvm-project/issues/47657
 	rm -v test/ExecutionEngine/Interpreter/intrinsics.ll
-
-	local common_targets="AMDGPU;BPF;WebAssembly"
-	case "$CARCH" in
-		arm*) _llvm_targets="-DLLVM_TARGETS_TO_BUILD=ARM;$common_targets";;
-		ppc64le) _llvm_targets="-DLLVM_TARGETS_TO_BUILD=PowerPC;$common_targets";;
-	esac
 
 	# Archs that do not build the X86 target above need to
 	# have llvm-debuginfo-analyzer tests disabled due to:
@@ -130,12 +131,6 @@ build() {
 	# Auto-detect it by guessing either.
 	local ffi_include_dir="$(pkg-config --cflags-only-I libffi | sed 's|^-I||g')"
 
-	local zstd=ON
-	# tries linking host libzstd in cross
-	if [ -n "$BOOTSTRAP" ]; then
-		zstd=OFF
-	fi
-
 	# NOTE: DO NOT change CMAKE_BUILD_TYPE! Buildmodes like None will enable
 	# debug assertions for LLVM!
 	cmake -B build -G Ninja -Wno-dev -S llvm \
@@ -158,14 +153,14 @@ build() {
 		-DLLVM_ENABLE_CURL=FORCE_ON \
 		-DLLVM_ENABLE_DUMP=ON \
 		-DLLVM_ENABLE_EH=ON \
-		-DLLVM_ENABLE_FFI=ON \
+		-DLLVM_ENABLE_FFI=FORCE_ON \
 		-DLLVM_ENABLE_LIBCXX=OFF \
 		-DLLVM_ENABLE_LIBEDIT=OFF \
 		-DLLVM_ENABLE_PIC=ON \
 		-DLLVM_ENABLE_RTTI=ON \
 		-DLLVM_ENABLE_SPHINX=OFF \
-		-DLLVM_ENABLE_ZLIB=ON \
-		-DLLVM_ENABLE_ZSTD=$zstd \
+		-DLLVM_ENABLE_ZLIB=FORCE_ON \
+		-DLLVM_ENABLE_ZSTD=FORCE_ON \
 		-DLLVM_INCLUDE_BENCHMARKS=OFF \
 		-DLLVM_INCLUDE_EXAMPLES=OFF \
 		-DLLVM_INSTALL_GTEST=ON \
