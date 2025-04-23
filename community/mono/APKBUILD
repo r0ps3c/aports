@@ -1,0 +1,78 @@
+maintainer="fossdd <fossdd@pwned.life>"
+pkgname=mono
+pkgver=6.14.0
+pkgrel=0
+pkgdesc="Free implementation of the .NET platform including runtime and compiler"
+url="https://www.mono-project.com/"
+arch="x86_64 aarch64"
+license="MIT"
+depends="python3"
+depends_dev="
+	$pkgname=$pkgver-r$pkgrel
+	libgdiplus-dev
+	"
+makedepends="
+	$depends_dev
+	bash
+	cmake
+	linux-headers
+	perl
+	samurai
+	"
+subpackages="
+	$pkgname-dev
+	$pkgname-doc
+	$pkgname-lang
+	"
+source="https://dl.winehq.org/mono/sources/mono/mono-$pkgver.tar.xz
+	aarch64-fix-pointer-to-int-cast-size.patch
+	"
+options="!check" # fail
+
+build() {
+	CFLAGS="$CFLAGS -O2 -flto=auto" \
+	CXXFLAGS="$CXXFLAGS -O2 -flto=auto" \
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--disable-boehm \
+		--enable-ninja \
+		--disable-rpath \
+		--disable-static \
+		--enable-parallel-mark \
+		--with-mcs-docs=no \
+		--without-sigaltstack
+	make
+	make -C mcs/jay
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	make DESTDIR="$pkgdir" prefix=/usr INSTALL=../../install-sh -C mcs/jay install
+
+	cd "$pkgdir"
+
+	rm -rf \
+		usr/lib/mono/*/Mono.Security.Win32* \
+		usr/lib/*.la
+}
+
+dev() {
+	default_dev
+
+	mv "$subpkgdir"/usr/lib/*.so "$pkgdir"/usr/lib/
+}
+
+sha512sums="
+a5ea38f0ff2d23f361414158f89626f741193dcdd5685f10eb0a0c15566ba55c6ad36989cb7b04bed43fb432d7356351711012325fafcb3b0c7f439c6b3fc3fc  mono-6.14.0.tar.xz
+d95c19be46115bfa1b9d0e59a8ac90eb90073e4fcb86e3951243f167f53f30bbd3b038b430f11b7ab2df642c29dd45d13d8bef2e5d63a7f2ceb2edf34b30e897  aarch64-fix-pointer-to-int-cast-size.patch
+"

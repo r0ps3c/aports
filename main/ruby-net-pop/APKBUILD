@@ -5,13 +5,13 @@ _gemname=net-pop
 # Keep version in sync with "Bundled gems" (https://stdgems.org) for the
 # packaged Ruby version.
 pkgver=0.1.2
-pkgrel=1
+pkgrel=2
 pkgdesc="Ruby client library for POP3"
 url="https://github.com/ruby/net-pop"
 arch="noarch"
 license="BSD-2-Clause AND Ruby"
 depends="ruby"
-checkdepends="ruby-rake ruby-test-unit"
+checkdepends="ruby-test-unit"
 makedepends="ruby-rdoc"
 subpackages="$pkgname-doc"
 source="https://github.com/ruby/net-pop/archive/v$pkgver/$_gemname-$pkgver.tar.gz
@@ -19,17 +19,13 @@ source="https://github.com/ruby/net-pop/archive/v$pkgver/$_gemname-$pkgver.tar.g
 	"
 builddir="$srcdir/$_gemname-$pkgver"
 
-prepare() {
-	default_prepare
-	sed -i '/require .bundler/d' Rakefile
-}
-
 build() {
 	gem build $_gemname.gemspec
 }
 
 check() {
-	rake test
+	ruby -I lib -I test/lib -r helper \
+		-e "Dir.glob('./test/**/test_*.rb', &method(:require))" -- --verbose
 }
 
 package() {

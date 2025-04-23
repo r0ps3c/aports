@@ -2,10 +2,11 @@
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=xapian-bindings
 pkgver=1.4.27
-pkgrel=0
+pkgrel=1
 pkgdesc="Binding libraries for xapian"
 url="http://www.xapian.org"
 arch="all"
+arch="" # blocked by py3-sphinx-autobuild -> uvicorn
 license="GPL-2.0-or-later"
 # Disabled check for now since ruby smoketest fails
 options="!check"
