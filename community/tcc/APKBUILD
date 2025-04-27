@@ -1,0 +1,67 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Hinata Yanagi <hinasssan@gmail.com>
+# Maintainer: Celeste <cielesti@protonmail.com>
+maintainer="Celeste <cielesti@protonmail.com>"
+pkgname=tcc
+pkgver=0.9.27_git20250106
+_commit="f6385c05308f715bdd2c06336801193a21d69b50"
+pkgrel=0
+pkgdesc="Tiny C Compiler"
+url="https://repo.or.cz/w/tinycc.git"
+# loongarch64: Unsupported CPU
+arch="all !ppc64le !s390x !loongarch64"
+license="LGPL-2.1-or-later"
+depends="$pkgname-libs=$pkgver-r$pkgrel"
+depends_dev="$pkgname-libs=$pkgver-r$pkgrel"
+makedepends="texinfo"
+subpackages="
+	$pkgname-libs
+	$pkgname-libs-static
+	$pkgname-dev
+	$pkgname-doc
+	"
+source="$pkgname-$_commit.tar.gz::https://repo.or.cz/tinycc.git/snapshot/$_commit.tar.gz
+	libtcc.pc.in
+	"
+builddir="$srcdir/tinycc-${_commit:0:7}"
+
+case "$CARCH" in
+	x86_64) ;;
+	# various tests fail
+	*) options="$options !check" ;;
+esac
+
+build() {
+	./configure \
+		--cpu="$CARCH" \
+		--targetos=Linux \
+		--prefix=/usr \
+		--disable-static \
+		--config-musl
+	make
+
+	sed 's/@VERSION@/'"$pkgver"'/' "$srcdir"/libtcc.pc.in > libtcc.pc
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	install -Dvm644 libtcc.pc -t "$pkgdir"/usr/lib/pkgconfig/
+	install -Dvm644 Changelog CodingStyle README TODO \
+		-t "$pkgdir"/usr/share/doc/$pkgname/
+}
+
+libs() {
+	default_libs
+
+	amove usr/lib/libtcc.so
+}
+
+sha512sums="
+12f9e806a9de4300cade2017dcc839e261f0d1eb16bb829321039a89fb2814146c51aa34df40ccad4372522e1b73b6ebad358fd6ff68c1614b4b09a86673f3cf  tcc-f6385c05308f715bdd2c06336801193a21d69b50.tar.gz
+3e6311ef2b93ef5bcc17eb33077e2d79526c1592bb28189d1d12f1835d3af8234fe33cf49372c3c9ca703bb7cebebbdbbeb3db9864e18a76510e67b52b173e3a  libtcc.pc.in
+"
