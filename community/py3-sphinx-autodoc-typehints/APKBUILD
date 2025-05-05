@@ -2,7 +2,7 @@
 # Maintainer: Galen Abell <galen@galenabell.com>
 pkgname=py3-sphinx-autodoc-typehints
 _pyname=sphinx-autodoc-typehints
-pkgver=3.0.1
+pkgver=3.2.0
 pkgrel=0
 pkgdesc="Type hints support for the Sphinx autodoc extension"
 url="https://github.com/tox-dev/sphinx-autodoc-typehints"
@@ -35,5 +35,5 @@ package() {
 }
 
 sha512sums="
-52d31b773cbb421cecfa6d35792de931c1202dcba3f618bf8b9553b3c9073e730d5edc6409edcefdb7845d3d56c723fe3911f599af0e02dff9c8590f68fef0fa  sphinx-autodoc-typehints-3.0.1.tar.gz
+626da418442cb71cf4e60f6315bbfda97d48cabc9cbde49e23155cd0c697c235321fe8ed4a35127ea792384df4430593f3e53b5823ebdcc4b884b074e2aaf576  sphinx-autodoc-typehints-3.2.0.tar.gz
 "
