@@ -2,7 +2,7 @@
 # Maintainer: Celeste <cielesti@protonmail.com>
 maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=gleam
-pkgver=1.8.1
+pkgver=1.10.0
 pkgrel=0
 pkgdesc="Statically-typed language that compiles to Erlang and JS"
 url="https://gleam.run/"
@@ -13,8 +13,16 @@ makedepends="
 	cargo
 	cargo-auditable
 	"
-checkdepends="git"
-source="$pkgname-$pkgver.tar.gz::https://github.com/gleam-lang/gleam/archive/refs/tags/v$pkgver.tar.gz"
+checkdepends="
+	elixir
+	git
+	nodejs
+	rebar3
+	"
+source="$pkgname-$pkgver.tar.gz::https://github.com/gleam-lang/gleam/archive/refs/tags/v$pkgver.tar.gz
+	skip-bun-case.patch
+	skip-deno-case.patch
+	"
 
 prepare() {
 	default_prepare
@@ -35,5 +43,7 @@ package() {
 }
 
 sha512sums="
-c841977e3e4330f4c76b86571d5922cc330b1543a45c0b36fc875057193b8724fe8933966db682796665d867b587576ec9c0c58f10c4b973c4f222d1154e11af  gleam-1.8.1.tar.gz
+22f3c3f3d4088853d42a3bce708ff2ec48f02e6280812c3825eca17b8436985f85a7bcda4c367d6994f791708c18b1bc2356b0e6b9b5e1581d1eea18efddb932  gleam-1.10.0.tar.gz
+4f4e0be74ebdc9b31910c8f80d364b0365f2268f62e0d0af5afd36a54d2c1bbb2aaf6bb6c0ecf743e3a4cf3ce80ec792e399912e0bc0d01aa2ea40ec82f5cf27  skip-bun-case.patch
+03a1bc735da92ca9142e9c7e51ba3d3d220588d2d74f4c2635d2b3d0fa48ef687403ba123feab2b796362a01d479900617e58c59f606d039a190f4c819254b9b  skip-deno-case.patch
 "
