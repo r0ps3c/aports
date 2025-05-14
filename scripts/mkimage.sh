@@ -13,14 +13,10 @@
 set -e
 
 # get abuild configurables
-. /usr/share/abuild/functions.sh
+. "${ABUILD_SHAREDIR:-/usr/share/abuild}"/functions.sh
 
 scriptdir="$(dirname "$0")"
 git=$(command -v git) || git=true
-
-# deduce aports directory
-[ -n "$APORTS" ] || APORTS=$(realpath "$scriptdir/../")
-[ -e "$APORTS/main/build-base" ] || die "Unable to deduce aports base checkout"
 
 # echo '-dirty' if git is not clean
 git_dirty() {
