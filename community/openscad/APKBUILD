@@ -31,6 +31,7 @@ makedepends="
 	qscintilla-dev
 	qt5-qtbase-dev
 	qt5-qtmultimedia-dev
+	samurai
 	"
 checkdepends="
 	imagemagick
@@ -131,11 +132,13 @@ check() {
 		csgpngtest_polyhedron-nonplanar-tests
 		echotest_allexpressions
 		echotest_function-literal-.*
+		echotest_issue2342
 		lazyunion-.*
 		monotonepngtest_polyhedron-nonplanar-tests
 		opencsgtest_nef3_broken
 		pdfexporttest_centered
 		pdfexporttest_simple-pdf
+		svgviewbox-*
 		throwntogethertest_nef3_broken
 		$_arch_failing_tests
 		"
@@ -143,10 +146,10 @@ check() {
 	# trim whitespace before and after list and separate expressions by | (regex or)
 	failing_tests="$(echo "$failing_tests" | tr -d '\n' | sed -e 's/^\s*//' -e 's/\s*$//' -e 's/\s\+/|/g')"
 
-	cmake \
+	cmake -G Ninja \
 		-DEXPERIMENTAL=OFF \
 		.
-	make
+	cmake
 	xvfb-run ctest -E "$failing_tests"
 }
 

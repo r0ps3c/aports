@@ -1,8 +1,8 @@
 # Contributor: Sean E. Russell <ser@ser1.net>
 # Maintainer: Sean E. Russell <ser@ser1.net>
 pkgname=rook
-pkgver=0.2.6
-pkgrel=2
+pkgver=0.3.1
+pkgrel=0
 pkgdesc="Lightweight, stand-alone, headless secret service tool backed by a Keepass v2 database"
 url="https://sr.ht/~ser/rook"
 arch="all"
@@ -50,5 +50,5 @@ getattr() {
 }
 
 sha512sums="
-4f3b203c13952aaa7a30a52fbd7c21b24a859894c49555d39a8be273ae71ff1f37c271d491cb2f9eb0d5b608ca4ad314edc538948ac2ddc06b2a666d4ed1ad78  rook-0.2.6.tar.gz
+e35b35eb61c40a6c3569f5784c245fa48f721498dc953cb8112bc00dcd1b68b7273cda87cdf53a934bc8f30f50245cfef526e94fe2b010cbe688620fc31f6c9b  rook-0.3.1.tar.gz
 "

@@ -15,19 +15,19 @@ makedepends="
 	gpsd-dev
 	hamlib-dev
 	libudev-zero-dev
+	samurai
 	"
 subpackages="$pkgname-doc"
 source="$pkgname-$pkgver.tar.gz::https://github.com/wb2osz/direwolf/archive/refs/tags/$pkgver.tar.gz"
 
 build() {
-	cmake -B build -DCMAKE_INSTALL_PREFIX=/usr
-
-	make -C build
+	cmake -B build -G Ninja -DCMAKE_INSTALL_PREFIX=/usr
+	cmake --build build
 }
 
 package() {
-	make -C build DESTDIR="$pkgdir" install
-	make -C build DESTDIR="$pkgdir" install-conf
+	DESTDIR="$pkgdir" cmake --install build
+	DESTDIR="$pkgdir" cmake --build build --target install-conf
 
 	rm -r "${pkgdir:?}"/etc
 	rm -r "${pkgdir:?}"/usr/share/doc/direwolf/*.pdf

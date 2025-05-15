@@ -16,6 +16,8 @@ makedepends="
 	basu-dev
 	cmake
 	hyprland-protocols
+	hyprlang-dev
+	samurai
 	pipewire-dev
 	qt6-qtwayland-dev
 	sdbus-cpp-dev
@@ -28,7 +30,7 @@ source="
 	"
 
 build() {
-	cmake -B build \
+	cmake -B build -G Ninja \
 		-DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
 		-DCMAKE_INSTALL_PREFIX=/usr

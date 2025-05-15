@@ -15,7 +15,7 @@ subpackages="
 	$pkgname-detect
 	$pkgname-dev
 	$pkgname-doc
-	$pkgname-fancontrol
+	$pkgname-fancontrol::noarch
 	$pkgname-fancontrol-openrc:fancontrol_openrc
 	$pkgname-libs
 	$pkgname-sensord
@@ -60,14 +60,11 @@ package() {
 detect() {
 	depends="perl"
 	pkgdesc="Detection/migration scripts for lm-sensors"
-	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/sbin
-	cd "$pkgdir"
-	mv usr/bin/sensors-conf-convert "$subpkgdir"/usr/bin/
-	mv usr/sbin/sensors-detect "$subpkgdir"/usr/bin/
+	amove usr/bin/sensors-conf-convert
+	amove usr/sbin/sensors-detect
 }
 
 fancontrol() {
-	arch="noarch"
 	depends="bash"
 	pkgdesc="fancontrol daemon"
 	amove usr/sbin/fancontrol usr/sbin/pwmconfig
@@ -81,9 +78,7 @@ fancontrol_openrc() {
 
 sensord() {
 	pkgdesc="sensord daemon"
-	cd "$builddir"
-	mkdir -p "$subpkgdir"/usr/sbin
-	mv "$pkgdir"/usr/sbin/sensord "$subpkgdir"/usr/sbin/sensord
+	amove usr/sbin/sensord
 }
 
 sensord_openrc() {

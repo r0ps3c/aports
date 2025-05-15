@@ -8,7 +8,7 @@ url="https://lwan.ws"
 arch="x86_64"
 license="GPL-2.0-or-later"
 checkdepends="python3 py3-requests"
-makedepends="cmake bsd-compat-headers lua5.1-dev zlib-dev"
+makedepends="cmake bsd-compat-headers lua5.1-dev samurai zlib-dev"
 subpackages="$pkgname-dev $pkgname-libs $pkgname-dbg"
 source="$pkgname-$pkgver.tar.gz::https://github.com/lpereira/lwan/archive/v$pkgver.tar.gz
 	fix-pthread-stack-min.patch
@@ -20,20 +20,20 @@ source="$pkgname-$pkgver.tar.gz::https://github.com/lpereira/lwan/archive/v$pkgv
 build() {
 	CFLAGS="$CFLAGS -DHAS_SECURE_GETENV=1"
 	VERSION="$pkgver" \
-	cmake -B build \
+	cmake -B build -G Ninja \
 		-DCMAKE_BUILD_TYPE=None \
 		-DCMAKE_VERBOSE_MAKEFILE=ON \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DBUILD_SHARED_LIBS=ON
-	make -C build
+	cmake --build build
 }
 
 check() {
-	make -C build testsuite -j1
+	cmake --build build --target testsuite -j1
 }
 
 package() {
-	make -C build DESTDIR="$pkgdir" install
+	DESTDIR="$pkgdir" cmake --install build
 	rm -f "$pkgdir"/usr/lib/*.a
 }
 

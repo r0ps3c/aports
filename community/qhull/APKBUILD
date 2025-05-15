@@ -7,7 +7,7 @@ pkgdesc="Calculate convex hulls and related structures"
 url="https://www.qhull.org/"
 arch="all"
 license="custom"
-makedepends="cmake"
+makedepends="cmake samurai"
 subpackages="
 	$pkgname-static
 	$pkgname-dev
@@ -20,14 +20,14 @@ build() {
 	if [ "$CBUILD" != "$CHOST" ]; then
 		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
 	fi
-	cmake -B build \
+	cmake -B build -G Ninja \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_INSTALL_LIBDIR=lib \
 		-DBUILD_SHARED_LIBS=True \
 		-DCMAKE_BUILD_TYPE=None \
 		-DCMAKE_SKIP_INSTALL_RPATH=YES \
 		$CMAKE_CROSSOPTS
-	make -C build all libqhull
+	cmake --build build --target all libqhull
 }
 
 check() {
@@ -35,7 +35,7 @@ check() {
 }
 
 package() {
-	make -C build DESTDIR="$pkgdir" install
+	DESTDIR="$pkgdir" cmake --install build
 	mv build/libqhull.so* "$pkgdir"/usr/lib/
 
 	install -Dm644 $builddir/COPYING.txt $pkgdir/usr/share/licenses/$pkgname/LICENSE

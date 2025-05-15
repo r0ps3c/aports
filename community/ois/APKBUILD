@@ -9,7 +9,7 @@ pkgdesc="Object Oriented Input System"
 arch="x86_64 aarch64"
 url="https://github.com/wgois/OIS"
 license="Zlib"
-makedepends="cmake gcc libxaw libx11-dev linux-headers"
+makedepends="cmake gcc libxaw libx11-dev linux-headers samurai"
 source=$pkgname-$pkgver.tar.gz::"https://github.com/wgois/OIS/archive/v$pkgver.tar.gz"
 subpackages="$pkgname-dev"
 options="!check" # Package does not include any tests
@@ -17,14 +17,14 @@ options="!check" # Package does not include any tests
 builddir=$srcdir/OIS-$pkgver
 
 build() {
-	cmake -B build . \
+	cmake -B build -G Ninja . \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_BUILD_TYPE=None
-	make -C build
+	cmake --build build
 }
 
 package() {
-	make -C build DESTDIR="$pkgdir" install
+	DESTDIR="$pkgdir" cmake --install build
 }
 sha512sums="
 20598aef999a70900cb7f75ffaf62059acf8e811822971cb21986b5d25d28dacb79e4b4cf4770c70e00d3c55cdd01ef3e68a77c2dd148677784fc4df38891340  ois-1.5.1.tar.gz

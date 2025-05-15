@@ -7,21 +7,21 @@ pkgdesc="Very small Elliptic Curve Cryptography library"
 url="https://github.com/neocturne/libuecc"
 arch="all"
 license="BSD-2-Clause"
-makedepends="cmake"
+makedepends="cmake samurai"
 options="!check" # No testsuite
 subpackages="$pkgname-dev"
 source="https://github.com/neocturne/libuecc/archive/refs/tags/v$pkgver/libuecc-$pkgver.tar.gz"
 
 build() {
-	cmake -B build \
+	cmake -B build -G Ninja \
 		-DCMAKE_BUILD_TYPE=None \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		.
-	make -C build
+	cmake --build build
 }
 
 package() {
-	make -C build DESTDIR="$pkgdir" install
+	DESTDIR="$pkgdir" cmake --install build
 	rm -f "$pkgdir"/usr/lib/*.a
 }
 

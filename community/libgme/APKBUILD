@@ -7,9 +7,9 @@ pkgdesc="Video game music file emulation/playback library"
 url="https://bitbucket.org/mpyne/game-music-emu/wiki/Home"
 arch="all"
 license="LGPL-2.1-only"
-makedepends="cmake zlib-dev"
+makedepends="cmake samurai zlib-dev"
 subpackages="$pkgname-dev"
-options="!check" # make check not implemented
+options="!check" # ctest not implemented
 source="$pkgname-$pkgver.tar.xz::https://bitbucket.org/mpyne/game-music-emu/downloads/game-music-emu-$pkgver.tar.xz
 	ppc-musl.patch
 	"
@@ -20,17 +20,17 @@ build() {
 		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
 	fi
 
-	cmake -B build \
+	cmake -B build -G Ninja \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DBUILD_SHARED_LIBS=True \
 		-DCMAKE_BUILD_TYPE=None \
 		-DENABLE_UBSAN=OFF \
 		$CMAKE_CROSSOPTS
-	make -C build
+	cmake --build build
 }
 
 package() {
-	make -C build DESTDIR="$pkgdir" install
+	DESTDIR="$pkgdir" cmake --install build
 }
 
 sha512sums="
