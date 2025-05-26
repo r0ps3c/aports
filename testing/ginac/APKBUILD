@@ -1,7 +1,8 @@
 # Contributor: Alex Yam <alex@alexyam.com>
-# Maintainer: Alex Yam <alex@alexyam.com>
+# Maintainer: Celeste <cielesti@protonmail.com>
+maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=ginac
-pkgver=1.8.8
+pkgver=1.8.9
 pkgrel=0
 pkgdesc="C++ library for symbolic computations"
 url="https://www.ginac.de/"
@@ -12,8 +13,8 @@ subpackages="$pkgname-dev $pkgname-doc"
 source="https://www.ginac.de/ginac-$pkgver.tar.bz2"
 
 build() {
-	CXXFLAGS="$CXXFLAGS -O2 -flto=auto" \
-	CFLAGS="$CFLAGS -O2 -flto=auto" \
+	CXXFLAGS="${CXXFLAGS//-Os/-O2} -flto=auto" \
+	CFLAGS="${CFLAGS//-Os/-O2} -flto=auto" \
 	cmake -B build -G Ninja -Wno-dev \
 		-DCMAKE_BUILD_TYPE=None \
 		-DCMAKE_PREFIX_PATH=/usr \
@@ -27,9 +28,9 @@ check() {
 }
 
 package() {
-	DESTDIR="$pkgdir" cmake --build build --target install
+	DESTDIR="$pkgdir" cmake --install build
 }
 
 sha512sums="
-2dbf0d883d33d5f7bd9f7d107aa7068c6730b07da6540821023ade85a83d8472e61e2ea43001613d0db2c8907a12dc89951f32c4da756163091fd6fcca89f5bd  ginac-1.8.8.tar.bz2
+33e7a74458a220bb132f42a42b785c799cf0b14c5da66ab5b54cbc8359aa8f97b9a897f62387f3f79b07418bbae7937c8e14b3d8e4f79f69d3866108644a80b1  ginac-1.8.9.tar.bz2
 "
