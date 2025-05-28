@@ -1,13 +1,18 @@
 # Contributor: Eivind Uggedal <eu@eju.no>
-# Maintainer: Eivind Uggedal <eu@eju.no>
+# Maintainer: Celeste <cielesti@protonmail.com>
+maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=uacme
-pkgver=1.7.5
+pkgver=1.7.6
 pkgrel=0
 pkgdesc="Lightweight client for the RFC8555 ACMEv2 protocol"
 url="https://github.com/ndilieto/uacme"
 arch="all"
-license="GPL-3.0-or-later ISC MIT"
-makedepends="openssl-dev>3 curl-dev asciidoc"
+license="GPL-3.0-or-later AND ISC AND MIT"
+makedepends="
+	asciidoc
+	curl-dev
+	openssl-dev
+	"
 subpackages="$pkgname-doc"
 options="!check"  # no test suite
 source="uacme-upstream-$pkgver.tar.gz::https://github.com/ndilieto/uacme/archive/upstream/$pkgver.tar.gz"
@@ -33,5 +38,5 @@ package() {
 }
 
 sha512sums="
-51a588826b2d45900039544e7054cf9c1f2eef850310e6ad1acd4318968fb57fb41dd8ce500874cd9a6ae8a1eed228335146146a5d07fd6f63c35fc82d9b97e0  uacme-upstream-1.7.5.tar.gz
+c9d901ef2207ec91574eb76327320047529b11e35cc383d63b1cae9a8f57266deb9042fb9ca8e0d54369499c843c390436cec37126bc38f7d8ac2ab03940d784  uacme-upstream-1.7.6.tar.gz
 "
