@@ -2,7 +2,7 @@
 # Contributor: Jake Buchholz Göktürk <tomalok@gmail.com>
 # Maintainer: Jake Buchholz Göktürk <tomalok@gmail.com>
 pkgname=tiny-cloud
-pkgver=3.1.1
+pkgver=3.2.0
 pkgrel=0
 pkgdesc="Tiny Cloud instance bootstrapper"
 url="https://gitlab.alpinelinux.org/alpine/cloud/tiny-cloud"
@@ -19,6 +19,7 @@ install="
 	tiny-cloud-openrc.pre-upgrade
 	tiny-cloud-aws.post-install
 	tiny-cloud-azure.post-install
+	tiny-cloud-digitalocean.post-install
 	tiny-cloud-gcp.post-install
 	tiny-cloud-hetzner.post-install
 	tiny-cloud-incus.post-install
@@ -30,6 +31,7 @@ subpackages="
 	$pkgname-openrc
 	$pkgname-aws
 	$pkgname-azure
+	$pkgname-digitalocean
 	$pkgname-gcp
 	$pkgname-hetzner
 	$pkgname-incus
@@ -55,6 +57,12 @@ aws() {
 
 azure() {
 	pkgdesc="Tiny Cloud - Azure module"
+	depends="$pkgname=$pkgver-r$pkgrel"
+	mkdir -p "$subpkgdir"
+}
+
+digitalocean() {
+	pkgdesc="Tiny Cloud - DigitalOcean module"
 	depends="$pkgname=$pkgver-r$pkgrel"
 	mkdir -p "$subpkgdir"
 }
@@ -97,5 +105,5 @@ scaleway() {
 }
 
 sha512sums="
-77ab4ae579c6ddb7decf6fa1306cc3e37d7926ad2fec4b1653888e94fa582c517c1340df2792214dc5667e4ca6be60026840df9c0004f48c8da11084446f1e7b  tiny-cloud-3.1.1.tar.gz
+1c957d17f28b6a65d20808ded334f96c35086fe06d09aad1a01a17652be5fdaf560022c53fb42da6e33bc81f34a5b4c5072578d3ffb19deac371345fe25c1de1  tiny-cloud-3.2.0.tar.gz
 "
