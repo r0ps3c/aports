@@ -2,8 +2,8 @@
 # Maintainer: Celeste <cielesti@protonmail.com>
 maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=cmake
-pkgver=3.31.7
-pkgrel=1
+pkgver=4.0.2
+pkgrel=0
 pkgdesc="Cross-platform, open-source make system"
 url="https://www.cmake.org/"
 arch="all"
@@ -69,6 +69,17 @@ check() {
 
 package() {
 	DESTDIR="$pkgdir" ninja install
+
+	# Wrappers to ease the CMake 4 migration, aports that fail to build can
+	# switch to these while waiting for upstream to update CMakeLists.txt.
+	local exe; for exe in cmake ctest; do
+		cat > "$pkgdir"/usr/bin/${exe}3.5 <<-EOF
+			#!/bin/sh
+			export CMAKE_POLICY_VERSION_MINIMUM=3.5
+			exec $exe "\$@"
+		EOF
+		chmod 0755 "$pkgdir"/usr/bin/${exe}3.5
+	done
 }
 
 ccmake() {
@@ -93,5 +104,5 @@ vim() {
 }
 
 sha512sums="
-896f29e8e7c897e6e346141496d3f338aeaced8300fb2fd1fedcd0236742bfe4842de1c94253adf54f4847b17c5d9699c92d199cbb4a74c99ee14972c939b09e  cmake-3.31.7.tar.gz
+049138ec2a7d690663d431bcb4d8abd22f18ec2c9e0e58092df6bbfe801a30fef9a3b7cbd9fe88c476c0a95c71147a5b31b0494f04be879a86cbaaa4697f613c  cmake-4.0.2.tar.gz
 "
