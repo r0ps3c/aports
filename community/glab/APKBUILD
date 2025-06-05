@@ -2,7 +2,7 @@
 # Maintainer: Celeste <cielesti@protonmail.com>
 maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=glab
-pkgver=1.58.0
+pkgver=1.59.2
 pkgrel=0
 pkgdesc="Open source GitLab CLI tool written in Go"
 url="https://gitlab.com/gitlab-org/cli"
@@ -52,5 +52,5 @@ package() {
 }
 
 sha512sums="
-fa8f6ac00a7d2b2bdd3e8197a16e5b1918fea1e62e082e54e44b052d85d83c73bd735c656e81a4e4f09c31e2b2e9db5acc217e1b38629447bdcc86d2ca79faec  glab-1.58.0.tar.gz
+5896a16e5e7af9e7e2f78f2e1d9a800bed44ddc1bb82db67f9fb43ca76a7fee13b23dfe9d5975a89ce48f8a9b88ebe95c604b63aa745c57aa1403af52dba0a69  glab-1.59.2.tar.gz
 "
