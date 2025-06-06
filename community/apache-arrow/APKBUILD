@@ -3,7 +3,7 @@
 # based on arch linux PKGBUILD
 pkgname=apache-arrow
 pkgver=19.0.1
-pkgrel=6
+pkgrel=7
 _dotver=${pkgver//./}
 pkgdesc="multi-language toolbox for accelerated data interchange and in-memory processing"
 url="https://arrow.apache.org/"
@@ -128,7 +128,7 @@ build() {
 		-DPARQUET_REQUIRE_ENCRYPTION=ON \
 		-S cpp \
 		$CMAKE_CROSSOPTS
-	cmake --build build-cpp
+	cmake3.5 --build build-cpp
 
 	# install in Arrow_DIR for python build to find
 	DESTDIR="$builddir/dist-cpp" cmake --install build-cpp
