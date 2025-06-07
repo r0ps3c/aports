@@ -2,7 +2,7 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=mesa
 pkgver=25.1.2
-pkgrel=0
+pkgrel=1
 pkgdesc="Mesa DRI OpenGL library"
 url="https://www.mesa3d.org"
 arch="all"
@@ -209,6 +209,17 @@ build() {
 	export CXXFLAGS="$CXXFLAGS -O2 -g1"
 	export CPPFLAGS="$CPPFLAGS -O2 -g1"
 
+	case "$CARCH" in
+	armhf|armv7)
+		# gnu2 tlsdesc is broken in binutils, see
+		# https://gitlab.alpinelinux.org/alpine/aports/-/issues/14140
+		# and
+		# https://gitlab.freedesktop.org/mesa/mesa/-/issues/13236
+		export CFLAGS="$CFLAGS -mtls-dialect=gnu"
+		export CXXFLAGS="$CXXFLAGS -mtls-dialect=gnu"
+		;;
+	esac
+
 	PATH="$PATH:/usr/lib/llvm$_llvmver/bin" \
 	abuild-meson \
 		-Db_ndebug=true \
@@ -216,7 +227,6 @@ build() {
 		-Dallow-kcmp=enabled \
 		-Dexpat=enabled \
 		-Dintel-rt=$_intel_rt \
-		-Dpower8=enabled \
 		-Dshader-cache=enabled \
 		-Dxlib-lease=enabled \
 		-Dxmlconfig=enabled \
@@ -233,7 +243,6 @@ build() {
 		-Dgbm=enabled \
 		-Dglx=dri \
 		-Dopengl=true \
-		-Dosmesa=false \
 		-Dgles1=enabled \
 		-Dgles2=enabled \
 		-Degl=enabled \
