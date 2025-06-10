@@ -12,6 +12,7 @@ replaces="raspberrypi"  # for backward compatibility
 depends_dev="linux-headers $pkgname-static $pkgname-libs"
 makedepends="cmake samurai $depends_dev"
 options="!fhs !check"
+install="$pkgname-udev.post-install"
 subpackages="$pkgname-dev $pkgname-doc $pkgname-static $pkgname-libs $pkgname-udev:udev"
 source="$pkgname-$_commit.tar.gz::https://github.com/raspberrypi/userland/archive/$_commit.tar.gz
 	dont-build-moved-utils.patch
@@ -30,7 +31,7 @@ build() {
 		arm*) local _arm64=off;;
 		aarch64) local _arm64=on;;
 	esac
-	cmake -B build -G Ninja \
+	cmake3.5 -B build -G Ninja \
 		-DCMAKE_C_FLAGS="$CFLAGS -D_GNU_SOURCE" \
 		-DARM64=$_arm64 \
 		-DCMAKE_BUILD_TYPE=MinSizeRel \
@@ -84,7 +85,6 @@ dev() {
 
 udev() {
 	pkgdesc="VC4 GPU vchiq udev rules"
-	install="$subpkgname.post-install"
 	install_if="$pkgname-libs=$pkgver-r$pkgrel eudev"
 	depends=""
 
