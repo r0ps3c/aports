@@ -7,7 +7,6 @@ url="https://github.com/dlundquist/sniproxy"
 arch="all"
 license="BSD-2-Clause"
 makedepends="
-	$depends_dev
 	autoconf
 	automake
 	bsd-compat-headers
@@ -30,7 +29,8 @@ source="$pkgname-$pkgver.tar.gz::https://github.com/dlundquist/sniproxy/archive/
 
 prepare() {
 	default_prepare
-	./autogen.sh
+	autoreconf -vif -I /usr/share/gettext/m4
+	automake --add-missing --copy
 }
 
 build() {
