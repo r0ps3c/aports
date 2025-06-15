@@ -2,7 +2,7 @@
 # Maintainer: Michał Polański <michal@polanski.me>
 pkgname=gping
 pkgver=1.18.0
-pkgrel=0
+pkgrel=1
 pkgdesc="Ping, but with a graph"
 url="https://github.com/orf/gping"
 license="MIT"
