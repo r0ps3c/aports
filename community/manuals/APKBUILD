@@ -1,15 +1,19 @@
 maintainer="fossdd <fossdd@pwned.life>"
 pkgname=manuals
 pkgver=48.1
-pkgrel=0
+pkgrel=1
 pkgdesc="Install, Browse, and Search developer documentation"
 url="https://gitlab.gnome.org/chergert/manuals"
 arch="all"
 license="GPL-3.0-or-later"
+depends="flatpak"
 makedepends="
 	desktop-file-utils
 	flatpak-dev
+	glib-dev
 	gom-dev
+	gtk4.0-dev
+	libadwaita-dev
 	libdex-dev
 	libpanel-dev
 	meson
