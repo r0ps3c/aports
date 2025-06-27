@@ -2,7 +2,7 @@
 # Maintainer: Bart Ribbers <bribbers@disroot.org>
 pkgname=telepathy-ofono
 pkgver=0_git20210212
-pkgrel=11
+pkgrel=12
 _commit="b9bfed49157fd16c4a3dc84d29bdc5656beba5c9"
 pkgdesc="Telepathy oFono connection manager"
 url="https://github.com/TelepathyIM/telepathy-ofono"
@@ -29,7 +29,7 @@ builddir="$srcdir/$pkgname-$_commit"
 
 build() {
 	export CFLAGS="$CFLAGS -Wno-incompatible-pointer-types"
-	cmake -B build -G Ninja \
+	cmake3.5 -B build -G Ninja \
 		-DCMAKE_BUILD_TYPE=None \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_INSTALL_LIBDIR=lib \
