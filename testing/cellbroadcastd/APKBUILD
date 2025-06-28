@@ -1,0 +1,41 @@
+maintainer="fossdd <fossdd@pwned.life>"
+pkgname=cellbroadcastd
+pkgver=0.0.2
+pkgrel=0
+pkgdesc="Manages cell broadcast messages received via ModemManager"
+url="https://gitlab.freedesktop.org/devrtz/cellbroadcastd"
+arch="all"
+license="LGPL-2.1-or-later"
+makedepends="
+	glib-dev
+	gmobile-dev
+	gobject-introspection-dev
+	meson
+	mobile-broadband-provider-info
+	modemmanager-dev
+	"
+checkdepends="dbus"
+subpackages="$pkgname-libs $pkgname-dev"
+source="https://sources.phosh.mobi/releases/cellbroadcastd/cbd-$pkgver.tar.xz"
+builddir="$srcdir/cbd-$pkgver"
+
+build() {
+	abuild-meson \
+		output .
+	meson compile -C output
+}
+
+check() {
+	meson test --print-errorlogs -C output
+}
+
+package() {
+	DESTDIR="$pkgdir" meson install --no-rebuild -C output
+
+	# We don't ship systemd
+	rm -r "$pkgdir"/usr/lib/systemd
+}
+
+sha512sums="
+672b0fbbf5201bff259886657917521c6323611be668e571031188d929e3a2bfd5fd96735b05f6a204e9745fb49ab1a492150cae5d2346898ab1b064d4181374  cbd-0.0.2.tar.xz
+"
