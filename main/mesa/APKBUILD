@@ -2,7 +2,7 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=mesa
 pkgver=25.1.4
-pkgrel=0
+pkgrel=1
 pkgdesc="Mesa DRI OpenGL library"
 url="https://www.mesa3d.org"
 arch="all"
@@ -16,12 +16,10 @@ subpackages="
 	$pkgname-egl
 	$pkgname-gl
 	$pkgname-gles
-	$pkgname-xatracker
 	$pkgname-gbm
 	$pkgname-vulkan-ati:_vulkan
 	$pkgname-vulkan-swrast:_vulkan
 	$pkgname-vulkan-layers:_vulkan_layers
-	$pkgname-libd3dadapter9
 	"
 _llvmver=20
 depends_dev="
@@ -247,11 +245,9 @@ build() {
 		-Dgles2=enabled \
 		-Degl=enabled \
 		-Dgallium-extra-hud=true \
-		-Dgallium-nine=true \
 		-Dgallium-rusticl=$_rusticl \
 		-Dgallium-va=enabled \
 		-Dgallium-vdpau=enabled \
-		-Dgallium-xa=enabled \
 		-Drust_std=2021 \
 		-Dvideo-codecs=all \
 		. output
@@ -308,28 +304,12 @@ gles() {
 	amove usr/lib/libGLES*.so*
 }
 
-xatracker() {
-	pkgdesc="Mesa XA state tracker for vmware"
-	depends="mesa=$pkgver-r$pkgrel"
-	provider_priority=100
-
-	amove usr/lib/libxatracker*.so.*
-}
-
 gbm() {
 	pkgdesc="Mesa gbm library"
 	depends="mesa=$pkgver-r$pkgrel"
 	provider_priority=100
 
 	amove usr/lib/libgbm.so.*
-}
-
-libd3dadapter9() {
-	pkgdesc="Mesa directx9 adapter"
-	depends="mesa=$pkgver-r$pkgrel"
-	provider_priority=100
-
-	amove usr/lib/d3d/d3dadapter9.so*
 }
 
 rusticl() {
