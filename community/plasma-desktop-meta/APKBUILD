@@ -2,7 +2,7 @@
 # group=kde-plasma
 maintainer="team/kde <bribbers@disroot.org>"
 pkgname=plasma-desktop-meta
-pkgver=6.3.5
+pkgver=6.4.1
 pkgrel=0
 pkgdesc="Plasma (Base) meta package"
 url="https://kde.org/plasma-desktop"
@@ -16,7 +16,6 @@ depends="
 	breeze-gtk
 	breeze-icons
 	discover
-	drkonqi
 	font-noto
 	kde-cli-tools
 	kde-gtk-config

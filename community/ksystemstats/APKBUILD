@@ -2,7 +2,7 @@
 # group=kde-plasma
 maintainer="team/kde <bribbers@disroot.org>"
 pkgname=ksystemstats
-pkgver=6.3.5
+pkgver=6.4.1
 pkgrel=0
 pkgdesc="A plugin based system monitoring daemon"
 # armhf blocked by qt6-qtdeclarative -> kio
@@ -23,15 +23,18 @@ makedepends="
 	samurai
 	solid-dev
 	"
-
+checkdepends="xwayland-run"
 case "$pkgver" in
 	*.*.9*) _rel=unstable;;
 	*) _rel=stable;;
 esac
-
 subpackages="$pkgname-lang"
 _repo_url="https://invent.kde.org/plasma/ksystemstats.git"
 source="https://download.kde.org/$_rel/plasma/$pkgver/ksystemstats-$pkgver.tar.xz"
+case "$CARCH" in
+	# s390x and ppc6l4 have no enabled tests at this moment
+	s390x|ppc64le) options="$options !check" ;;
+esac
 
 build() {
 	cmake -B build -G Ninja \
@@ -42,7 +45,17 @@ build() {
 }
 
 check() {
-	ctest --test-dir build -E "ksystemstatstest"
+	local skipped_tests="ksystemstatstest"
+	local tests=""
+	case "$CARCH" in
+		# Test thinks these architectures are AMD64, unsupported upstream
+		ppc64le|s390x) tests="$tests TestLinuxCpu" ;;
+		*) ;;
+	esac
+	for test in $tests; do
+		skipped_tests="$skipped_tests|"
+	done
+	wlheadless-run -- ctest --test-dir build -E "$skipped_tests"
 }
 
 package() {
@@ -53,5 +66,5 @@ package() {
 }
 
 sha512sums="
-f2e4ff90992748a2f096cb51110505a46ad4ee65ebbfcee6e97a24bb80d6e5cfaa14ae8f740997ebd6fbe053f85459f29adfcd1ce24361a1ef9cd92f171b338a  ksystemstats-6.3.5.tar.xz
+a422da0d949be8fb3f2f5246de73bae2679994ef87856782ec87af3c4ae2e4a173cb3b00b12376ac4acdaf24222e470c23421ace85195b86997c322e94f58c4c  ksystemstats-6.4.1.tar.xz
 "

@@ -3,7 +3,7 @@
 # Maintainer: Celeste <cielesti@protonmail.com>
 maintainer="Celeste <cielesti@protonmail.com>"
 pkgname=pike
-pkgver=8.0.2006
+pkgver=8.0.2012
 pkgrel=0
 pkgdesc="Pike programming language"
 url="https://pike.lysator.liu.se/"
@@ -176,5 +176,5 @@ full() {
 }
 
 sha512sums="
-9f780dc7830c881b755b45be8ad76045325fdb55fd2eec92ad19a6722d658b7b54a2f09bd30e25103cca72f6201bb8812e684b0853b493178096ea11c3506703  pike-8.0.2006.tar.gz
+c81215975115ca98c9b3dc3efc10b848903bbc0415fcb7668fa8000e9bb7d2049667e2b1fabc4c207b128502439c58d079f8c4856aa28ab8822d35a5cbacf2a8  pike-8.0.2012.tar.gz
 "
