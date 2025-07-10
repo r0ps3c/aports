@@ -1,14 +1,14 @@
 # Maintainer: Simon Zeni <simon@bl4ckb0ne.ca>
 pkgname=betula
 pkgver=1.4.0
-pkgrel=1
+pkgrel=2
 pkgdesc="free single-user bookmarking software"
 url="https://betula.mycorrhiza.wiki/"
 arch="all"
 license="AGPL-3.0-only"
 options="net" # go modules
 makedepends="go sqlite-dev"
-checkdepends="curl"
+checkdepends="curl mercurial"
 subpackages="$pkgname-openrc"
 install="$pkgname.pre-install"
 builddir="$srcdir/$pkgname-v$pkgver"

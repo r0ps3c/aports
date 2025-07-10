@@ -6005,11 +6005,8 @@ diff '--color=auto' -p -X ../chromium-loongarch64/qt6-webengine/exclude -N -u -r
 diff '--color=auto' -p -X ../chromium-loongarch64/qt6-webengine/exclude -N -u -r a/src/3rdparty/chromium/third_party/ffmpeg/chromium/config/Chromium/linux/loong64/libavcodec/codec_list.c b/src/3rdparty/chromium/third_party/ffmpeg/chromium/config/Chromium/linux/loong64/libavcodec/codec_list.c
 --- a/src/3rdparty/chromium/third_party/ffmpeg/chromium/config/Chromium/linux/loong64/libavcodec/codec_list.c	2000-01-01 00:00:00.000000000 +0800
 +++ b/src/3rdparty/chromium/third_party/ffmpeg/chromium/config/Chromium/linux/loong64/libavcodec/codec_list.c	2000-01-01 00:00:00.000000000 +0800
-@@ -0,0 +1,18 @@
+@@ -0,0 +1,15 @@
 +static const FFCodec * const codec_list[] = {
-+    &ff_theora_decoder,
-+    &ff_vp3_decoder,
-+    &ff_vp8_decoder,
 +    &ff_flac_decoder,
 +    &ff_mp3_decoder,
 +    &ff_vorbis_decoder,
@@ -6027,21 +6024,19 @@ diff '--color=auto' -p -X ../chromium-loongarch64/qt6-webengine/exclude -N -u -r
 diff '--color=auto' -p -X ../chromium-loongarch64/qt6-webengine/exclude -N -u -r a/src/3rdparty/chromium/third_party/ffmpeg/chromium/config/Chromium/linux/loong64/libavcodec/parser_list.c b/src/3rdparty/chromium/third_party/ffmpeg/chromium/config/Chromium/linux/loong64/libavcodec/parser_list.c
 --- a/src/3rdparty/chromium/third_party/ffmpeg/chromium/config/Chromium/linux/loong64/libavcodec/parser_list.c	2000-01-01 00:00:00.000000000 +0800
 +++ b/src/3rdparty/chromium/third_party/ffmpeg/chromium/config/Chromium/linux/loong64/libavcodec/parser_list.c	2000-01-01 00:00:00.000000000 +0800
-@@ -0,0 +1,9 @@
+@@ -0,0 +1,7 @@
 +static const AVCodecParser * const parser_list[] = {
 +    &ff_flac_parser,
 +    &ff_mpegaudio_parser,
 +    &ff_opus_parser,
 +    &ff_vorbis_parser,
-+    &ff_vp3_parser,
-+    &ff_vp8_parser,
 +    &ff_vp9_parser,
 +    NULL };
 diff '--color=auto' -p -X ../chromium-loongarch64/qt6-webengine/exclude -N -u -r a/src/3rdparty/chromium/third_party/ffmpeg/chromium/config/Chromium/linux/loong64/libavformat/demuxer_list.c b/src/3rdparty/chromium/third_party/ffmpeg/chromium/config/Chromium/linux/loong64/libavformat/demuxer_list.c
 --- a/src/3rdparty/chromium/third_party/ffmpeg/chromium/config/Chromium/linux/loong64/libavformat/demuxer_list.c	2000-01-01 00:00:00.000000000 +0800
 +++ b/src/3rdparty/chromium/third_party/ffmpeg/chromium/config/Chromium/linux/loong64/libavformat/demuxer_list.c	2000-01-01 00:00:00.000000000 +0800
 @@ -0,0 +1,8 @@
-+static const AVInputFormat * const demuxer_list[] = {
++static const FFInputFormat * const demuxer_list[] = {
 +    &ff_flac_demuxer,
 +    &ff_matroska_demuxer,
 +    &ff_mov_demuxer,
@@ -6074,16 +6069,15 @@ diff '--color=auto' -p -X ../chromium-loongarch64/qt6-webengine/exclude -N -u -r
 diff '--color=auto' -p -X ../chromium-loongarch64/qt6-webengine/exclude -N -u -r a/src/3rdparty/chromium/third_party/ffmpeg/ffmpeg_generated.gni b/src/3rdparty/chromium/third_party/ffmpeg/ffmpeg_generated.gni
 --- a/src/3rdparty/chromium/third_party/ffmpeg/ffmpeg_generated.gni	2000-01-01 00:00:00.000000000 +0800
 +++ b/src/3rdparty/chromium/third_party/ffmpeg/ffmpeg_generated.gni	2000-01-01 00:00:00.000000000 +0800
-@@ -270,7 +270,7 @@ if ((is_apple && ffmpeg_branding == "Chr
-   ]
- }
+@@ -251,6 +251,7 @@ if ((current_cpu == "arm64" && ffmpeg_br
  
--if ((current_cpu == "arm64" && ffmpeg_branding == "Chrome") || (current_cpu == "x64" && ffmpeg_branding == "Chrome") || (is_android && current_cpu == "arm" && arm_use_neon && ffmpeg_branding == "Chrome") || (is_android && current_cpu == "x86" && ffmpeg_branding == "Chrome") || (is_apple && ffmpeg_branding == "Chrome") || (is_win && ffmpeg_branding == "Chrome") || (use_linux_config && ffmpeg_branding == "Chrome") || (use_linux_config && ffmpeg_branding == "ChromeOS")) {
-+if ((current_cpu == "arm64" && ffmpeg_branding == "Chrome") || (current_cpu == "x64" && ffmpeg_branding == "Chrome") || (current_cpu == "loong64" && ffmpeg_branding == "Chrome") || (is_android && current_cpu == "arm" && arm_use_neon && ffmpeg_branding == "Chrome") || (is_android && current_cpu == "x86" && ffmpeg_branding == "Chrome") || (is_apple && ffmpeg_branding == "Chrome") || (is_win && ffmpeg_branding == "Chrome") || (use_linux_config && ffmpeg_branding == "Chrome") || (use_linux_config && ffmpeg_branding == "ChromeOS")) {
-   ffmpeg_c_sources += [
-     "libavcodec/aac_ac3_parser.c",
-     "libavcodec/aac_parser.c",
-@@ -467,6 +467,19 @@ if ((is_android && current_cpu == "arm64
+ if ((current_cpu == "arm64" && ffmpeg_branding == "Chrome") ||
+     (current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
++    (current_cpu == "loong64" && ffmpeg_branding == "Chrome") ||
+     (is_android && current_cpu == "arm" && arm_use_neon &&
+      ffmpeg_branding == "Chrome") ||
+     (is_android && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
+@@ -366,6 +367,19 @@ if (current_cpu == "x64" || (is_android
    ]
  }
  
@@ -6100,6 +6094,6 @@ diff '--color=auto' -p -X ../chromium-loongarch64/qt6-webengine/exclude -N -u -r
 +  ]
 +}
 +
- if ((is_android && current_cpu == "arm" && arm_use_neon) || (use_linux_config && current_cpu == "arm" && arm_use_neon) || (use_linux_config && current_cpu == "arm")) {
-   ffmpeg_c_sources += [
-     "libavcodec/arm/flacdsp_init_arm.c",
+ if ((is_android && current_cpu == "arm" && arm_use_neon) ||
+     (use_linux_config && current_cpu == "arm" && arm_use_neon) ||
+     (use_linux_config && current_cpu == "arm")) {
